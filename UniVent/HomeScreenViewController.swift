@@ -37,7 +37,8 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
 //            NSLog("User logged in to Facebook")
 //            self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
 //        }
-        //test
+        //Test pull on different machine
+
 
     }
 
