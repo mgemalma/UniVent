@@ -12,59 +12,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-    ////////////
-    private func initializer()
-    {
-        loaddata();
-    }
-    var data = [Event]();
-    var filePath: String
-    {
-        let manager = FileManager.default;
-        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first;
-        return url!.appendingPathComponent("Data").path;
-    }
-    private func loaddata()
-    {
-        if let ourData = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? [Event]
-        {
-            data = ourData;
-        }
-    }
     
-    //private func savedata(event: Event)
-    private func savedata()
-    {
-        //data.append(event);
-        NSKeyedArchiver.archiveRootObject(data, toFile: filePath);
-    }
-    
-    private func testEvents(size : Int)
-    {
-        for i in 1...size
-        {
-            let name = "Test \(i)";
-            let event = Event(name: name);
-            data.append(event);
-        }
-        savedata();
-    }
-    
-    
-    private func deleteEventsFromPersistData()
-    {
-        data.removeAll();
-        savedata();
-    }
-    
-    private func printAllEvents()
-    {
-        for i in data
-        {
-            print(i.Name);
-        }
-        
-    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -73,25 +21,46 @@ class ViewController: UIViewController {
     @IBOutlet weak var bton: UIButton!
     
     @IBAction func butonPoshed(_ sender: Any) {
-        initializer();
-        testEvents(size: 10);
+        //TESTING AREA
         //To delete all the events from persistent data turn false to true
         if (false)
         {
-            deleteEventsFromPersistData();
+            //Delete all the events from the DISK
+            Event.deleteEventsFromPersistData();
         }
-        printAllEvents();
-        
-        //data[1].Name = "altug's"
-        /*data.removeAll()
-         self.savedata();*/
-        //data.remove(at: 1)
-        
-        //self.savedata(event: event);
-        
+            //To play with the Events already written in the DISK just simply make false to true
+            //But make sure if statement above is false
+            //Also make sure that you executed the else statement
+        else if (true)
+        {
+            //Get the Event Object Array from the DISK
+            Event.initializer();
+            print("Before any modification the event list\n");
+            Event.printAllEvents();
+            //To Rename a Event already in the existent
+            print("After Renaming An Event\n");
+            Event.renameEventFromPersistData(EventIndex: 1, NewName : "Altug's Party");
+            Event.printAllEvents();
+            //To delete an Event already in the existent
+            print("After Deleting An Event\n");
+            Event.deleteEventFromPersistData(EventIndex: 0);
+            Event.printAllEvents();
+            
+            
+        }
+            //To initialize events from scratch and save to the DISK
+        else {
+            //Get the Event Object Array from the DISK
+            Event.initializer();
+            //Create "size" of Events
+            Event.testEvents(size: 10);
+            //Print all the Event Objects in the DISK
+            Event.printAllEvents();
+        }
         
         
     }
+
 
     
 }
