@@ -15,7 +15,6 @@ class GenInfo {
     private var description: String
     
     /** Constructors **/
-    
     // Minimum Info Constructor
     convenience init(hostID: Int, title: String) {
         // Call Main Constructor with Default Values
