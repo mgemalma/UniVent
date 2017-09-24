@@ -27,9 +27,10 @@ class ViewController: UIViewController {
         }
     }
     
-    private func savedata(event: Event)
+    //private func savedata(event: Event)
+    private func savedata()
     {
-        data.append(event);
+        //data.append(event);
         NSKeyedArchiver.archiveRootObject(data, toFile: filePath);
     }
     
@@ -42,12 +43,20 @@ class ViewController: UIViewController {
     
     @IBAction func butonPoshed(_ sender: Any) {
         loaddata();
-        let name = "Part2!";
-        let event = Event(name: name);
+        let x = 10;
+        for i in 1...x
+        {
+            let name = "Test \(i)";
+            let event = Event(name: name);
+            data.append(event);
+        }
+        self.savedata();
         //data[1].Name = "altug's"
-        //data.removeAll()
+        /*data.removeAll()
+         self.savedata();*/
         //data.remove(at: 1)
-        self.savedata(event: event);
+        
+        //self.savedata(event: event);
         for i in data
         {
             print(i.Name);
