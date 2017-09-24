@@ -12,6 +12,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
+    ////////////
+    private func initializer()
+    {
+        loaddata();
+    }
     var data = [Event]();
     var filePath: String
     {
@@ -34,33 +39,55 @@ class ViewController: UIViewController {
         NSKeyedArchiver.archiveRootObject(data, toFile: filePath);
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    @IBOutlet weak var bton: UIButton!
-    
-    @IBAction func butonPoshed(_ sender: Any) {
-        loaddata();
-        let x = 10;
-        for i in 1...x
+    private func testEvents(size : Int)
+    {
+        for i in 1...size
         {
             let name = "Test \(i)";
             let event = Event(name: name);
             data.append(event);
         }
-        self.savedata();
+        savedata();
+    }
+    
+    
+    private func deleteEventsFromPersistData()
+    {
+        data.removeAll();
+        savedata();
+    }
+    
+    private func printAllEvents()
+    {
+        for i in data
+        {
+            print(i.Name);
+        }
+        
+    }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    @IBOutlet weak var bton: UIButton!
+    
+    @IBAction func butonPoshed(_ sender: Any) {
+        initializer();
+        testEvents(size: 10);
+        //To delete all the events from persistent data turn false to true
+        if (false)
+        {
+            deleteEventsFromPersistData();
+        }
+        printAllEvents();
+        
         //data[1].Name = "altug's"
         /*data.removeAll()
          self.savedata();*/
         //data.remove(at: 1)
         
         //self.savedata(event: event);
-        for i in data
-        {
-            print(i.Name);
-        }
         
         
         
