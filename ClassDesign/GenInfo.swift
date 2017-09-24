@@ -1,6 +1,6 @@
 /**
  *  Author: Anirudh Pal & Amjad Zahraa
- *  Description: This class stores all the general information about an event like; host, title, description, type etc.
+ *  Description: This class stores all the general information about an event like; host, title, description, type etc. Setter not implemented requires host priveleges. 
  **/
 
 class GenInfo {
@@ -8,7 +8,7 @@ class GenInfo {
     private let tSize = 32;
     private let dSize = 256;
     
-    /** Intance Variables **/
+    /** Instance Variables **/
     private var hostID: Int
     private var title: String
     private var type: Interest
