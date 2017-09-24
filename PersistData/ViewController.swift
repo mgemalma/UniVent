@@ -31,7 +31,7 @@ class ViewController: UIViewController {
             //To play with the Events already written in the DISK just simply make false to true
             //But make sure if statement above is false
             //Also make sure that you executed the else statement
-        else if (true)
+        else if (false)
         {
             //Get the Event Object Array from the DISK
             Event.initializer();
