@@ -25,7 +25,14 @@ class StatInfo {
     }
     
     /** Getters **/
-    func getRating() -> Int {return Int(rating)}
+    func getRating() -> Int {
+        if rating > 5.0 {
+            return 5
+        }
+        else {
+            return Int(rating)
+        }
+    }
     func getRatingCount() -> Int {return ratingCount}
     func getFlagCount() -> Int {return flagCount}
     func getHeadCount() -> Int {return headCount}
@@ -33,10 +40,10 @@ class StatInfo {
     /** Setters **/
     func setSmartRating(rating: Double) {
         ratingCount += 1
-        if self.rating == -1 {
-            self.rating = 0
+        if self.rating == -1.0 {
+            self.rating = 0.0
         }
-        self.rating = (self.rating + rating)/Double(ratingCount)
+        self.rating = ((self.rating * (Double(ratingCount - 1))) + rating)/Double(ratingCount)
     }
     func setSmartFlagCount() {flagCount += 1}
     func setSmartHeadCount() {headCount += 1}
