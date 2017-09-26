@@ -13,7 +13,7 @@ class Example: NSObject, NSCoding
     
     //NOTE I WILL MAKE EVERY FUNCTION STATIC SO THAT WHEN USED NO NEED TO CREATE OBJECTS
     
-    //The array that will be stored in the disk holding the Example class Objects.
+    //The array that will be stored in the disk which holds the Example class Objects.
     static var data = [Example]();
     
     //The only variable of the class
@@ -26,7 +26,7 @@ class Example: NSObject, NSCoding
     }
 
     /*
-     Later on when we want to recieve the data of the class variables we want to get the data through a key.
+     Later on when we want to recieve the data of the class variables from the disk we want to get it through a key.
      For each variable of the class a key must exist.
     */
     struct Keys
@@ -38,14 +38,14 @@ class Example: NSObject, NSCoding
     
     /*
      * Initialize the file path
-     * which will store the path
-     * in the disk where Event Objects are stored
+     * to the location in the disk where Event Objects array
+     * is stored
      */
     
     static var filePath: String
     {
         let manager = FileManager.default;
-        //Get the first available link
+        //Get the first available link (Location in the disk)
         let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first;
         //name the location as "ExampleData" to find it later
         return url!.appendingPathComponent("ExampleData").path;
@@ -61,12 +61,12 @@ class Example: NSObject, NSCoding
         coder.encode(name, forKey: Keys.name);
     }
     /*Now this function will be executed in the background when the data is received from the disk.
-     The reason why it has required tag is because we require every subclass to have it's NSCoding initializer.
+     The reason why it has required tag is because we require every subclass to have it's own NSCoding initializer.
     */
     required init(coder decoder: NSCoder)
     {
         //We are getting the name data of the object through the key we created in the Keys struct.
-        //Later on we say as? String saying that we want the data as String but it can also be NULL
+        //Later on we are saying " as? String" which means that we want the incoming data as String but it can also be NULL
         //The reason why the whole statement is in the if statement is that if the name is not NULL 
         //assign name variable it's value from the disk.
         if let nameObj = decoder.decodeObject(forKey: Keys.name) as? String
@@ -80,11 +80,12 @@ class Example: NSObject, NSCoding
     //TO LOAD DATA WHEN THE INITIALIZATION BEGINS USE loaddata()
     /*
      * Get the Event Object Array
-     * from "Data" location
+     * from "ExampleData" location
      */
     public static func loaddata()
     {
         //If the data from the filePath is not null in that case assign it to the Data array
+        //Get the data from the disk as an array of Example (data array)
         if let ourData = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? [Example]
         {
             data = ourData;
