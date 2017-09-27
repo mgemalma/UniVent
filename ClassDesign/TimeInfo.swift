@@ -30,6 +30,10 @@ class TimeInfo {
     func getStartTime() -> Date {return sTime}
     func getEndTime() -> Date {return eTime}
     
+    func getCreatedTimeStamp() -> Double {return cTime.timeIntervalSinceReferenceDate}
+    func getStartTimeStamp() -> Double {return sTime.timeIntervalSinceReferenceDate}
+    func getEndTimeStand() -> Double {return eTime.timeIntervalSinceReferenceDate}
+    
     /** Functions **/
     // Static Function to Generate Date Object using YYYY/MM/DD @ HH:MM
     static func genDate(year: Int, month: Int, day: Int, hour: Int, min: Int) -> Date {

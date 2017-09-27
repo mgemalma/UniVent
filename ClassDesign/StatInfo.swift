@@ -25,7 +25,7 @@ class StatInfo {
     }
     
     /** Getters **/
-    func getRating() -> Int {
+    func getRatingInt() -> Int {
         if rating > 5.0 {
             return 5
         }
@@ -33,6 +33,7 @@ class StatInfo {
             return Int(rating)
         }
     }
+    func getRatingDouble() -> Double {return rating}
     func getRatingCount() -> Int {return ratingCount}
     func getFlagCount() -> Int {return flagCount}
     func getHeadCount() -> Int {return headCount}

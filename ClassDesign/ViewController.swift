@@ -44,43 +44,43 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
    
     @IBAction func testing(_ sender: UIButton) {
-        var eTest = Event(eventID: 123)
-        
-        print(eTest.getEventID())
-        
-        var df = DateFormatter()
-        df.dateStyle = .full
-        df.timeStyle = .full
-        print(df.string(from: eTest.getTime().getCreatedTime()))
-        print(df.string(from: eTest.getTime().getStartTime()))
-        print(df.string(from: eTest.getTime().getEndTime()))
-        
-        print(eTest.getLoc().getAddress())
-        print(eTest.getLoc().getLocation().coordinate)
-        
-        print(eTest.getStat().getRating())
-        print(eTest.getStat().getRatingCount())
-        print(eTest.getStat().getFlagCount())
-        print(eTest.getStat().getHeadCount())
-        
-        eTest.getStat().setSmartFlagCount()
-        eTest.getStat().setSmartHeadCount()
-        eTest.getStat().setSmartRating(rating: 5)
-        eTest.getStat().setSmartRating(rating: 3)
-        eTest.getStat().setSmartRating(rating: 7)
-        eTest.getStat().setSmartRating(rating: 9)
-        eTest.getStat().setSmartRating(rating: 9)
-        
-        print(eTest.getStat().getRating())
-        print(eTest.getStat().getRatingCount())
-        print(eTest.getStat().getFlagCount())
-        print(eTest.getStat().getHeadCount())
-        
-        print(eTest.getGen().getHostID())
-        print(eTest.getGen().getTitle())
-        print(eTest.getGen().getType())
-        print(eTest.getGen().getDescription())
-        
+//        var eTest = Event(eventID: 123)
+//
+//        print(eTest.getEventID())
+//
+//        var df = DateFormatter()
+//        df.dateStyle = .full
+//        df.timeStyle = .full
+//        print(df.string(from: eTest.getTime().getCreatedTime()))
+//        print(df.string(from: eTest.getTime().getStartTime()))
+//        print(df.string(from: eTest.getTime().getEndTime()))
+//
+//        print(eTest.getLoc().getAddress())
+//        print(eTest.getLoc().getLocation().coordinate)
+//
+//        print(eTest.getStat().getRating())
+//        print(eTest.getStat().getRatingCount())
+//        print(eTest.getStat().getFlagCount())
+//        print(eTest.getStat().getHeadCount())
+//
+//        eTest.getStat().setSmartFlagCount()
+//        eTest.getStat().setSmartHeadCount()
+//        eTest.getStat().setSmartRating(rating: 5)
+//        eTest.getStat().setSmartRating(rating: 3)
+//        eTest.getStat().setSmartRating(rating: 7)
+//        eTest.getStat().setSmartRating(rating: 9)
+//        eTest.getStat().setSmartRating(rating: 9)
+//
+//        print(eTest.getStat().getRating())
+//        print(eTest.getStat().getRatingCount())
+//        print(eTest.getStat().getFlagCount())
+//        print(eTest.getStat().getHeadCount())
+//
+//        print(eTest.getGen().getHostID())
+//        print(eTest.getGen().getTitle())
+//        print(eTest.getGen().getType())
+//        print(eTest.getGen().getDescription())
+//
         
         
     }

@@ -20,6 +20,9 @@ class LocInfo {
     /** Getters **/
     func getAddress() -> String {return address}
     func getLocation() -> CLLocation {return eLocation}
+    
+    func getLatitude() -> Double {return eLocation.coordinate.latitude}
+    func getLongitude() -> Double {return eLocation.coordinate.longitude}
 
     /** Functions **/
     func distanceFrom(that: CLLocation) -> Double {return self.eLocation.distance(from: that)}
