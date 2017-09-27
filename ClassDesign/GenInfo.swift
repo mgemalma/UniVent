@@ -27,10 +27,10 @@ class GenInfo {
         self.hostID = hostID
         
         // Bounds Check on Title (Weird Behaviour)
-        if title.count <= 0 {
+        if title.lengthOfBytes(using: .ascii) <= 0 {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
-        if title.count > tSize {
+        if title.lengthOfBytes(using: .ascii) > tSize {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
         
@@ -41,12 +41,12 @@ class GenInfo {
         self.type = type
         
         // Bound Check on Description
-        if description.count > dSize {
+        if description.lengthOfBytes(using: .ascii) > dSize {
             print("init in GenInfo: invalid description size")
         }
         
         // Auto Description for Empty Descriptor
-        if description.count == 0 {
+        if description.lengthOfBytes(using: .ascii) == 0 {
             self.description = "No description"
         }
             

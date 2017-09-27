@@ -1,0 +1,901 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		16C6E19B4B50E4CFB63D8A90 /* Pods_UniVentTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833D87D859120A44CBA5C59A /* Pods_UniVentTests.framework */; };
+		8E0829C91F74718D00626F19 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829C81F74718D00626F19 /* SettingsViewController.swift */; };
+		8E0829CC1F755CFF00626F19 /* MapScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829CB1F755CFF00626F19 /* MapScreenViewController.swift */; };
+		8E0829CE1F75706500626F19 /* EventAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829CD1F75706500626F19 /* EventAnnotation.swift */; };
+		8E0829D01F75738800626F19 /* VCMapViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829CF1F75738800626F19 /* VCMapViewExtension.swift */; };
+		8E0829D41F75883F00626F19 /* EventFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829D31F75883F00626F19 /* EventFormViewController.swift */; };
+		8E0829E11F7AADB700626F19 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829D71F7AADB700626F19 /* Event.swift */; };
+		8E0829E21F7AADB700626F19 /* GenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829D81F7AADB700626F19 /* GenInfo.swift */; };
+		8E0829E41F7AADB700626F19 /* Interest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DA1F7AADB700626F19 /* Interest.swift */; };
+		8E0829E51F7AADB700626F19 /* LocInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DB1F7AADB700626F19 /* LocInfo.swift */; };
+		8E0829E61F7AADB700626F19 /* StatInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DC1F7AADB700626F19 /* StatInfo.swift */; };
+		8E0829E71F7AADB700626F19 /* TimeInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DD1F7AADB700626F19 /* TimeInfo.swift */; };
+		8E0829E81F7AADB700626F19 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DE1F7AADB700626F19 /* User.swift */; };
+		8E0829E91F7AADB700626F19 /* UserHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DF1F7AADB700626F19 /* UserHistory.swift */; };
+		8E0829ED1F7AE8F300626F19 /* Handy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829EC1F7AE8F300626F19 /* Handy.swift */; };
+		8E1742171F719F0000C556B7 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1742161F719F0000C556B7 /* UserNotifications.framework */; };
+		8E97EC4F1F698C28000BAE13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */; };
+		8E97EC511F698C28000BAE13 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */; };
+		8E97EC541F698C28000BAE13 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E97EC521F698C28000BAE13 /* Main.storyboard */; };
+		8E97EC571F698C28000BAE13 /* UniVent.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC551F698C28000BAE13 /* UniVent.xcdatamodeld */; };
+		8E97EC591F698C28000BAE13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E97EC581F698C28000BAE13 /* Assets.xcassets */; };
+		8E97EC5C1F698C28000BAE13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E97EC5A1F698C28000BAE13 /* LaunchScreen.storyboard */; };
+		8E97EC671F698C28000BAE13 /* UniVentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC661F698C28000BAE13 /* UniVentTests.swift */; };
+		8E97EC721F698C28000BAE13 /* UniVentUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC711F698C28000BAE13 /* UniVentUITests.swift */; };
+		8E97EC811F698C7C000BAE13 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E97EC801F698C7C000BAE13 /* MapKit.framework */; };
+		8E97EC861F69AB54000BAE13 /* EventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC851F69AB54000BAE13 /* EventTableViewController.swift */; };
+		8E97EC881F69AB65000BAE13 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC871F69AB65000BAE13 /* EventTableViewCell.swift */; };
+		AEC7F0176229448C16B2153E /* Pods_UniVentUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07D9AA17AFFB2500AA13AFE4 /* Pods_UniVentUITests.framework */; };
+		EBA5DDD4822BA10357F1E1E6 /* Pods_UniVent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 157A02DB82EE9592C739EEAF /* Pods_UniVent.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8E97EC631F698C28000BAE13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8E97EC431F698C28000BAE13 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8E97EC4A1F698C28000BAE13;
+			remoteInfo = UniVent;
+		};
+		8E97EC6E1F698C28000BAE13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8E97EC431F698C28000BAE13 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8E97EC4A1F698C28000BAE13;
+			remoteInfo = UniVent;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07D9AA17AFFB2500AA13AFE4 /* Pods_UniVentUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UniVentUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		157A02DB82EE9592C739EEAF /* Pods_UniVent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UniVent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		46395DE0BF48F61A06EDD3DE /* Pods-UniVent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVent/Pods-UniVent.debug.xcconfig"; sourceTree = "<group>"; };
+		497A5AA84B7AF1673A70B6FE /* Pods-UniVentTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests.release.xcconfig"; sourceTree = "<group>"; };
+		7432D61773B512E8FE6FE582 /* Pods-UniVentUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentUITests/Pods-UniVentUITests.release.xcconfig"; sourceTree = "<group>"; };
+		833D87D859120A44CBA5C59A /* Pods_UniVentTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UniVentTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E0829C81F74718D00626F19 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		8E0829CB1F755CFF00626F19 /* MapScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapScreenViewController.swift; sourceTree = "<group>"; };
+		8E0829CD1F75706500626F19 /* EventAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventAnnotation.swift; sourceTree = "<group>"; };
+		8E0829CF1F75738800626F19 /* VCMapViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCMapViewExtension.swift; sourceTree = "<group>"; };
+		8E0829D31F75883F00626F19 /* EventFormViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventFormViewController.swift; sourceTree = "<group>"; };
+		8E0829D71F7AADB700626F19 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/Event.swift; sourceTree = "<group>"; };
+		8E0829D81F7AADB700626F19 /* GenInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GenInfo.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/GenInfo.swift; sourceTree = "<group>"; };
+		8E0829DA1F7AADB700626F19 /* Interest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Interest.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/Interest.swift; sourceTree = "<group>"; };
+		8E0829DB1F7AADB700626F19 /* LocInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocInfo.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/LocInfo.swift; sourceTree = "<group>"; };
+		8E0829DC1F7AADB700626F19 /* StatInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StatInfo.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/StatInfo.swift; sourceTree = "<group>"; };
+		8E0829DD1F7AADB700626F19 /* TimeInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeInfo.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/TimeInfo.swift; sourceTree = "<group>"; };
+		8E0829DE1F7AADB700626F19 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/User.swift; sourceTree = "<group>"; };
+		8E0829DF1F7AADB700626F19 /* UserHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserHistory.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/UserHistory.swift; sourceTree = "<group>"; };
+		8E0829EC1F7AE8F300626F19 /* Handy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handy.swift; sourceTree = "<group>"; };
+		8E1742161F719F0000C556B7 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		8E97EC4B1F698C28000BAE13 /* UniVent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniVent.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
+		8E97EC531F698C28000BAE13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		8E97EC561F698C28000BAE13 /* UniVent.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UniVent.xcdatamodel; sourceTree = "<group>"; };
+		8E97EC581F698C28000BAE13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8E97EC5B1F698C28000BAE13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8E97EC5D1F698C28000BAE13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8E97EC621F698C28000BAE13 /* UniVentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniVentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E97EC661F698C28000BAE13 /* UniVentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniVentTests.swift; sourceTree = "<group>"; };
+		8E97EC681F698C28000BAE13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8E97EC6D1F698C28000BAE13 /* UniVentUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniVentUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E97EC711F698C28000BAE13 /* UniVentUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniVentUITests.swift; sourceTree = "<group>"; };
+		8E97EC731F698C28000BAE13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8E97EC801F698C7C000BAE13 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		8E97EC821F698CB4000BAE13 /* UniVent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UniVent.entitlements; sourceTree = "<group>"; };
+		8E97EC851F69AB54000BAE13 /* EventTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewController.swift; sourceTree = "<group>"; };
+		8E97EC871F69AB65000BAE13 /* EventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
+		C6772C5AF98E8C8FD8BFC7E7 /* Pods-UniVentUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentUITests/Pods-UniVentUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		D9C3737EBFFAF857B4474F34 /* Pods-UniVentTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests.debug.xcconfig"; sourceTree = "<group>"; };
+		FF76CC40A7E83BB814E45C6F /* Pods-UniVent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVent.release.xcconfig"; path = "Pods/Target Support Files/Pods-UniVent/Pods-UniVent.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8E97EC481F698C28000BAE13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8E1742171F719F0000C556B7 /* UserNotifications.framework in Frameworks */,
+				8E97EC811F698C7C000BAE13 /* MapKit.framework in Frameworks */,
+				EBA5DDD4822BA10357F1E1E6 /* Pods_UniVent.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E97EC5F1F698C28000BAE13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16C6E19B4B50E4CFB63D8A90 /* Pods_UniVentTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E97EC6A1F698C28000BAE13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AEC7F0176229448C16B2153E /* Pods_UniVentUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		70E94F3FC1065C33B977AD6B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				46395DE0BF48F61A06EDD3DE /* Pods-UniVent.debug.xcconfig */,
+				FF76CC40A7E83BB814E45C6F /* Pods-UniVent.release.xcconfig */,
+				D9C3737EBFFAF857B4474F34 /* Pods-UniVentTests.debug.xcconfig */,
+				497A5AA84B7AF1673A70B6FE /* Pods-UniVentTests.release.xcconfig */,
+				C6772C5AF98E8C8FD8BFC7E7 /* Pods-UniVentUITests.debug.xcconfig */,
+				7432D61773B512E8FE6FE582 /* Pods-UniVentUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		8E0829C71F74714A00626F19 /* SettingsScreen */ = {
+			isa = PBXGroup;
+			children = (
+				8E0829C81F74718D00626F19 /* SettingsViewController.swift */,
+			);
+			name = SettingsScreen;
+			sourceTree = "<group>";
+		};
+		8E0829CA1F755CE100626F19 /* MapScreen */ = {
+			isa = PBXGroup;
+			children = (
+				8E0829CB1F755CFF00626F19 /* MapScreenViewController.swift */,
+				8E0829CD1F75706500626F19 /* EventAnnotation.swift */,
+				8E0829CF1F75738800626F19 /* VCMapViewExtension.swift */,
+			);
+			name = MapScreen;
+			sourceTree = "<group>";
+		};
+		8E0829D11F7577A000626F19 /* EventDetailScreen */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = EventDetailScreen;
+			sourceTree = "<group>";
+		};
+		8E0829D21F75789400626F19 /* EventCreationScreen */ = {
+			isa = PBXGroup;
+			children = (
+				8E0829D31F75883F00626F19 /* EventFormViewController.swift */,
+			);
+			name = EventCreationScreen;
+			sourceTree = "<group>";
+		};
+		8E0829D61F7AAD8400626F19 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				8E0829D71F7AADB700626F19 /* Event.swift */,
+				8E0829D81F7AADB700626F19 /* GenInfo.swift */,
+				8E0829DA1F7AADB700626F19 /* Interest.swift */,
+				8E0829DB1F7AADB700626F19 /* LocInfo.swift */,
+				8E0829DC1F7AADB700626F19 /* StatInfo.swift */,
+				8E0829DD1F7AADB700626F19 /* TimeInfo.swift */,
+				8E0829DE1F7AADB700626F19 /* User.swift */,
+				8E0829DF1F7AADB700626F19 /* UserHistory.swift */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		8E97EC421F698C28000BAE13 = {
+			isa = PBXGroup;
+			children = (
+				8E97EC4D1F698C28000BAE13 /* UniVent */,
+				8E97EC651F698C28000BAE13 /* UniVentTests */,
+				8E97EC701F698C28000BAE13 /* UniVentUITests */,
+				8E97EC4C1F698C28000BAE13 /* Products */,
+				8E97EC7F1F698C7C000BAE13 /* Frameworks */,
+				70E94F3FC1065C33B977AD6B /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		8E97EC4C1F698C28000BAE13 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8E97EC4B1F698C28000BAE13 /* UniVent.app */,
+				8E97EC621F698C28000BAE13 /* UniVentTests.xctest */,
+				8E97EC6D1F698C28000BAE13 /* UniVentUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8E97EC4D1F698C28000BAE13 /* UniVent */ = {
+			isa = PBXGroup;
+			children = (
+				8E0829D61F7AAD8400626F19 /* Classes */,
+				8E0829D21F75789400626F19 /* EventCreationScreen */,
+				8E0829D11F7577A000626F19 /* EventDetailScreen */,
+				8E0829CA1F755CE100626F19 /* MapScreen */,
+				8E0829C71F74714A00626F19 /* SettingsScreen */,
+				8E97EC841F69AB24000BAE13 /* EventsTable */,
+				8E97EC831F6996B8000BAE13 /* HomeScreen */,
+				8E97EC821F698CB4000BAE13 /* UniVent.entitlements */,
+				8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */,
+				8E97EC521F698C28000BAE13 /* Main.storyboard */,
+				8E97EC581F698C28000BAE13 /* Assets.xcassets */,
+				8E97EC5A1F698C28000BAE13 /* LaunchScreen.storyboard */,
+				8E97EC5D1F698C28000BAE13 /* Info.plist */,
+				8E97EC551F698C28000BAE13 /* UniVent.xcdatamodeld */,
+				8E0829EC1F7AE8F300626F19 /* Handy.swift */,
+			);
+			path = UniVent;
+			sourceTree = "<group>";
+		};
+		8E97EC651F698C28000BAE13 /* UniVentTests */ = {
+			isa = PBXGroup;
+			children = (
+				8E97EC661F698C28000BAE13 /* UniVentTests.swift */,
+				8E97EC681F698C28000BAE13 /* Info.plist */,
+			);
+			path = UniVentTests;
+			sourceTree = "<group>";
+		};
+		8E97EC701F698C28000BAE13 /* UniVentUITests */ = {
+			isa = PBXGroup;
+			children = (
+				8E97EC711F698C28000BAE13 /* UniVentUITests.swift */,
+				8E97EC731F698C28000BAE13 /* Info.plist */,
+			);
+			path = UniVentUITests;
+			sourceTree = "<group>";
+		};
+		8E97EC7F1F698C7C000BAE13 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8E1742161F719F0000C556B7 /* UserNotifications.framework */,
+				8E97EC801F698C7C000BAE13 /* MapKit.framework */,
+				157A02DB82EE9592C739EEAF /* Pods_UniVent.framework */,
+				833D87D859120A44CBA5C59A /* Pods_UniVentTests.framework */,
+				07D9AA17AFFB2500AA13AFE4 /* Pods_UniVentUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8E97EC831F6996B8000BAE13 /* HomeScreen */ = {
+			isa = PBXGroup;
+			children = (
+				8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */,
+			);
+			name = HomeScreen;
+			sourceTree = "<group>";
+		};
+		8E97EC841F69AB24000BAE13 /* EventsTable */ = {
+			isa = PBXGroup;
+			children = (
+				8E97EC851F69AB54000BAE13 /* EventTableViewController.swift */,
+				8E97EC871F69AB65000BAE13 /* EventTableViewCell.swift */,
+			);
+			name = EventsTable;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8E97EC4A1F698C28000BAE13 /* UniVent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8E97EC761F698C28000BAE13 /* Build configuration list for PBXNativeTarget "UniVent" */;
+			buildPhases = (
+				CC19020E01DB44430A13144D /* [CP] Check Pods Manifest.lock */,
+				8E97EC471F698C28000BAE13 /* Sources */,
+				8E97EC481F698C28000BAE13 /* Frameworks */,
+				8E97EC491F698C28000BAE13 /* Resources */,
+				E4C3481F817EA7CFC9781E70 /* [CP] Embed Pods Frameworks */,
+				93E6B0CB355CB3E107EC7400 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UniVent;
+			productName = UniVent;
+			productReference = 8E97EC4B1F698C28000BAE13 /* UniVent.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8E97EC611F698C28000BAE13 /* UniVentTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8E97EC791F698C28000BAE13 /* Build configuration list for PBXNativeTarget "UniVentTests" */;
+			buildPhases = (
+				05FE8034592341BCD914B125 /* [CP] Check Pods Manifest.lock */,
+				8E97EC5E1F698C28000BAE13 /* Sources */,
+				8E97EC5F1F698C28000BAE13 /* Frameworks */,
+				8E97EC601F698C28000BAE13 /* Resources */,
+				564848752C25883B8169CC17 /* [CP] Embed Pods Frameworks */,
+				EA7A9A7F419827460D9FBAD3 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8E97EC641F698C28000BAE13 /* PBXTargetDependency */,
+			);
+			name = UniVentTests;
+			productName = UniVentTests;
+			productReference = 8E97EC621F698C28000BAE13 /* UniVentTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8E97EC6C1F698C28000BAE13 /* UniVentUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8E97EC7C1F698C28000BAE13 /* Build configuration list for PBXNativeTarget "UniVentUITests" */;
+			buildPhases = (
+				B22A47E294D1E89B4C90B5F3 /* [CP] Check Pods Manifest.lock */,
+				8E97EC691F698C28000BAE13 /* Sources */,
+				8E97EC6A1F698C28000BAE13 /* Frameworks */,
+				8E97EC6B1F698C28000BAE13 /* Resources */,
+				AF3DC90431391CC88E5C1EC2 /* [CP] Embed Pods Frameworks */,
+				C00A33C4A288D55EB2D93698 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8E97EC6F1F698C28000BAE13 /* PBXTargetDependency */,
+			);
+			name = UniVentUITests;
+			productName = UniVentUITests;
+			productReference = 8E97EC6D1F698C28000BAE13 /* UniVentUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8E97EC431F698C28000BAE13 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = UniVentApp;
+				TargetAttributes = {
+					8E97EC4A1F698C28000BAE13 = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = 743LU673R8;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.DataProtection = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
+					};
+					8E97EC611F698C28000BAE13 = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = 743LU673R8;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 8E97EC4A1F698C28000BAE13;
+					};
+					8E97EC6C1F698C28000BAE13 = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = 743LU673R8;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 8E97EC4A1F698C28000BAE13;
+					};
+				};
+			};
+			buildConfigurationList = 8E97EC461F698C28000BAE13 /* Build configuration list for PBXProject "UniVent" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8E97EC421F698C28000BAE13;
+			productRefGroup = 8E97EC4C1F698C28000BAE13 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8E97EC4A1F698C28000BAE13 /* UniVent */,
+				8E97EC611F698C28000BAE13 /* UniVentTests */,
+				8E97EC6C1F698C28000BAE13 /* UniVentUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8E97EC491F698C28000BAE13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8E97EC5C1F698C28000BAE13 /* LaunchScreen.storyboard in Resources */,
+				8E97EC591F698C28000BAE13 /* Assets.xcassets in Resources */,
+				8E97EC541F698C28000BAE13 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E97EC601F698C28000BAE13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E97EC6B1F698C28000BAE13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		05FE8034592341BCD914B125 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		564848752C25883B8169CC17 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		93E6B0CB355CB3E107EC7400 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVent/Pods-UniVent-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AF3DC90431391CC88E5C1EC2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVentUITests/Pods-UniVentUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B22A47E294D1E89B4C90B5F3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C00A33C4A288D55EB2D93698 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVentUITests/Pods-UniVentUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CC19020E01DB44430A13144D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		E4C3481F817EA7CFC9781E70 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVent/Pods-UniVent-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EA7A9A7F419827460D9FBAD3 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8E97EC471F698C28000BAE13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8E97EC511F698C28000BAE13 /* HomeScreenViewController.swift in Sources */,
+				8E0829E11F7AADB700626F19 /* Event.swift in Sources */,
+				8E0829D41F75883F00626F19 /* EventFormViewController.swift in Sources */,
+				8E0829E61F7AADB700626F19 /* StatInfo.swift in Sources */,
+				8E0829E71F7AADB700626F19 /* TimeInfo.swift in Sources */,
+				8E0829C91F74718D00626F19 /* SettingsViewController.swift in Sources */,
+				8E97EC571F698C28000BAE13 /* UniVent.xcdatamodeld in Sources */,
+				8E0829E81F7AADB700626F19 /* User.swift in Sources */,
+				8E0829D01F75738800626F19 /* VCMapViewExtension.swift in Sources */,
+				8E0829E41F7AADB700626F19 /* Interest.swift in Sources */,
+				8E0829E21F7AADB700626F19 /* GenInfo.swift in Sources */,
+				8E0829E51F7AADB700626F19 /* LocInfo.swift in Sources */,
+				8E97EC861F69AB54000BAE13 /* EventTableViewController.swift in Sources */,
+				8E0829CC1F755CFF00626F19 /* MapScreenViewController.swift in Sources */,
+				8E0829CE1F75706500626F19 /* EventAnnotation.swift in Sources */,
+				8E0829E91F7AADB700626F19 /* UserHistory.swift in Sources */,
+				8E97EC881F69AB65000BAE13 /* EventTableViewCell.swift in Sources */,
+				8E97EC4F1F698C28000BAE13 /* AppDelegate.swift in Sources */,
+				8E0829ED1F7AE8F300626F19 /* Handy.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E97EC5E1F698C28000BAE13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8E97EC671F698C28000BAE13 /* UniVentTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E97EC691F698C28000BAE13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8E97EC721F698C28000BAE13 /* UniVentUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8E97EC641F698C28000BAE13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8E97EC4A1F698C28000BAE13 /* UniVent */;
+			targetProxy = 8E97EC631F698C28000BAE13 /* PBXContainerItemProxy */;
+		};
+		8E97EC6F1F698C28000BAE13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8E97EC4A1F698C28000BAE13 /* UniVent */;
+			targetProxy = 8E97EC6E1F698C28000BAE13 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		8E97EC521F698C28000BAE13 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8E97EC531F698C28000BAE13 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		8E97EC5A1F698C28000BAE13 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8E97EC5B1F698C28000BAE13 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8E97EC741F698C28000BAE13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8E97EC751F698C28000BAE13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8E97EC771F698C28000BAE13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 46395DE0BF48F61A06EDD3DE /* Pods-UniVent.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = UniVent/UniVent.entitlements;
+				DEVELOPMENT_TEAM = 743LU673R8;
+				INFOPLIST_FILE = UniVent/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = UniVentApp.UniVent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		8E97EC781F698C28000BAE13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FF76CC40A7E83BB814E45C6F /* Pods-UniVent.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = UniVent/UniVent.entitlements;
+				DEVELOPMENT_TEAM = 743LU673R8;
+				INFOPLIST_FILE = UniVent/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = UniVentApp.UniVent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		8E97EC7A1F698C28000BAE13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D9C3737EBFFAF857B4474F34 /* Pods-UniVentTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 743LU673R8;
+				INFOPLIST_FILE = UniVentTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = UniVentApp.UniVentTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UniVent.app/UniVent";
+			};
+			name = Debug;
+		};
+		8E97EC7B1F698C28000BAE13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 497A5AA84B7AF1673A70B6FE /* Pods-UniVentTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 743LU673R8;
+				INFOPLIST_FILE = UniVentTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = UniVentApp.UniVentTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UniVent.app/UniVent";
+			};
+			name = Release;
+		};
+		8E97EC7D1F698C28000BAE13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C6772C5AF98E8C8FD8BFC7E7 /* Pods-UniVentUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 743LU673R8;
+				INFOPLIST_FILE = UniVentUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = UniVentApp.UniVentUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = UniVent;
+			};
+			name = Debug;
+		};
+		8E97EC7E1F698C28000BAE13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7432D61773B512E8FE6FE582 /* Pods-UniVentUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 743LU673R8;
+				INFOPLIST_FILE = UniVentUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = UniVentApp.UniVentUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = UniVent;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8E97EC461F698C28000BAE13 /* Build configuration list for PBXProject "UniVent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E97EC741F698C28000BAE13 /* Debug */,
+				8E97EC751F698C28000BAE13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8E97EC761F698C28000BAE13 /* Build configuration list for PBXNativeTarget "UniVent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E97EC771F698C28000BAE13 /* Debug */,
+				8E97EC781F698C28000BAE13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8E97EC791F698C28000BAE13 /* Build configuration list for PBXNativeTarget "UniVentTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E97EC7A1F698C28000BAE13 /* Debug */,
+				8E97EC7B1F698C28000BAE13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8E97EC7C1F698C28000BAE13 /* Build configuration list for PBXNativeTarget "UniVentUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E97EC7D1F698C28000BAE13 /* Debug */,
+				8E97EC7E1F698C28000BAE13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		8E97EC551F698C28000BAE13 /* UniVent.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				8E97EC561F698C28000BAE13 /* UniVent.xcdatamodel */,
+			);
+			currentVersion = 8E97EC561F698C28000BAE13 /* UniVent.xcdatamodel */;
+			path = UniVent.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 8E97EC431F698C28000BAE13 /* Project object */;
+}
