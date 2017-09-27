@@ -2,6 +2,7 @@
  *  Author: Anirudh Pal & Amjad Zahraa
  *  Description: This class stores all the general information about an event like; host, title, description, type etc. Setter not implemented requires host priveleges. 
  **/
+import UIKit
 
 class GenInfo {
     /** Config Variables **/
@@ -11,26 +12,34 @@ class GenInfo {
     /** Instance Variables **/
     private var hostID: Int
     private var title: String
-    private var type: Interest
+    private var type: EventType
     private var description: String
+    private var interests: NSMutableArray
     
     /** Constructors **/
     // Minimum Info Constructor
     convenience init(hostID: Int, title: String) {
         // Call Main Constructor with Default Values
-        self.init(hostID: hostID, title: title, type: Interest.None, description: "")
+        self.init(hostID: hostID, title: title, type: EventType.None, interests: NSMutableArray.init(), description: "")
     }
     
     // Main Constructor
-    init(hostID: Int, title: String, type: Interest, description: String) {
+    init(hostID: Int, title: String, type: EventType, interests: NSArray, description: String) {
         // Error Handling needs to be Implemented with User Object.
         self.hostID = hostID
         
+        if interests.count == 0 {
+            self.interests = NSMutableArray.init()
+        }
+        else {
+            self.interests = NSMutableArray.init(array: interests)
+        }
+        
         // Bounds Check on Title (Weird Behaviour)
-        if title.lengthOfBytes(using: .ascii) <= 0 {
+        if title.count <= 0 {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
-        if title.lengthOfBytes(using: .ascii) > tSize {
+        if title.count > tSize {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
         
@@ -41,12 +50,12 @@ class GenInfo {
         self.type = type
         
         // Bound Check on Description
-        if description.lengthOfBytes(using: .ascii) > dSize {
+        if description.count > dSize {
             print("init in GenInfo: invalid description size")
         }
         
         // Auto Description for Empty Descriptor
-        if description.lengthOfBytes(using: .ascii) == 0 {
+        if description.count == 0 {
             self.description = "No description"
         }
             
@@ -59,9 +68,23 @@ class GenInfo {
     /** Getters **/
     func getHostID() -> Int {return hostID}
     func getTitle() -> String {return title}
-    func getType() -> Interest {return type}
+    func getType() -> EventType {return type}
     func getDescription() -> String {return description}
+    func getTypeString() -> String {return "\(type)"}
+    
+    /** Setters **/
+    func setType(type: EventType) {self.type = type}
+    func setDescription(desc: String) {self.description = desc}
+    
+    /** Functions **/
+    func addInterest(interest: Interest) {
+        interests.add(interest)
+    }
+    func removeEvent(interest: Interest) {
+        interests.remove(interest)
+    }
+    func findEvent(interest: Interest) -> Bool {
+        return interests.contains(interest)
+    }
 
-    /** Getters for DB **/
-    func getTypeString() -> String {return "(\type)"}
 }

@@ -33,13 +33,11 @@ class StatInfo {
             return Int(rating)
         }
     }
+    func getRatingDouble() -> Double {return rating}
     func getRatingCount() -> Int {return ratingCount}
     func getFlagCount() -> Int {return flagCount}
     func getHeadCount() -> Int {return headCount}
     
-    /** Getters for DB **/
-    func getRatingDouble() -> Double {return rating}
-
     /** Setters **/
     func setSmartRating(rating: Double) {
         ratingCount += 1

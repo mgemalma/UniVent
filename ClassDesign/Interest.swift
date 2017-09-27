@@ -8,17 +8,36 @@ enum Interest {
     case None
     
     // Got these interest from BoilerLink
-    case Callout
-    case Charity
-    case Community_Service
-    case Concert
-    case Conference
-    case Party
-    case Demonstration
-    case Education
-    case Festival
-    case Meeting
+    case Athletic
     case Recreation
-    case Social
-    case Travel
+    case Automotive
+    case Flight
+    case Broadcasting
+    case ClubSports
+    case College
+    case CommunityService
+    case Civic
+    case Competitive
+    case Technical
+    case Cooperative
+    case Drama
+    case Cultural
+    case Dance
+    case FemaleBased
+    case Finance
+    case Gaming
+    case Graduate
+    case Hobby
+    case Honors
+    case International
+    case MartialArts
+    case Military
+    case MultiCultural
+    case Music
+    case Political
+    case Religious
+    case ResHall
+    case Fraternity
+    case Sorority
+    case StudentRun
 }

@@ -21,7 +21,6 @@ class LocInfo {
     func getAddress() -> String {return address}
     func getLocation() -> CLLocation {return eLocation}
     
-    /** Getters for DB **/
     func getLatitude() -> Double {return eLocation.coordinate.latitude}
     func getLongitude() -> Double {return eLocation.coordinate.longitude}
 

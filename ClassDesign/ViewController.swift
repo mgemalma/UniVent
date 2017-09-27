@@ -44,7 +44,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
    
     @IBAction func testing(_ sender: UIButton) {
-//        var eTest = Event(eventID: 123)
+        var eTest = Event(eventID: 123)
 //
 //        print(eTest.getEventID())
 //
@@ -80,7 +80,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 //        print(eTest.getGen().getTitle())
 //        print(eTest.getGen().getType())
 //        print(eTest.getGen().getDescription())
-//
+
+//        eTest.genInfo(hostID: 66, title: "TestEvent")
+//        eTest.getGen().addInterest(interest: Interest.Dance)
+//        eTest.getGen().addInterest(interest: Interest.Drama)
+//        eTest.getGen().addInterest(interest: Interest.Military)
+//        print(eTest.getGen().findEvent(interest: Interest.Dance))
+//        print(eTest.getGen().findEvent(interest: Interest.Hobby))
+//        eTest.getGen().removeEvent(interest: Interest.Drama)
+//        print(eTest.getGen().findEvent(interest: Interest.Drama))
+//        print(eTest.getGen().getTypeString())
+//        eTest.getGen().setType(type: EventType.Charity)
+//        print(eTest.getGen().getTypeString())
         
         
     }
