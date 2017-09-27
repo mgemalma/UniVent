@@ -59,10 +59,10 @@ class Event {
     }
     
     // GenInfo
-    func genInfo(hostID: Int, title: String) {
+    func initGen(hostID: Int, title: String) {
         genInfo = GenInfo(hostID: hostID, title: title)
     }
-    func genInfo(hostID: Int, title: String, type: Interest, description: String) {
+    func initgen(hostID: Int, title: String, type: Interest, description: String) {
         genInfo = GenInfo(hostID: hostID, title: title, type: type, description: description)
     }
     

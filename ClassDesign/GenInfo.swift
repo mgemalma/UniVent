@@ -61,5 +61,7 @@ class GenInfo {
     func getTitle() -> String {return title}
     func getType() -> Interest {return type}
     func getDescription() -> String {return description}
+
+    /** Getters for DB **/
     func getTypeString() -> String {return "(\type)"}
 }
