@@ -111,10 +111,9 @@ class EventTableViewController: UITableViewController {
     
     
     // MARK: Private Methods
-    func loadDefaults() {
+    private func loadDefaults() {
         eventTitles = ["Tech Club Callout", "USAF Information Table", "Free Food!", "Motorsport Club Showoff"]
-        
-        
     }
+    
 
 }
