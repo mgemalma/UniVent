@@ -15,9 +15,13 @@ class Event {
     private var genInfo: GenInfo
     
     /** Constructor **/
+    
+    convenience init() {
+        self.init(eventID: 0)
+    }
     init(eventID: Int) {
         // Print Disclaimer
-        print("Event construction is incomplete until all setters are called. Not calling the setters will result in Default Values")
+        //print("Event construction is incomplete until all setters are called. Not calling the setters will result in Default Values")
         
         // Set Values
         self.eventID = eventID
