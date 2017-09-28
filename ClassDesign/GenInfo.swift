@@ -36,12 +36,21 @@ class GenInfo {
         }
         
         // Bounds Check on Title (Weird Behaviour)
+<<<<<<< HEAD
         if title.characters.count <= 0 {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
         if title.characters.count > tSize {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
+=======
+       if title.count <= 0 {
+           print("Warning -> init() in GenInfo: Invalid title Size.")
+       }
+       if title.count > tSize {
+           print("Warning -> init() in GenInfo: Invalid title Size.")
+       }
+>>>>>>> 98040436413c548b02225384b1635b7b419b7c53
         
         // Initialize Title
         self.title = title
@@ -50,6 +59,7 @@ class GenInfo {
         self.type = type
         
         // Bound Check on Description
+<<<<<<< HEAD
         if description.characters.count > dSize {
             print("init in GenInfo: invalid description size")
         }
@@ -58,6 +68,16 @@ class GenInfo {
         if description.characters.count == 0 {
             self.description = "No description"
         }
+=======
+       if description.count > dSize {
+           print("init in GenInfo: invalid description size")
+       }
+       
+       // Auto Description for Empty Descriptor
+       if description.count == 0 {
+           self.description = "No description"
+       }
+>>>>>>> 98040436413c548b02225384b1635b7b419b7c53
         
         // Standard Initialization for Description
         else {
