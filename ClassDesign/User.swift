@@ -11,14 +11,12 @@ class User {
     private var userID: Int
     private var userName: String
     private var userHistory: UserHistory
-//    private var userPersonal: UserPersonal       Still needs to be implemented(waiting for schedule)
     
     /** Constructors **/
     init(userID: Int, userName: String) {
         self.userID = userID
         self.userName = userName
         self.userHistory = UserHistory.init()
-//        self.userPersonal = UserPersonal.init()       Still needs to be implemented(waiting for schedule)
     }
     
     /** Getters **/
@@ -31,13 +29,9 @@ class User {
     func getUserHistory() -> UserHistory {
         return userHistory
     }
-//    func getUserPersonal() -> UserPersonal {          Still needs to be implemented(waiting for schedule)
-//        return userPersonal
-//    }
-    
+
     /** Setters **/
     func setUserName(name: String) {
         self.userName = name
     }
-
 }

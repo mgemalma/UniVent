@@ -8,9 +8,9 @@ import UIKit
 
 class TimeInfo {
     /** Instance Variables **/
-    private var cTime: Date      // created time
-    private var sTime: Date       // start time
-    private var eTime: Date       // end time
+    private var cTime: Date     // created time
+    private var sTime: Date     // start time
+    private var eTime: Date     // end time
     
     /** Constructor **/
     // Sets End Time 1 hr for Start Time

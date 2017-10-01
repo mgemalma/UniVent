@@ -1,8 +1,13 @@
+/**
+ *  Author: Amjad Zahraa
+ *  Description: The user history class. Further work is required.
+ **/
 
+// Import library for some stuff
 import UIKit
 
 class UserHistory {
-    
+    /** Instance Variables **/
     private var flagCount: Int
     private var postedEvents: NSMutableArray
     //private var attendingEvents: NSMutableArray
@@ -40,5 +45,4 @@ class UserHistory {
     
     /** Setters **/
     func setSmartFlagCount() {flagCount += 1}
-    
 }
