@@ -16,9 +16,12 @@ class Event {
     
     /** Constructor **/
     
+    // Creates Default Event with ID 0. Used for Testing.
     convenience init() {
         self.init(eventID: 0)
     }
+    
+    // Main Constructor
     init(eventID: Int) {
         // Print Disclaimer
         //print("Event construction is incomplete until all setters are called. Not calling the setters will result in Default Values")
@@ -69,5 +72,4 @@ class Event {
     func genInfo(hostID: Int, title: String, type: EventType, interests: NSArray, description: String) {
         genInfo = GenInfo(hostID: hostID, title: title, type: type, interests: interests, description: description)
     }
-    
 }

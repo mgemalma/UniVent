@@ -35,19 +35,13 @@ class GenInfo {
             self.interests = NSMutableArray.init(array: interests)
         }
         
-        // Bounds Check on Title (Weird Behaviour)
+        // Bounds Check on Title (Fixed by Andrew)
         if title.characters.count <= 0 {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
         if title.characters.count > tSize {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
-//        if title.count <= 0 {
-//            print("Warning -> init() in GenInfo: Invalid title Size.")
-//        }
-//        if title.count > tSize {
-//            print("Warning -> init() in GenInfo: Invalid title Size.")
-//        }
         
         // Initialize Title
         self.title = title
@@ -64,15 +58,7 @@ class GenInfo {
         if description.characters.count == 0 {
             self.description = "No description"
         }
-//        if description.count > dSize {
-//            print("init in GenInfo: invalid description size")
-//        }
-       
-//        // Auto Description for Empty Descriptor
-//        if description.count == 0 {
-//            self.description = "No description"
-//        }
-        
+            
         // Standard Initialization for Description
         else {
             self.description = description
