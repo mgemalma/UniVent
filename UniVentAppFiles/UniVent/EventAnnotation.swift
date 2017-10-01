@@ -12,26 +12,28 @@ import MapKit
 class EventAnnotation: NSObject, MKAnnotation {
     
     let title: String?
+    let event: Event
+    let eventID: Int
     let coordinate: CLLocationCoordinate2D
-    let startTime: String!
-    let endTime: String!
+    let startTime: Date
+    let endTime: Date
     let address: String!
-    let note: String!
+
     
-    init(title: String, coordinates: CLLocationCoordinate2D, startTime: String, endTime: String, address: String, note: String) {
-        
-        self.title = title
-        self.coordinate = coordinates
-        self.startTime = startTime
-        self.endTime = endTime
-        self.address = address
-        self.note = note
+    init(event: Event) {
+        self.event = event
+        self.eventID = event.getEventID()
+        self.title = event.getGen().getTitle()
+        self.coordinate = CLLocationCoordinate2D(latitude: event.getLoc().getLatitude(), longitude: event.getLoc().getLongitude())
+        self.startTime = event.getTime().getStartTime()
+        self.endTime = event.getTime().getEndTime()
+        self.address = event.getLoc().getAddress()
 
         super.init()
     }
     
     var subtitle: String? {
-        return startTime
+        return ""//address
     }
     
     

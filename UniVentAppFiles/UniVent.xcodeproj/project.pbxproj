@@ -22,7 +22,9 @@
 		8E0829E81F7AADB700626F19 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DE1F7AADB700626F19 /* User.swift */; };
 		8E0829E91F7AADB700626F19 /* UserHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829DF1F7AADB700626F19 /* UserHistory.swift */; };
 		8E0829ED1F7AE8F300626F19 /* Handy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829EC1F7AE8F300626F19 /* Handy.swift */; };
+		8E0829F01F7D6E7D00626F19 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829EF1F7D6E7D00626F19 /* EventType.swift */; };
 		8E1742171F719F0000C556B7 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1742161F719F0000C556B7 /* UserNotifications.framework */; };
+		8E8C6CCE1F7D814D001F2520 /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C6CCD1F7D814D001F2520 /* EventDetailViewController.swift */; };
 		8E97EC4F1F698C28000BAE13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */; };
 		8E97EC511F698C28000BAE13 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */; };
 		8E97EC541F698C28000BAE13 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E97EC521F698C28000BAE13 /* Main.storyboard */; };
@@ -76,7 +78,9 @@
 		8E0829DE1F7AADB700626F19 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/User.swift; sourceTree = "<group>"; };
 		8E0829DF1F7AADB700626F19 /* UserHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserHistory.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/UserHistory.swift; sourceTree = "<group>"; };
 		8E0829EC1F7AE8F300626F19 /* Handy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handy.swift; sourceTree = "<group>"; };
+		8E0829EF1F7D6E7D00626F19 /* EventType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventType.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/EventType.swift; sourceTree = "<group>"; };
 		8E1742161F719F0000C556B7 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		8E8C6CCD1F7D814D001F2520 /* EventDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
 		8E97EC4B1F698C28000BAE13 /* UniVent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniVent.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 		8E0829D11F7577A000626F19 /* EventDetailScreen */ = {
 			isa = PBXGroup;
 			children = (
+				8E8C6CCD1F7D814D001F2520 /* EventDetailViewController.swift */,
 			);
 			name = EventDetailScreen;
 			sourceTree = "<group>";
@@ -180,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				8E0829D71F7AADB700626F19 /* Event.swift */,
+				8E0829EF1F7D6E7D00626F19 /* EventType.swift */,
 				8E0829D81F7AADB700626F19 /* GenInfo.swift */,
 				8E0829DA1F7AADB700626F19 /* Interest.swift */,
 				8E0829DB1F7AADB700626F19 /* LocInfo.swift */,
@@ -589,11 +595,13 @@
 				8E0829E61F7AADB700626F19 /* StatInfo.swift in Sources */,
 				8E0829E71F7AADB700626F19 /* TimeInfo.swift in Sources */,
 				8E0829C91F74718D00626F19 /* SettingsViewController.swift in Sources */,
+				8E0829F01F7D6E7D00626F19 /* EventType.swift in Sources */,
 				8E97EC571F698C28000BAE13 /* UniVent.xcdatamodeld in Sources */,
 				8E0829E81F7AADB700626F19 /* User.swift in Sources */,
 				8E0829D01F75738800626F19 /* VCMapViewExtension.swift in Sources */,
 				8E0829E41F7AADB700626F19 /* Interest.swift in Sources */,
 				8E0829E21F7AADB700626F19 /* GenInfo.swift in Sources */,
+				8E8C6CCE1F7D814D001F2520 /* EventDetailViewController.swift in Sources */,
 				8E0829E51F7AADB700626F19 /* LocInfo.swift in Sources */,
 				8E97EC861F69AB54000BAE13 /* EventTableViewController.swift in Sources */,
 				8E0829CC1F755CFF00626F19 /* MapScreenViewController.swift in Sources */,

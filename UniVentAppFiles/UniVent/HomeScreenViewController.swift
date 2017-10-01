@@ -227,9 +227,9 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
         if segue.identifier == "HomeToMap" {
             //print(userName)
             //print(userID)
-            let destVC = segue.destination as? MapScreenViewController
-            destVC?.initialLocation = self.initialLocation
-            destVC?.locationManager = self.locationManager
+            //let destVC = segue.destination as? MapScreenViewController
+            //destVC?.initialLocation = self.initialLocation
+            //destVC?.locationManager = self.locationManager
         }
     }
     

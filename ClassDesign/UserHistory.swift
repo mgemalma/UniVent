@@ -5,6 +5,7 @@ class UserHistory {
     
     private var flagCount: Int
     private var postedEvents: NSMutableArray
+    //private var attendingEvents: NSMutableArray
     
     /** Constructors **/
     convenience init() {
