@@ -10,8 +10,29 @@ import UIKit
 import Eureka
 import CoreLocation
 import PostalAddressRow
+import GoogleMaps
+
+extension EventFormViewController {
+    func invalidSaveRequest(incomplete: String) {
+        let alertController = UIAlertController(title: NSLocalizedString("Unable to Save!", comment: ""), message: "Please completely fill out:\(incomplete)", preferredStyle: .alert)
+        let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okayAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func invalidDate() {
+        let alertController = UIAlertController(title: NSLocalizedString("Invalid Dates", comment: ""), message: "Start and End times cannot be the same", preferredStyle: .alert)
+        let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okayAction)
+        self.present(alertController, animated: true, completion:  nil)
+    }
+    
+}
 
 class EventFormViewController: FormViewController {
+    
+    
+    // TODO: - Safe save. Only save when certain fields have been filled
     
 
     // MARK: - Variables
@@ -21,7 +42,7 @@ class EventFormViewController: FormViewController {
     var eStartDate: Date = Date()
     var eEndDate: Date = Date()
     var eType: String! = ""
-    var eInterests: Set<String> = []
+    var eInterests: NSArray = []
     var eCreateTime: Date = Date()
     var eHost: Int = 0
     var eDescription: String?
@@ -33,6 +54,8 @@ class EventFormViewController: FormViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.navigationController?.viewControllers[(self.navigationController?.viewControllers.endIndex)! - 2] as! MapScreenViewController, action: #selector(MapScreenViewController.createEventCancelled(_:)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(EventFormViewController.saveEvent(_:)))
     }
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,19 +88,28 @@ class EventFormViewController: FormViewController {
         form +++ Section("Address")
             <<< TextRow() { row in
                 row.title = "Building"
+                row.tag = "Building"
                 row.placeholder = "Enter building name"
             }
             <<< TextRow() { row in
                 row.title = "Address"
+                row.tag = "Address"
                 row.placeholder = "Enter the street address"
             }
             <<< TextRow() { row in
                 row.title = "City"
+                row.tag = "City"
                 row.placeholder = "Enter the city"
             }
             <<< TextRow() { row in
                 row.title = "State"
+                row.tag = "State"
                 row.placeholder = "Enter the state"
+            }
+            <<< ZipCodeRow { row in
+                row.title = "Zip Code"
+                row.tag = "Zip"
+                row.placeholder = "Enter zip code"
             }
             <<< ButtonRow() { (row: ButtonRow) -> Void in
                 row.title = "Use current location"
@@ -87,6 +119,7 @@ class EventFormViewController: FormViewController {
                     
                     self?.useCurrentLocation() { success in
                         print(self?.eLocation ?? "No location given")
+                        
                     }
         }
         form +++ Section("Date & Time")
@@ -137,7 +170,7 @@ class EventFormViewController: FormViewController {
                     to.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: from, action: #selector(EventFormViewController.multipleSelectorDone(_:)))
                 }
                 .onChange{ row in
-                    self.eInterests = row.value!
+                    self.eInterests = self.eInterests.adding(row.value!) as NSArray
                 }
             <<< TextAreaRow { row in
                 row.title = "Description"
@@ -163,7 +196,8 @@ class EventFormViewController: FormViewController {
             locationManager.startUpdatingLocation()
             locationManager.stopUpdatingLocation()
             self.eLocation = locationManager.location
-            print("Use current location")
+            //print("Use current location")
+            self.reverseGeocode(location: self.eLocation!)
             completion("Location received")
         }
     }
@@ -171,19 +205,102 @@ class EventFormViewController: FormViewController {
     // MARK: - Persisting Data
     
     func saveEvent(_ item: UIBarButtonItem) {
-        print("Title: \(eTitle)")
-        print("Address: \(eAddress ?? "No address provided")")
-        print("Coordinates: \(String(describing: eLocation ?? nil))")
-        print("Start time: \(eStartDate)")
-        eCreateTime = Date()
-        print("End time: \(eEndDate)")
-        print("Event type: \(eType)")
-        print("Event interests: \(eInterests)")
-        print("Event escription: \(eDescription ?? "No description")")
-        print("Event host: \(eHost)")
-        print("Event create time: \(eCreateTime)")
-        print("\nSave")
+        
+        // TODO: - Actually make the address string
+        
+        if validateSave() {
+            if validateDate() {
+                print("Title: \(eTitle)")
+                print("Address: \(eAddress ?? "No address provided")")
+                print("Coordinates: \(String(describing: eLocation ?? nil))")
+                print("Start time: \(eStartDate)")
+                eCreateTime = Date()
+                print("End time: \(eEndDate)")
+                print("Event type: \(eType)")
+                print("Event interests: \(eInterests)")
+                print("Event escription: \(eDescription ?? "No description")")
+                print("Event host: \(eHost)")
+                print("Event create time: \(eCreateTime)")
+                print("\nSave")
+        
+                let event = Event(eventID: 9998)
+                event.genInfo(hostID: 110, title: eTitle, type: EventType.Callout, interests: eInterests, description: eDescription!)
+                event.initLoc(add: "No address here", lat: (eLocation?.coordinate.latitude)!, long: (eLocation?.coordinate.longitude)!)
+                event.initStat()
+                event.initTime(sTime: eStartDate, eTime: eEndDate)
+                parseDataToURL(event1: event)
+            }
+        }
     }
+    
+    
+    // MARK: - Private Methods
+    
+    private func validateSave() -> Bool {
+        if eAddress != nil {
+            validateAddress()
+        }
+        
+        
+        var incompleteStr = ""
+        if eTitle == nil || eTitle == "" {
+            incompleteStr.append("\nTitle")
+        }
+        if eAddress == nil {
+            incompleteStr.append("\nAddress")
+        }
+        if eLocation == nil {
+            incompleteStr.append("\nLocation")
+        }
+        if eType == nil || eType == "" {
+            incompleteStr.append("\nType")
+        }
+        
+        if incompleteStr != "" {
+            invalidSaveRequest(incomplete: incompleteStr)
+            return false
+        }
+        return true
+    }
+    
+    private func validateDate() -> Bool {
+        if eEndDate.timeIntervalSince(eStartDate) < 600 {
+            invalidDate()
+            return false
+        }
+        return true
+    }
+    
+    private func validateAddress() {
+        CLGeocoder().geocodeAddressString(eAddress!) { (placemarks, error) in
+            if error != nil {
+                print("Error")
+            } else if placemarks?.count != 0 {
+                print("Found places:")
+            } else {
+                print("Invalid address")
+            }
+        }
+    }
+
+    private func reverseGeocode(location: CLLocation) {
+        GMSGeocoder().reverseGeocodeCoordinate(location.coordinate) { (response, error) in
+            if response?.results()?.count != 0 {
+                
+                let street = response?.firstResult()?.thoroughfare
+                let city = response?.firstResult()?.locality
+                let state = response?.firstResult()?.administrativeArea
+                let zip = response?.firstResult()?.postalCode
+                self.form.setValues(["Address": street, "City": city, "State": state, "Zip": zip])
+
+                self.tableView.reloadData()
+//                self.form.rowBy(tag: "Address")?.updateCell()
+//                self.form.rowBy(tag: "City")?.updateCell()
+//                self.form.rowBy(tag: "State")?.updateCell()
+            }
+        }
+    }
+    
 
     /*
     // MARK: - Navigation
