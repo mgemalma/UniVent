@@ -1,7 +1,7 @@
 
 import UIKit
 
-func parseDataToURL() {
+func parseDataToURL(event1: Event) {
 //    var eventID = 25
 //    var startTime = "2012-12-6 14:20:00"
 //    var endTime = "2012-12-6 16:20:00"
@@ -18,7 +18,7 @@ func parseDataToURL() {
 //    var desc = "No Description"
 //    var type = "Group Meeting"
     
-    var event1 = Event(eventID: 1000)
+//    var event1 = Event(eventID: 1002)
     
 //    var URL = "http://gymbuddyapp.net/insertEvent.php?eventID=\(eventID)&createdTime=\(createdTime)&startTime=\(startTime)&endTime=\(endTime)&address=\(address)&latitude=\(latitude)&longitude=\(longitude)&rating=\(rating)&ratingCount=\(ratingCount)&flag=\(flagCount)&attendanceCount=\(headCount)&creatorID=\(hostID)&title=\(title)&description=\(desc)&type=\(type)"
     
