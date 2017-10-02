@@ -24,6 +24,7 @@
 		8E0829ED1F7AE8F300626F19 /* Handy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829EC1F7AE8F300626F19 /* Handy.swift */; };
 		8E0829F01F7D6E7D00626F19 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829EF1F7D6E7D00626F19 /* EventType.swift */; };
 		8E1742171F719F0000C556B7 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1742161F719F0000C556B7 /* UserNotifications.framework */; };
+		8E6B500C1F81D9750089B967 /* UserPersonal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B500B1F81D9750089B967 /* UserPersonal.swift */; };
 		8E8C6CCE1F7D814D001F2520 /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C6CCD1F7D814D001F2520 /* EventDetailViewController.swift */; };
 		8E97EC4F1F698C28000BAE13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */; };
 		8E97EC511F698C28000BAE13 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */; };
@@ -36,6 +37,8 @@
 		8E97EC811F698C7C000BAE13 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E97EC801F698C7C000BAE13 /* MapKit.framework */; };
 		8E97EC861F69AB54000BAE13 /* EventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC851F69AB54000BAE13 /* EventTableViewController.swift */; };
 		8E97EC881F69AB65000BAE13 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC871F69AB65000BAE13 /* EventTableViewCell.swift */; };
+		8EF8FDB81F81D8CB00EAC13F /* DataConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF8FDB71F81D8CB00EAC13F /* DataConnector.swift */; };
+		8EF8FDBA1F81D8D100EAC13F /* DBConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF8FDB91F81D8D100EAC13F /* DBConnector.swift */; };
 		AEC7F0176229448C16B2153E /* Pods_UniVentUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07D9AA17AFFB2500AA13AFE4 /* Pods_UniVentUITests.framework */; };
 		EBA5DDD4822BA10357F1E1E6 /* Pods_UniVent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 157A02DB82EE9592C739EEAF /* Pods_UniVent.framework */; };
 /* End PBXBuildFile section */
@@ -80,6 +83,7 @@
 		8E0829EC1F7AE8F300626F19 /* Handy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handy.swift; sourceTree = "<group>"; };
 		8E0829EF1F7D6E7D00626F19 /* EventType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventType.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/EventType.swift; sourceTree = "<group>"; };
 		8E1742161F719F0000C556B7 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		8E6B500B1F81D9750089B967 /* UserPersonal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserPersonal.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/UserPersonal.swift; sourceTree = "<group>"; };
 		8E8C6CCD1F7D814D001F2520 /* EventDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
 		8E97EC4B1F698C28000BAE13 /* UniVent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniVent.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +103,8 @@
 		8E97EC821F698CB4000BAE13 /* UniVent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UniVent.entitlements; sourceTree = "<group>"; };
 		8E97EC851F69AB54000BAE13 /* EventTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewController.swift; sourceTree = "<group>"; };
 		8E97EC871F69AB65000BAE13 /* EventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
+		8EF8FDB71F81D8CB00EAC13F /* DataConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataConnector.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/DataConnector.swift; sourceTree = "<group>"; };
+		8EF8FDB91F81D8D100EAC13F /* DBConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DBConnector.swift; path = ../../UniVentGitRepo/UniVent/ClassDesign/DBConnector.swift; sourceTree = "<group>"; };
 		C6772C5AF98E8C8FD8BFC7E7 /* Pods-UniVentUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentUITests/Pods-UniVentUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		D9C3737EBFFAF857B4474F34 /* Pods-UniVentTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FF76CC40A7E83BB814E45C6F /* Pods-UniVent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVent.release.xcconfig"; path = "Pods/Target Support Files/Pods-UniVent/Pods-UniVent.release.xcconfig"; sourceTree = "<group>"; };
@@ -186,8 +192,11 @@
 			children = (
 				8E0829D71F7AADB700626F19 /* Event.swift */,
 				8E0829EF1F7D6E7D00626F19 /* EventType.swift */,
+				8EF8FDB71F81D8CB00EAC13F /* DataConnector.swift */,
+				8EF8FDB91F81D8D100EAC13F /* DBConnector.swift */,
 				8E0829D81F7AADB700626F19 /* GenInfo.swift */,
 				8E0829DA1F7AADB700626F19 /* Interest.swift */,
+				8E6B500B1F81D9750089B967 /* UserPersonal.swift */,
 				8E0829DB1F7AADB700626F19 /* LocInfo.swift */,
 				8E0829DC1F7AADB700626F19 /* StatInfo.swift */,
 				8E0829DD1F7AADB700626F19 /* TimeInfo.swift */,
@@ -590,12 +599,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E97EC511F698C28000BAE13 /* HomeScreenViewController.swift in Sources */,
+				8EF8FDB81F81D8CB00EAC13F /* DataConnector.swift in Sources */,
 				8E0829E11F7AADB700626F19 /* Event.swift in Sources */,
 				8E0829D41F75883F00626F19 /* EventFormViewController.swift in Sources */,
 				8E0829E61F7AADB700626F19 /* StatInfo.swift in Sources */,
 				8E0829E71F7AADB700626F19 /* TimeInfo.swift in Sources */,
 				8E0829C91F74718D00626F19 /* SettingsViewController.swift in Sources */,
 				8E0829F01F7D6E7D00626F19 /* EventType.swift in Sources */,
+				8E6B500C1F81D9750089B967 /* UserPersonal.swift in Sources */,
 				8E97EC571F698C28000BAE13 /* UniVent.xcdatamodeld in Sources */,
 				8E0829E81F7AADB700626F19 /* User.swift in Sources */,
 				8E0829D01F75738800626F19 /* VCMapViewExtension.swift in Sources */,
@@ -609,6 +620,7 @@
 				8E0829E91F7AADB700626F19 /* UserHistory.swift in Sources */,
 				8E97EC881F69AB65000BAE13 /* EventTableViewCell.swift in Sources */,
 				8E97EC4F1F698C28000BAE13 /* AppDelegate.swift in Sources */,
+				8EF8FDBA1F81D8D100EAC13F /* DBConnector.swift in Sources */,
 				8E0829ED1F7AE8F300626F19 /* Handy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

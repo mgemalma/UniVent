@@ -101,7 +101,7 @@
         <!--Map-->
         <scene sceneID="GjJ-X7-tIn">
             <objects>
-                <viewController storyboardIdentifier="MapScreen" title="Map" wantsFullScreenLayout="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Uze-KZ-jpz" customClass="MapScreenViewController" customModule="UniVent" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapScreen" title="Map" wantsFullScreenLayout="YES" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Uze-KZ-jpz" customClass="MapScreenViewController" customModule="UniVent" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="bbg-zz-UT5"/>
                         <viewControllerLayoutGuide type="bottom" id="v2n-OW-1aW"/>
@@ -110,8 +110,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDH-st-7ff">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" showsUserLocation="YES" showsScale="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDH-st-7ff">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uq0-nf-2Va">
                                 <rect key="frame" x="162" y="597" width="50" height="50"/>
@@ -158,6 +158,18 @@
                                     <segue destination="A2q-yc-CFB" kind="show" identifier="settingsSegue" id="0Is-g4-acr"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ob4-02-NnM">
+                                <rect key="frame" x="326" y="75" width="36" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Ob4-02-NnM" secondAttribute="height" multiplier="1:1" id="nHK-x7-Ux2"/>
+                                    <constraint firstAttribute="width" constant="36" id="xfc-LB-W28"/>
+                                </constraints>
+                                <size key="titleShadowOffset" width="4" height="4"/>
+                                <state key="normal" image="centerOnUserButton"/>
+                                <connections>
+                                    <action selector="recenterMapOnUser:" destination="Uze-KZ-jpz" eventType="touchUpInside" id="lvj-a6-Idf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -171,14 +183,16 @@
                             <constraint firstItem="dLR-uD-XVj" firstAttribute="leading" secondItem="pPI-bc-zfa" secondAttribute="leadingMargin" constant="89" id="X7O-AK-KJu"/>
                             <constraint firstItem="v2n-OW-1aW" firstAttribute="top" secondItem="IXM-UQ-cjT" secondAttribute="bottom" constant="56" id="XMU-OE-G3h"/>
                             <constraint firstAttribute="trailingMargin" secondItem="IXM-UQ-cjT" secondAttribute="trailing" constant="89" id="XPm-o3-oeN"/>
+                            <constraint firstItem="Ob4-02-NnM" firstAttribute="top" secondItem="bbg-zz-UT5" secondAttribute="bottom" constant="55" id="XlS-EW-UBK"/>
                             <constraint firstItem="v2n-OW-1aW" firstAttribute="top" secondItem="vDH-st-7ff" secondAttribute="bottom" id="jew-v7-dKP"/>
                             <constraint firstItem="YjU-UJ-HMI" firstAttribute="trailing" secondItem="pPI-bc-zfa" secondAttribute="trailingMargin" constant="-147" id="jqF-0e-Wvh"/>
                             <constraint firstItem="Uq0-nf-2Va" firstAttribute="top" secondItem="YjU-UJ-HMI" secondAttribute="bottom" constant="20" id="tTu-WE-m7b"/>
+                            <constraint firstItem="Ob4-02-NnM" firstAttribute="trailing" secondItem="pPI-bc-zfa" secondAttribute="trailingMargin" constant="3" id="tbu-ZD-SFr"/>
                         </constraints>
                     </view>
-                    <nil key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedTopBarMetrics"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <connections>
+                        <outlet property="centerMap" destination="Ob4-02-NnM" id="DoS-wX-Oaj"/>
                         <outlet property="mapView" destination="vDH-st-7ff" id="23f-7n-1J1"/>
                         <segue destination="KAP-qY-3Ag" kind="show" identifier="MapPinToEventDetail" id="IDe-oe-4S5"/>
                     </connections>
@@ -200,6 +214,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NJJ-Dh-xBj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -270,7 +285,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="EventTitle" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yqO-pN-rEA">
-                                <rect key="frame" x="0.0" y="8" width="375" height="41"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="41"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="41" id="gqd-e0-LZj"/>
                                 </constraints>
@@ -279,13 +294,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Event Description" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UmK-jM-2I6">
-                                <rect key="frame" x="42" y="86" width="291" height="147"/>
+                                <rect key="frame" x="42" y="106" width="291" height="127"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" weight="thin" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event Type" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pAg-Ry-jeq">
-                                <rect key="frame" x="16" y="57" width="343" height="21"/>
+                                <rect key="frame" x="16" y="77" width="343" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -369,6 +384,7 @@
     <resources>
         <image name="UniVent Logo" width="890" height="250"/>
         <image name="addEventButton" width="200" height="200"/>
+        <image name="centerOnUserButton" width="200" height="200"/>
         <image name="eventListButton" width="200" height="200"/>
         <image name="profileButton" width="200" height="200"/>
         <image name="settingsButton" width="200" height="200"/>

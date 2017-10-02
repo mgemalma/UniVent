@@ -59,6 +59,10 @@
 		<string>MKDirectionsModeCar</string>
 		<string>MKDirectionsModePedestrian</string>
 	</array>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Allow this app to access your location while in the background?</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Allow this app to access your location while in use?</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -76,7 +80,7 @@
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UIStatusBarHidden</key>
-	<true/>
+	<false/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDefault</string>
 	<key>UISupportedInterfaceOrientations</key>
@@ -90,9 +94,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Allow this app to access your location while in the background?</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Allow this app to access your location while in use?</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

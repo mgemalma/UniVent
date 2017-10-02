@@ -91,6 +91,7 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
     }
     
     
+    
     // MARK: - FBSDKLoginButton Methods
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
@@ -225,10 +226,10 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
         super.prepare(for: segue, sender: sender)
         
         if segue.identifier == "HomeToMap" {
-            //print(userName)
-            //print(userID)
-            //let destVC = segue.destination as? MapScreenViewController
-            //destVC?.initialLocation = self.initialLocation
+            print(userName)
+            print(userID)
+            let destVC = segue.destination as? MapScreenViewController
+            destVC?.initialLocation = self.initialLocation
             //destVC?.locationManager = self.locationManager
         }
     }

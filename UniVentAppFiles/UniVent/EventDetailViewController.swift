@@ -37,6 +37,8 @@ class EventDetailViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
+    
     // MARK: - Private Methods
     private func setupView(event: Event) {
         eventTitleLabel.text = event.getGen().getTitle()

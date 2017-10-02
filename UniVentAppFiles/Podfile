@@ -25,5 +25,7 @@ pod ‘FBSDKLoginKit’
 pod ’IODProfanityFilter’
 pod ‘Eureka’
 pod ’PostalAddressRow’, ’~> 1.0’
+pod ’GoogleMaps’
+pod ’GooglePlaces’
 
 end

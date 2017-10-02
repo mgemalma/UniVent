@@ -9,6 +9,7 @@ import UIKit
 import UserNotifications
 import CoreData
 import FBSDKCoreKit
+import GoogleMaps
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -40,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        GMSServices.provideAPIKey("AIzaSyCHWdKuV7jBcB6upYjHs97Oglhk7rGPUD4")
         
         return true
     }
