@@ -8,9 +8,9 @@ import UIKit
 
 class TimeInfo {
     /** Instance Variables **/
-    private var cTime: Date     // created time
-    private var sTime: Date     // start time
-    private var eTime: Date     // end time
+    private var cTime: Date      // created time
+    private var sTime: Date       // start time
+    private var eTime: Date       // end time
     
     /** Constructor **/
     // Sets End Time 1 hr for Start Time
@@ -33,6 +33,30 @@ class TimeInfo {
     func getCreatedTimeStamp() -> Double {return cTime.timeIntervalSinceReferenceDate}
     func getStartTimeStamp() -> Double {return sTime.timeIntervalSinceReferenceDate}
     func getEndTimeStand() -> Double {return eTime.timeIntervalSinceReferenceDate}
+    
+    // The following function are used to get the date and time in the format needed for the current URL parsing Sultan requested. (URL date syntax might change later)
+    
+    func getCreatedTimeSultan() -> String {
+        var year = Calendar.current.component(.year, from: cTime)
+        var month = Calendar.current.component(.month, from: cTime)
+        var day = Calendar.current.component(.day, from: cTime)
+        var hour = Calendar.current.component(.hour, from: cTime)
+        var minute = Calendar.current.component(.minute, from: cTime)
+        return "\(year)-\(month)-\(day) \(hour):\(minute):00"}
+        func getStartTimeSultan() -> String {
+            var year = Calendar.current.component(.year, from: sTime)
+    var month = Calendar.current.component(.month, from: sTime)
+    var day = Calendar.current.component(.day, from: sTime)
+    var hour = Calendar.current.component(.hour, from: sTime)
+    var minute = Calendar.current.component(.minute, from: sTime)
+    return "\(year)-\(month)-\(day) \(hour):\(minute):00"}
+    func getEndTimeSultan() -> String {
+var year = Calendar.current.component(.year, from: eTime)
+var month = Calendar.current.component(.month, from: eTime)
+var day = Calendar.current.component(.day, from: eTime)
+var hour = Calendar.current.component(.hour, from: eTime)
+var minute = Calendar.current.component(.minute, from: eTime)
+return "\(year)-\(month)-\(day) \(hour):\(minute):00"}
     
     /** Functions **/
     // Static Function to Generate Date Object using YYYY/MM/DD @ HH:MM

@@ -44,13 +44,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
    
     @IBAction func testing(_ sender: UIButton) {
-        var eTest = Event(eventID: 123)
+//        var eTest = Event(eventID: 123)
 //
 //        print(eTest.getEventID())
 //
 //        var df = DateFormatter()
-//        df.dateStyle = .full
-//        df.timeStyle = .full
+//        df.dateStyle = .medium
+//        df.timeStyle = .medium
 //        print(df.string(from: eTest.getTime().getCreatedTime()))
 //        print(df.string(from: eTest.getTime().getStartTime()))
 //        print(df.string(from: eTest.getTime().getEndTime()))
@@ -92,6 +92,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 //        print(eTest.getGen().getTypeString())
 //        eTest.getGen().setType(type: EventType.Charity)
 //        print(eTest.getGen().getTypeString())
+        parseDataToURL()
         
         
     }
