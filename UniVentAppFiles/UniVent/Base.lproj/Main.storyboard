@@ -15,7 +15,7 @@
         <scene sceneID="Iq4-J7-dKr">
             <objects>
                 <navigationController title="UniVentNavigation" id="207-BG-ymI" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="bZl-sL-dEs">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="bZl-sL-dEs">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -233,7 +233,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CcH-vH-WBU" id="aKL-fp-qDq">
-                                    <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="EventTitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v2k-ID-EOb">
@@ -339,12 +339,26 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7cG-nn-7sZ">
+                                <rect key="frame" x="170" y="466" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="35" id="2tL-Ua-Brf"/>
+                                    <constraint firstAttribute="width" secondItem="7cG-nn-7sZ" secondAttribute="height" multiplier="1:1" id="JUF-Fk-r6L"/>
+                                </constraints>
+                                <state key="normal" image="FlagEventButton"/>
+                                <state key="selected" image="FlagEventButton_Flagged"/>
+                                <state key="highlighted" image="FlagEventButton_Flagged"/>
+                                <connections>
+                                    <action selector="flagEventPressed:" destination="KAP-qY-3Ag" eventType="touchUpInside" id="8RL-RK-Txw"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="UmK-jM-2I6" firstAttribute="leading" secondItem="qbv-5A-YuK" secondAttribute="leadingMargin" constant="26" id="195-T7-GrM"/>
                             <constraint firstItem="dU2-Yw-aqw" firstAttribute="leading" secondItem="1aM-yP-Sci" secondAttribute="leading" id="3Fu-LY-pcp"/>
                             <constraint firstItem="Szp-Ln-kmf" firstAttribute="baseline" secondItem="dU2-Yw-aqw" secondAttribute="baseline" id="5XP-x2-XTW"/>
+                            <constraint firstItem="7cG-nn-7sZ" firstAttribute="centerX" secondItem="TmN-B5-dIg" secondAttribute="centerX" id="6ge-sF-lIb"/>
                             <constraint firstItem="dU2-Yw-aqw" firstAttribute="leading" secondItem="Szp-Ln-kmf" secondAttribute="trailing" constant="8" symbolic="YES" id="713-4x-Gsc"/>
                             <constraint firstItem="TmN-B5-dIg" firstAttribute="top" secondItem="1aM-yP-Sci" secondAttribute="bottom" constant="68" id="9mJ-4t-iJf"/>
                             <constraint firstItem="1aM-yP-Sci" firstAttribute="leading" secondItem="FJz-l4-2tt" secondAttribute="trailing" constant="18" id="EYj-i1-KAj"/>
@@ -355,6 +369,7 @@
                             <constraint firstItem="tcr-gN-2uG" firstAttribute="top" secondItem="TmN-B5-dIg" secondAttribute="bottom" constant="239" id="Rvf-33-LsT"/>
                             <constraint firstItem="Szp-Ln-kmf" firstAttribute="leading" secondItem="FJz-l4-2tt" secondAttribute="leading" id="TKM-Q7-Ga3"/>
                             <constraint firstItem="Szp-Ln-kmf" firstAttribute="top" secondItem="UmK-jM-2I6" secondAttribute="bottom" constant="31" id="Uoo-cT-VSS"/>
+                            <constraint firstItem="tcr-gN-2uG" firstAttribute="top" secondItem="7cG-nn-7sZ" secondAttribute="bottom" constant="166" id="Vr7-hJ-Qzk"/>
                             <constraint firstItem="FJz-l4-2tt" firstAttribute="baseline" secondItem="1aM-yP-Sci" secondAttribute="baseline" id="WWa-YX-d4t"/>
                             <constraint firstItem="UmK-jM-2I6" firstAttribute="top" secondItem="pAg-Ry-jeq" secondAttribute="bottom" constant="8" symbolic="YES" id="XnC-as-pXH"/>
                             <constraint firstItem="pAg-Ry-jeq" firstAttribute="trailing" secondItem="dU2-Yw-aqw" secondAttribute="trailing" id="bJx-I4-cYQ"/>
@@ -365,6 +380,7 @@
                             <constraint firstItem="pAg-Ry-jeq" firstAttribute="leading" secondItem="Szp-Ln-kmf" secondAttribute="leading" id="liR-7a-PoE"/>
                             <constraint firstItem="FJz-l4-2tt" firstAttribute="top" secondItem="Szp-Ln-kmf" secondAttribute="bottom" constant="24" id="vDM-0S-cqa"/>
                             <constraint firstAttribute="trailing" secondItem="yqO-pN-rEA" secondAttribute="trailing" id="wue-tB-2gH"/>
+                            <constraint firstItem="7cG-nn-7sZ" firstAttribute="top" secondItem="TmN-B5-dIg" secondAttribute="bottom" constant="38" id="yFM-8N-9kf"/>
                         </constraints>
                     </view>
                     <connections>
@@ -372,6 +388,7 @@
                         <outlet property="eventDescriptionText" destination="UmK-jM-2I6" id="fL0-3L-XxM"/>
                         <outlet property="eventTitleLabel" destination="yqO-pN-rEA" id="ajc-Of-y8Q"/>
                         <outlet property="eventTypeLabel" destination="pAg-Ry-jeq" id="BxE-Iw-zVV"/>
+                        <outlet property="flagButton" destination="7cG-nn-7sZ" id="OcV-aS-vVJ"/>
                         <outlet property="rsvpButton" destination="TmN-B5-dIg" id="798-DT-Pok"/>
                         <outlet property="startTimeLabel" destination="dU2-Yw-aqw" id="8Z5-gt-Z2N"/>
                     </connections>
@@ -382,6 +399,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="FlagEventButton" width="200" height="200"/>
+        <image name="FlagEventButton_Flagged" width="200" height="200"/>
         <image name="UniVent Logo" width="890" height="250"/>
         <image name="addEventButton" width="200" height="200"/>
         <image name="centerOnUserButton" width="200" height="200"/>

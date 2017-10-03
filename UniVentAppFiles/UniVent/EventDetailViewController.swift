@@ -8,16 +8,64 @@
 
 import UIKit
 
+extension EventDetailViewController {
+    
+    func eventFlaggedAlert(completion: @escaping (_ flagChoice: String) -> Void) {
+        
+        let alertController = UIAlertController(title: "Please select a reason:", message: nil, preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: {(
+            alertController: UIAlertAction) in
+                completion("Cancel")
+        })
+        let falseEvent = UIAlertAction(title: "The event does not exist", style: .default, handler: {(
+            alertController: UIAlertAction) in
+                completion("False")
+        })
+        let inappropriateEvent = UIAlertAction(title: "Inappropriate subject/language", style: .default, handler: {(
+            alertController: UIAlertAction) in
+                completion("Inappropriate")
+        })
+        let repeatedEvent = UIAlertAction(title: "Duplicate event", style: .default, handler: {(
+            alertController: UIAlertAction) in
+                completion("Duplicate")
+        })
+        let otherAction = UIAlertAction(title: "Other...", style: .default, handler: {(
+            alertController: UIAlertAction) in
+                completion("Other")
+        })
+        let undoFlag = UIAlertAction(title: "Undo previous report", style: .default, handler: {(
+            alertController: UIAlertAction) in
+                completion("Undo")
+        })
+        
+        if (self.eventFlagged == false) {
+            alertController.addAction(falseEvent)
+            alertController.addAction(inappropriateEvent)
+            alertController.addAction(repeatedEvent)
+            alertController.addAction(otherAction)
+            alertController.addAction(cancelAction)
+        } else {
+            alertController.addAction(undoFlag)
+            alertController.addAction(cancelAction)
+        }
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
+    
+}
 class EventDetailViewController: UIViewController {
     
     // MARK: - Properties
     var event = Event()
+    var eventFlagged: Bool = false
+    
     @IBOutlet weak var eventTitleLabel: UILabel!
     @IBOutlet weak var eventTypeLabel: UILabel!
     @IBOutlet weak var eventDescriptionText: UITextView!
     @IBOutlet weak var startTimeLabel: UILabel!
     @IBOutlet weak var endTimeLabel: UILabel!
     @IBOutlet weak var rsvpButton: UIButton!    
+    @IBOutlet weak var flagButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +124,54 @@ class EventDetailViewController: UIViewController {
  
     }
     
+    // MARK: - UIButton Methods
+    
+    /*  Executed when the user presses the flagButton
+     *  
+     *  Calls eventFlaggedAlert which returns the user's decision upon completion.
+     *  Any report by the user will increase the event's flagCount variable.
+     *
+     */
+    @IBAction func flagEventPressed(_ sender: UIButton) {
+        
+        eventFlaggedAlert() { result in
+        switch result {
+        case "Cancel":
+            self.eventFlagged = false
+            self.flagButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
+            break
+        case "False":
+            print("False Event")
+            self.eventFlagged = true
+            self.flagButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+            break
+        case "Inappropriate":
+            print("Inappropriate Event")
+            self.eventFlagged = true
+            self.flagButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+            break
+        case "Duplicate":
+            print("Duplicate Event")
+            self.eventFlagged = true
+            self.flagButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+            break
+        case "Other":
+            print("Other report")
+            self.eventFlagged = true
+            self.flagButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+            break
+        case "Undo":
+            print("Flag undone")
+            self.eventFlagged = false
+            self.flagButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
+            break
+        default:
+            print("Error")
+            
+        }
+        }
+        
+    }
 
     /*
     // MARK: - Navigation
