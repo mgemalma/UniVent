@@ -92,7 +92,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 //        print(eTest.getGen().getTypeString())
 //        eTest.getGen().setType(type: EventType.Charity)
 //        print(eTest.getGen().getTypeString())
-        parseDataToURL()
+//        var xxx = Event(eventID: 54637)
+//        parseDataToURL(event1: xxx)
+//        getItems()
+//        var str = "99"
+//        var ttt = Double(str)
+//        ttt = ttt! + 1.5
+//        print(ttt!)
+//        print(getUniqueID())
+        var ii = getAUniqueID()
+        print("final:", ii)
+        
         
         
     }
