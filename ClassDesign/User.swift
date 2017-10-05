@@ -40,5 +40,25 @@ class User {
     func setUserName(name: String) {
         self.userName = name
     }
+    
+    func updateJSON(dict : [String : String]) {
+        //Parse dictionary items into respective fields
+        userID = Int(dict["userID"]!)!
+        userName = dict["userName"]!
+        userHistory = UserHistory(flagCount: Int(dict["flagCount"]!)!, postedEvents: NSArray())
+        userPersonal = UserPersonal(radius: Int(dict["radius"]!)!, attendingEvents: NSArray(), uLatitude: Double(dict["uLatitude"]!)!, uLongitude: Double(dict["uLongitude"]!)!)
+    }
+    
+    func objectToDict() -> [String : String]
+    {
+        var dict = [String : String] ()
+        dict["userID"] = String(userID)
+        dict["userName"] = userName
+        dict["flagCount"] = String(getUserHistory().getFlagCount())
+        dict["radius"] = String(getUserPersonal().getradius())
+        dict["uLatitude"] = String(getUserPersonal().getLocation().coordinate.latitude)
+        dict["uLongitude"] =  String(getUserPersonal().getLocation().coordinate.longitude)
+        return dict
+    }
 
 }
