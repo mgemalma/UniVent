@@ -56,7 +56,7 @@ class GenInfo {
         
         // Auto Description for Empty Descriptor
         if description.characters.count == 0 {
-            self.description = "No description"
+            self.description = "No%20description"
         }
             
         // Standard Initialization for Description

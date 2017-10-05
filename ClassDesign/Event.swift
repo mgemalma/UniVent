@@ -87,24 +87,4 @@ class Event {
         //Enum array problem
         initGen(hostID: Int(dict["hostID"]!)!, title: dict["title"]!, type: Int(dict["type"]!)!, interests: NSArray(), description: dict["description"]!)
     }
-    
-    func objectToDict() -> [String : String]
-    {
-        var dict = [String : String] ()
-        dict["eventID"] = String(eventID)
-        dict["address"] = getLoc().getAddress()
-        dict["latitude"] = String(getLoc().getLatitude())
-        dict["longitude"] = String(getLoc().getLongitude())
-        dict["sTimeStamp"] = String(getTime().getStartTimeStamp())
-        dict["eTimeStamp"] =  String(getTime().getEndTimeStand())
-        dict["rating"] = String(getStat().getRatingInt())
-        dict["ratingCount"] = String(getStat().getRatingCount())
-        dict["flag"] = String(getStat().getFlagCount())
-        dict["headCount"] = String(getStat().getHeadCount())
-        dict["hostID"] = String(getGen().getHostID())
-        dict["title"] = getGen().getTitle()
-        dict["type"] = String(getGen().getType().rawValue)
-        dict["description"] = getGen().getDescription()
-       return dict
-    }
 }
