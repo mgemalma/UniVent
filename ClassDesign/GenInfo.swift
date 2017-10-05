@@ -74,6 +74,7 @@ class GenInfo {
     
     /** Setters **/
     func setType(type: EventType) {self.type = type}
+    func setTypeRawValue(num: Int) {self.type = EventType(rawValue: num)!}
     func setDescription(desc: String) {self.description = desc}
     
     /** Functions **/
@@ -86,5 +87,4 @@ class GenInfo {
     func findEvent(interest: Interest) -> Bool {
         return interests.contains(interest)
     }
-
 }
