@@ -1,7 +1,8 @@
 
 import UIKit
-var id1 = 0
-var num = 0
+
+//var id1: Int = 0
+//var num: Int = 0
 
 func getItems() {
 //    let stringURL = "https://gymbuddyapp.net/allEvents.php"
@@ -66,7 +67,7 @@ func parseID(_ data:Data) -> Int {
         
         for element in jsonArray {
             let dict = element as! [String:String]
-            let id = dict["uniqueID"] as? String
+            let id = dict["uniqueID"]
             let ids = id!
             num = Int(ids, radix: 16)!
 //            print(ids)
