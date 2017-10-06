@@ -107,4 +107,16 @@ class Event {
         dict["description"] = getGen().getDescription()
        return dict
     }
+    
+    /** Incrementers **/
+    func incHeadCount() {
+        self.getStat().setSmartHeadCount()
+        changeEventAttendance(eventID: self.eventID, option: "I")
+    }
+    
+    func incFlagCount() {
+        self.getStat().setSmartFlagCount()
+        changeFlagCountEvent(eventID: self.eventID, option: "I")
+        changeFlagCountUser(userID: self.genInfo.getHostID(), option: "I")
+    }
 }
