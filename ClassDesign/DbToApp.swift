@@ -1,15 +1,20 @@
 
 import UIKit
 
-var id1 = 0     // temporary local variable for unique ID
-var num = 0     // temporary local variable for unique ID
+var id1 = 0     // temporary global variable for unique ID
+var num = 0     // temporary global variable for unique ID
 var sleeper = 0
-var arrayDict = [[String:String]]()     // temporary local variable for allEvents
-var arrayDict2 = [[String:String]]()     // temporary local variable for allEvents
-var arrayDict3 = [String:String]()     // temporary local variable for event
-var arrayDict4 = [String:String]()     // temporary local variable for event
-var arrayDict5 = [String:String]()     // temporary local variable for user
-var arrayDict6 = [String:String]()     // temporary local variable for user
+var arrayDict = [[String:String]]()     // temporary global variable for allEvents
+var arrayDict2 = [[String:String]]()     // temporary global variable for allEvents
+var arrayDict3 = [String:String]()     // temporary global variable for event
+var arrayDict4 = [String:String]()     // temporary global variable for event
+var arrayDict5 = [String:String]()     // temporary global variable for user
+var arrayDict6 = [String:String]()     // temporary global variable for user
+
+// Amjad: We might have to reset the above variables after every request. Not sure if necessary?
+
+
+// getAllEvents returns an array of dictionaries containing all the events currently in the database.
 
 func getAllEvents() -> [[String:String]] {
     let stringURL = "https://gymbuddyapp.net/allEvents.php"
@@ -32,6 +37,8 @@ func getAllEvents() -> [[String:String]] {
     return arrayDict
 }
 
+// parseAllEvents is a helper function to getAllEvents.
+// It parses the data in the script into dictionaries.
 
 func parseAllEvents(_ data:Data) -> [[String:String]] {
     do {
@@ -49,6 +56,7 @@ func parseAllEvents(_ data:Data) -> [[String:String]] {
     return arrayDict2
 }
 
+// getEvent returns a dictionary of a specific event in the database(given its ID)
 
 func getEvent(eventID: Int) -> [String:String] {
     let stringURL = "https://gymbuddyapp.net/getEvent.php?eventID=\(eventID)"
@@ -71,6 +79,8 @@ func getEvent(eventID: Int) -> [String:String] {
     return arrayDict3
 }
 
+// parseEvent is a helper function to getEvent
+// It parses the data in the script into a dictionary.
 
 func parseEvent(_ data:Data) -> [String:String] {
     do {
@@ -88,7 +98,7 @@ func parseEvent(_ data:Data) -> [String:String] {
     return arrayDict4
 }
 
-
+// getAUniqueID requests a unique ID for an event.
 
 func getAUniqueID() -> Int {
     let stringURL = "https://gymbuddyapp.net/GetUniqueID.php"
@@ -111,6 +121,10 @@ func getAUniqueID() -> Int {
     return id1
 }
 
+// parseID is a helper function to getAUniqueID
+// It parses the data in the script into a dictionary.
+// The ID is returned as an Int. Typically 16 digits long.
+
 func parseID(_ data:Data) -> Int {
     do {
         let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
@@ -127,6 +141,8 @@ func parseID(_ data:Data) -> Int {
     }
     return num
 }
+
+// getUser returns a dictionary of a specific user in the database(given its ID)
 
 func getUser(userID: Int) -> [String:String] {
     let stringURL = "https://gymbuddyapp.net/getUser.php?userID=\(userID)"
@@ -149,6 +165,8 @@ func getUser(userID: Int) -> [String:String] {
     return arrayDict5
 }
 
+// parseUser is a helper function to getUser
+// It parses the data in the script into a dictionary.
 
 func parseUser(_ data:Data) -> [String:String] {
     do {
