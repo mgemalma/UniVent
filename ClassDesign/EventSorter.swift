@@ -10,13 +10,17 @@ import Foundation
 import CoreLocation
 class EventSorter
 {
-   
+    static func cpyArray()
+    {
+        for i in eventList
+        {
+            eventArrSort.append(i)
+        }
+    }
     static func sortByTime()
     {
-        //cpyArray()
-        //var eventArrSort = getNearEventsTest(count: 2)
-        //eventArrSort = eventArrSort.sorted(by: EventSorter.sortByTime as! (Event, Event) -> Bool) as Array<Event>
-        //eventArrSort = eventList
+        eventArrSort.removeAll()
+        cpyArray()
         var i = 0;
         var j = 0;
         var n = eventArrSort.count;
@@ -51,9 +55,8 @@ class EventSorter
     
     static func sortByDistance()
     {
-        
-        //cpyArray()
-        //EventSorter.sortByDist(eventList: eventArrSort, userLoc: user.getUserPersonal().getLocation())
+        eventArrSort.removeAll()
+        cpyArray()
         var i = 0;
         var j = 0;
         var n = eventArrSort.count;
@@ -87,6 +90,8 @@ class EventSorter
     
     static func filter(type : EventType) 
     {
+        eventArrSort.removeAll()
+        cpyArray()
         var tmp =  [Event] ()
         for i in eventArrSort
         {
