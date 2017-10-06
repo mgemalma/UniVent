@@ -1,6 +1,11 @@
 /**
  *  Author: Anirudh Pal & Amjad Zahraa
- *  Description: The event class but further work is required. 
+ *  Description: The event class but further work is required.
+ *
+ *  Use: Get Unique ID from Sultan & Use it to Initialize Default Event.
+ *       Use Persist Data Class to Initialize all Instance Variables.
+ *       Sync with DB.
+ *       Update changes to DB. (Only Created Events)
  **/
 
 // Import library for some stuff
@@ -15,10 +20,13 @@ class Event {
     private var genInfo: GenInfo
     
     /** Constructor **/
+    // Creates Default Event with ID 0. Used for Testing.
+    convenience init() {
+        self.init(eventID: 0)
+    }
+    
+    // Main Constructor
     init(eventID: Int) {
-        // Print Disclaimer
-        print("Event construction is incomplete until all setters are called. Not calling the setters will result in Default Values")
-        
         // Set Values
         self.eventID = eventID
         
@@ -59,11 +67,44 @@ class Event {
     }
     
     // GenInfo
-    func genInfo(hostID: Int, title: String) {
+    func initGen(hostID: Int, title: String) {
         genInfo = GenInfo(hostID: hostID, title: title)
     }
-    func genInfo(hostID: Int, title: String, type: EventType, interests: NSArray, description: String) {
+    func initGen(hostID: Int, title: String, type: EventType, interests: NSArray, description: String) {
         genInfo = GenInfo(hostID: hostID, title: title, type: type, interests: interests, description: description)
     }
+    func initGen(hostID: Int, title: String, type: Int, interests: NSArray, description: String) {
+        genInfo = GenInfo(hostID: hostID, title: title, type: EventType(rawValue: type)!, interests: interests, description: description)
+    }
     
+    // JSON Updater
+    func updateJSON(dict : [String : String]) {
+        //Parse dictionary items into respective fields
+        eventID = Int(dict["eventID"]!)!
+        initTime(sTime: Date(timeIntervalSince1970 : Double(dict["sTimeStamp"]!)!), eTime: Date(timeIntervalSince1970 : Double(dict["eTimeStamp"]!)!))
+        initLoc(add: dict["address"]!, lat: Double(dict["latitude"]!)!, long: Double(dict["longitude"]!)!)
+        initStat(rating: Int(dict["rating"]!)!, ratingCount: Int(dict["ratingCount"]!)!, flagCount: Int(dict["flag"]!)!, headCount: Int(dict["headCount"]!)!)
+        //Enum array problem
+        initGen(hostID: Int(dict["hostID"]!)!, title: dict["title"]!, type: Int(dict["type"]!)!, interests: NSArray(), description: dict["description"]!)
+    }
+    
+    func objectToDict() -> [String : String]
+    {
+        var dict = [String : String] ()
+        dict["eventID"] = String(eventID)
+        dict["address"] = getLoc().getAddress()
+        dict["latitude"] = String(getLoc().getLatitude())
+        dict["longitude"] = String(getLoc().getLongitude())
+        dict["sTimeStamp"] = String(getTime().getStartTimeStamp())
+        dict["eTimeStamp"] =  String(getTime().getEndTimeStand())
+        dict["rating"] = String(getStat().getRatingInt())
+        dict["ratingCount"] = String(getStat().getRatingCount())
+        dict["flag"] = String(getStat().getFlagCount())
+        dict["headCount"] = String(getStat().getHeadCount())
+        dict["hostID"] = String(getGen().getHostID())
+        dict["title"] = getGen().getTitle()
+        dict["type"] = String(getGen().getType().rawValue)
+        dict["description"] = getGen().getDescription()
+       return dict
+    }
 }

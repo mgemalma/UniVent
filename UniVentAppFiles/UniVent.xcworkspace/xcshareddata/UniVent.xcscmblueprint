@@ -1,0 +1,29 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "92E32ECDD87AC10663FB42769DC45A321F04AFA8" : 9223372036854775807,
+    "CAC7A74728DE922ED997D327F7624EEAFCD68504" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "0508F694-F4CF-48D4-9AD1-2FC96256119D",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "92E32ECDD87AC10663FB42769DC45A321F04AFA8" : "UniVentGitRepo\/UniVent\/",
+    "CAC7A74728DE922ED997D327F7624EEAFCD68504" : "UniVentGitRepo\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "UniVent",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "UniVent.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mgemalma\/UniVent.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "92E32ECDD87AC10663FB42769DC45A321F04AFA8"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:mgemalma\/UniVent.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CAC7A74728DE922ED997D327F7624EEAFCD68504"
+    }
+  ]
+}

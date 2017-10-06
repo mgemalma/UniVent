@@ -44,13 +44,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
    
     @IBAction func testing(_ sender: UIButton) {
-        var eTest = Event(eventID: 123)
+//        var eTest = Event(eventID: 5913243546784563)
 //
 //        print(eTest.getEventID())
 //
 //        var df = DateFormatter()
-//        df.dateStyle = .full
-//        df.timeStyle = .full
+//        df.dateStyle = .medium
+//        df.timeStyle = .medium
 //        print(df.string(from: eTest.getTime().getCreatedTime()))
 //        print(df.string(from: eTest.getTime().getStartTime()))
 //        print(df.string(from: eTest.getTime().getEndTime()))
@@ -81,7 +81,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 //        print(eTest.getGen().getType())
 //        print(eTest.getGen().getDescription())
 
-//        eTest.genInfo(hostID: 66, title: "TestEvent")
+//        eTest.initGen(hostID: 73244, title: "5oood")
+//        eTest.initStat()
+//        eTest.initLoc(add: "Here%20Lol", lat: 638194.34, long: 56.5433)
 //        eTest.getGen().addInterest(interest: Interest.Dance)
 //        eTest.getGen().addInterest(interest: Interest.Drama)
 //        eTest.getGen().addInterest(interest: Interest.Military)
@@ -92,6 +94,40 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 //        print(eTest.getGen().getTypeString())
 //        eTest.getGen().setType(type: EventType.Charity)
 //        print(eTest.getGen().getTypeString())
+//        var xxx = Event(eventID: 54637)
+//        parseDataToURL(event1: xxx)
+//        getItems()
+//        var str = "99"
+//        var ttt = Double(str)
+//        ttt = ttt! + 1.5
+//        print(ttt!)
+//        print(getUniqueID())
+//        let oldTime = Date()
+//        var ii = getAUniqueID()
+//        let newTime = Date()
+//        print("final:", ii)
+        
+//        var test = getAllEvents()
+//        print(test[7]["address"]!)
+        
+//        var test = getEvent(eventID: 40253530)
+//        print(test["address"]!)
+        
+//        var test = getUser(userID: 7620888)
+//                print(test["flagCount"]!)
+        
+//        insertEvent(event1: eTest)
+//        var testUser = User(userID: 69, userName: "Amjad")
+//        testUser.getUserHistory().setSmartFlagCount()
+//        testUser.getUserPersonal().setLocation(lat: 654.565, long: 123.321)
+//
+//        insertUser(user1: testUser)
+//        changeEventAttendance(eventID: 59, option: "D")
+//        changeRatingCount(eventID: 59, option: "D")
+//        changeFlagCountEvent(eventID: 59, option: "D")
+        
+        
+        
         
         
     }

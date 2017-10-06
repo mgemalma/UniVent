@@ -36,10 +36,10 @@ class GenInfo {
         }
         
         // Bounds Check on Title (Weird Behaviour)
-        if title.count <= 0 {
+        if title.characters.count <= 0 {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
-        if title.count > tSize {
+        if title.characters.count > tSize {
             print("Warning -> init() in GenInfo: Invalid title Size.")
         }
         
@@ -50,12 +50,12 @@ class GenInfo {
         self.type = type
         
         // Bound Check on Description
-        if description.count > dSize {
+        if description.characters.count > dSize {
             print("init in GenInfo: invalid description size")
         }
         
         // Auto Description for Empty Descriptor
-        if description.count == 0 {
+        if description.characters.count == 0 {
             self.description = "No description"
         }
             
@@ -74,6 +74,7 @@ class GenInfo {
     
     /** Setters **/
     func setType(type: EventType) {self.type = type}
+    func setTypeRawValue(num: Int) {self.type = EventType(rawValue: num)!}
     func setDescription(desc: String) {self.description = desc}
     
     /** Functions **/
@@ -86,5 +87,4 @@ class GenInfo {
     func findEvent(interest: Interest) -> Bool {
         return interests.contains(interest)
     }
-
 }

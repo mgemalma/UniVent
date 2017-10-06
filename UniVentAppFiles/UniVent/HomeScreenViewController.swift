@@ -46,33 +46,36 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
     var initialLocation = CLLocation()
     var userEnabledLocation: Bool = false
     var userLoggedIntoFacebook: Bool = false
+    var userName: String! = ""
+    var userID: String! = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
         let loginButton = FBSDKLoginButton()
         view.addSubview(loginButton)
         loginButton.frame = CGRect(x: 64, y: 500, width: Int(view.frame.width - 128), height: 40)
         loginButton.readPermissions = ["public_profile"]
         loginButton.delegate = self
+        
+        self.requestLocationServices() { response in
+            NSLog(response)
+            //print(self.initialLocation.coordinate.latitude)
+            //print(self.initialLocation.coordinate.longitude)
+           // self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
+        }
 
         //If the user's access token is nil, they are not logged in
         if (FBSDKAccessToken.current() == nil) {
             NSLog("User not logged in to Facebook")
         } else {
             NSLog("User logged in to Facebook")
+            self.getFacebookUserInfo() { response in
+                NSLog(response)
+                self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
+                
+            }
         }
-        
-        self.requestLocationServices() { response in
-            NSLog(response)
-            print(self.initialLocation.coordinate.latitude)
-            print(self.initialLocation.coordinate.longitude)
-            self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
-        }
-        
-        
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -86,6 +89,7 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     
     
     // MARK: - FBSDKLoginButton Methods
@@ -103,17 +107,16 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
             userLoggedIntoFacebook = true
             
             // Compile user information here
-            
-            if self.shouldPerformSegue(withIdentifier: "HomeToMap", sender: "initialLogin") {
-                self.performSegue(withIdentifier: "HomeToMap", sender: "initialLogin")
-            } else {
-                self.handleBadAuthorization()
-            }
-            
             self.getFacebookUserInfo() { response in
                 NSLog(response)
-                //self.performSegue(withIdentifier: "HomeVCSegue", sender: "informationLoaded")
+                if self.shouldPerformSegue(withIdentifier: "HomeToMap", sender: "initialLogin") {
+                    self.performSegue(withIdentifier: "HomeToMap", sender: "initialLogin")
+                } else {
+                    print("Should not segue")
+                    self.handleBadAuthorization()
+                }
             }
+            
             
             
         } else {
@@ -131,20 +134,15 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
     private func getFacebookUserInfo(completion: @escaping (_ success: String) -> Void) {
         DispatchQueue.main.async {
             if FBSDKAccessToken.current() != nil {
-                let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: ["fields" : "id, name, gender"])
+                let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: ["fields" : "id, name"])
                 let connection = FBSDKGraphRequestConnection()
                 
                 connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
                     
                     let data = result as! [String: AnyObject]
                     
-                    let userName = ((data["name"] as? String)!)
-                    let userID = ((data["id"] as? String)!)
-                    let userGender = ((data["gender"] as? String)!)
-                    
-                    print(userName)
-                    print(userGender)
-                    print(userID)
+                    self.userName = ((data["name"] as? String)!)
+                    self.userID = ((data["id"] as? String)!)
                     
                     completion("Information Successfully Retrieved From Facebook!")
                     
@@ -207,16 +205,19 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
         if !userLoggedIntoFacebook {
             alertForFacebook()
         }
-        
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         handleBadAuthorization()
+        if userName == "" || userID == "" {
+            return false
+        }
+        
         if userEnabledLocation && userLoggedIntoFacebook{
-            print("Should segue")
+            //print("Should segue")
             return true
         } else {
-            print("Should segue")
+            //print("Should segue")
             return false
         }
     }
@@ -225,11 +226,33 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
         super.prepare(for: segue, sender: sender)
         
         if segue.identifier == "HomeToMap" {
+            print(userName)
+            print(userID)
             let destVC = segue.destination as? MapScreenViewController
             destVC?.initialLocation = self.initialLocation
-            destVC?.locationManager = self.locationManager
-            
+            //destVC?.locationManager = self.locationManager
         }
+    }
+    
+    
+    
+    private func verifyUserInDatabase(userID: String!, userName: String!, completion: @escaping (_ success: String) -> Void)  {
+        
+        // Use 'userID' and 'userName' to verify that the user either exists in the database already, or can be added.
+        // If the user is not in the database, add them.
+        // For testing purposes, use my (Andrew) information:
+        // userID: 1730583966965219
+        // userName: Andrew Peterson
+        
+        
+        // Return a completion string stating the result 
+        //         ex:
+        // DispatchQueue.main.async {
+                // var response: String?
+                // All your code for sending/retrieving info (Set 'response' string accordingly ("Success" or "Failure"))
+                // ...
+                // completion(response)
+        // }
     }
 
 

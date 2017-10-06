@@ -10,7 +10,8 @@ import UIKit
 
 class EventTableViewController: UITableViewController {
 
-    var eventTitles: [String] = [""]
+    //var eventTitles: [String] = [""]
+    var events: [Event] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,28 +40,33 @@ class EventTableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return eventTitles.count
+        return events.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! EventTableViewCell
-        cell.eventTitle.text = eventTitles[indexPath.row]
+        cell.eventTitle.text = events[indexPath.row].getGen().getTitle()
         
         
         // Configure the cell...
 
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedEvent = events[indexPath.row]
+        performSegue(withIdentifier: "TableToEventDetailSegue", sender: selectedEvent)
     }
     
 
@@ -99,22 +105,41 @@ class EventTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        let destVC = segue.destination as? EventDetailViewController
+        destVC?.event = sender as! Event
+        
     }
-    */
     
     
     // MARK: Private Methods
-    func loadDefaults() {
-        eventTitles = ["Tech Club Callout", "USAF Information Table", "Free Food!", "Motorsport Club Showoff"]
+    private func loadDefaults() {
+        //eventTitles = ["Tech Club Callout", "USAF Information Table", "Free Food!", "Motorsport Club Showoff"]
         
-        
+        for i in 0...50 {
+            let eID = i
+            let eTitle = "Event\(i)"
+            let eDesc = "Event\(i) description"
+            //let eTime = TimeInfo(sTime: Date())
+            let eType = EventType.Callout
+            let eInterests: [Interest] = [Interest.None]
+//            let eStats = StatInfo()
+//            let eLoc = LocInfo(address: "College Way", dLatitude: 49.435234, dLongitude: -89.23453)
+            
+            
+            let event = Event(eventID: eID)
+            event.genInfo(hostID: 0, title: eTitle, type: eType, interests: eInterests as NSArray, description: eDesc)
+            event.initLoc(add: "College Way", lat: 49.14634, long: -89.24355)
+            events.append(event)
+            
+        }
     }
+    
 
 }
