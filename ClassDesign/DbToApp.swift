@@ -1,15 +1,15 @@
 
 import UIKit
 
-var id1 = 0
-var num = 0
+var id1 = 0     // temporary local variable for unique ID
+var num = 0     // temporary local variable for unique ID
 var sleeper = 0
-var arrayDict = [[String:String]]()
-var arrayDict2 = [[String:String]]()
-var arrayDict3 = [String:String]()
-var arrayDict4 = [String:String]()
-var arrayDict5 = [String:String]()
-var arrayDict6 = [String:String]()
+var arrayDict = [[String:String]]()     // temporary local variable for allEvents
+var arrayDict2 = [[String:String]]()     // temporary local variable for allEvents
+var arrayDict3 = [String:String]()     // temporary local variable for event
+var arrayDict4 = [String:String]()     // temporary local variable for event
+var arrayDict5 = [String:String]()     // temporary local variable for user
+var arrayDict6 = [String:String]()     // temporary local variable for user
 
 func getAllEvents() -> [[String:String]] {
     let stringURL = "https://gymbuddyapp.net/allEvents.php"
