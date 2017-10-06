@@ -95,13 +95,13 @@ class PersistUser: NSObject, NSCoding
      */
     public static func saveUserData(val : [String : String])
     {
-        /*if (data.count > 0)
+        if (data.count > 0)
         {
             var s = PersistUser(user : val)
                 data[0] = s
-        }*/
-        //else {
-        data.append(PersistUser(user: val))//}
+        }
+        else {
+        data.append(PersistUser(user: val))}
         //Save data array to the file location
         NSKeyedArchiver.archiveRootObject(data, toFile: filePath);
     }

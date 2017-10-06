@@ -1,8 +1,8 @@
 import UIKit
 /** Global Variables **/
 var user: User = User(userID: -1, userName: "Null")
-var eventList: [Event] = [Event()]
-var eventArrSort : [Event] = [Event()]
+var eventList: [Event] = []
+var eventArrSort : [Event] = []
 /** Sort Operation **/
 func cpyArray()
 {
@@ -118,6 +118,11 @@ func loadUserDisk() {
     // Load Data
     PersistUser.loadUserData()
     
+    // Nothing on Disk
+    if PersistUser.data.count < 1 {
+        return
+    }
+    
     // Get Dictionary from Disk
     let dict = PersistUser.data[0].user
     
@@ -131,10 +136,13 @@ func saveUserDisk() {
     let dict = user.objectToDict()
     
     // Clear Exisiting Data
-    PersistUser.clear()
+    //PersistUser.clear()
     
     // Save Data
     PersistUser.saveUserData(val: dict)
+    
+    // Print Index
+    //print(PersistUser.data.count)
 }
 
 // Load Events
@@ -142,7 +150,13 @@ func loadEventsDisk() {
     // Load Data
     PersistEvent.loadEventData()
     
-    var i: Int = 1
+    // Print Count
+    print(eventList.count)
+    
+    // Clear
+    eventList.removeAll()
+    
+    var i: Int = 0
     while i < PersistEvent.eventList.count {
         // Get Dictionary from Disk
         let dict = PersistEvent.eventList[i].event
@@ -167,7 +181,7 @@ func saveEventsDisk() {
     PersistEvent.clear()
     
     // Iterate over all Events
-    var i: Int = 1
+    var i: Int = 0
     while i < eventList.count {
         // Get Dictionary from Disk
         let dict = eventList[i].objectToDict()
@@ -184,4 +198,7 @@ func saveEventsDisk() {
         // Increment
         i = i + 1
     }
+    
+    // Save Data
+    PersistEvent.saveEventData()
 }
