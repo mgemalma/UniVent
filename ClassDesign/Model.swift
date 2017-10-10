@@ -17,6 +17,7 @@ func fbLogin(ID: Int, name: String) {
     // In Disk
     if user.getUserID() == ID {
         // Push to DB
+        insertUser(user1: user)
     }
     
     // Not In Disk
@@ -38,6 +39,7 @@ func fbLogin(ID: Int, name: String) {
             saveUserDisk()
             
             // Push to DB
+            insertUser(user1: user)
         }
     }
 }
@@ -45,7 +47,7 @@ func fbLogin(ID: Int, name: String) {
 /** Create Event **/
 func createEvent(sTime: Date, eTime: Date, add: String, loc:CLLocation, title: String, type: Int, descript: String) {
     // Get UID from DB
-    let ID = 123
+    let ID = getAUniqueID()
     
     // Create Event
     let event = Event(eventID: ID)
@@ -63,10 +65,11 @@ func createEvent(sTime: Date, eTime: Date, add: String, loc:CLLocation, title: S
     saveEventsDisk()
     
     // Add to DB
+    insertEvent(event1: event)
 }
 
 /** Setting Menu **/
-func setSettings(rad: Int) {
+func setSettings(rad: Float) {
     // Update User
     user.getUserPersonal().setRadius(radius: rad)
     

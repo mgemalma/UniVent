@@ -48,5 +48,7 @@ class StatInfo {
     }
     func setSmartFlagCount() {flagCount += 1}
     func setSmartHeadCount() {headCount += 1}
+    func setNotSoSmartHeadCount() {headCount = 0}
+    func setNotSoSmartFlagCount() {headCount = 0}
 }
 

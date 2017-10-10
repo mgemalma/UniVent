@@ -8,16 +8,16 @@ import CoreLocation
 
 class UserPersonal {
     
-    private var radius: Int
+    private var radius: Float
     private var attendingEvents: NSMutableArray
     private var userLocation: CLLocation
     
     /** Constructors **/
     convenience init() {
-        self.init(radius: 100, attendingEvents: NSMutableArray.init(), uLatitude: 40.426, uLongitude: -86.908)
+        self.init(radius: 0.25, attendingEvents: NSMutableArray.init(), uLatitude: 40.426, uLongitude: -86.908)
     }
     
-    init(radius: Int, attendingEvents: NSArray, uLatitude: Double, uLongitude: Double) {
+    init(radius: Float, attendingEvents: NSArray, uLatitude: Double, uLongitude: Double) {
         self.radius = radius
         
         self.userLocation = CLLocation(latitude: uLatitude, longitude: uLongitude)
@@ -32,7 +32,8 @@ class UserPersonal {
     
     
     /** Getters **/
-    func getradius() -> Int {return radius}
+    func getradius() -> Float {return radius}
+    //func getRadiusMiles() -> Float {return Float(radius)/1000.0}
     func getEventsAttending() -> NSArray {return attendingEvents}
     func getLocation() -> CLLocation {return userLocation}
     
@@ -48,7 +49,7 @@ class UserPersonal {
     }
     
     /** Setters **/
-    func setRadius(radius: Int) {self.radius = radius}
+    func setRadius(radius: Float) {self.radius = radius}
     func setLocation(lat: Double, long: Double)
     {   self.userLocation = CLLocation(latitude: lat, longitude: long)
     }

@@ -46,7 +46,7 @@ class User {
         userID = Int(dict["userID"]!)!
         userName = dict["userName"]!
         userHistory = UserHistory(flagCount: Int(dict["flagCount"]!)!, postedEvents: NSArray())
-        userPersonal = UserPersonal(radius: Int(dict["radius"]!)!, attendingEvents: NSArray(), uLatitude: Double(dict["uLatitude"]!)!, uLongitude: Double(dict["uLongitude"]!)!)
+        userPersonal = UserPersonal(radius: Float(dict["radius"]!)!, attendingEvents: NSArray(), uLatitude: Double(dict["uLatitude"]!)!, uLongitude: Double(dict["uLongitude"]!)!)
     }
     
     func objectToDict() -> [String : String]
@@ -60,5 +60,4 @@ class User {
         dict["uLongitude"] =  String(getUserPersonal().getLocation().coordinate.longitude)
         return dict
     }
-
 }

@@ -88,7 +88,7 @@ class EventSorter
     static func filter(type : EventType) 
     {
         var tmp =  [Event] ()
-        for i in eventArrSort
+        for i in eventList
         {
             if (i.getGen().getType().rawValue == type.rawValue)
             {
