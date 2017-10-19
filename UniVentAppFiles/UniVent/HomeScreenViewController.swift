@@ -10,41 +10,6 @@ import UIKit
 import FBSDKLoginKit
 import CoreLocation
 
-
-// MARK: - Alert Extension
-extension UIViewController {
-    
-    /// Called when location services are not authorized
-    func alertForLocationServices() {
-        
-        let alertController = UIAlertController(title: NSLocalizedString("Unable to Continue", comment: ""), message: NSLocalizedString("Location services need to be enabled to use UniVent.", comment: ""), preferredStyle: .alert)
-    
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: nil)
-        let settingsAction = UIAlertAction(title: NSLocalizedString("Settings", comment: ""), style: .default)  { (UIAlertAction) in
-            UIApplication.shared.open(NSURL(string: UIApplicationOpenSettingsURLString)! as URL, options: [:], completionHandler: {
-                (success) in
-                print("openDeviceSettings")
-            }
-            )
-        }
-    
-        alertController.addAction(cancelAction)
-        alertController.addAction(settingsAction)
-        self.present(alertController, animated: true, completion: nil)
-    }
-    
-    /// Called when the user tries to continue without logging in to Facebook... unlikely
-    func alertForFacebook() {
-        
-        let alertController = UIAlertController(title: NSLocalizedString("Unable to Continue", comment: ""), message: "You must login to continue.", preferredStyle: .alert)
-        
-        let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alertController.addAction(okayAction)
-        self.present(alertController, animated: true, completion:  nil)
-
-    }
-}
-
 class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLocationManagerDelegate {
 
     

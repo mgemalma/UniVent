@@ -12,23 +12,6 @@ import CoreLocation
 import PostalAddressRow
 import GoogleMaps
 
-extension EventFormViewController {
-    func invalidSaveRequest(incomplete: String) {
-        let alertController = UIAlertController(title: NSLocalizedString("Unable to Save!", comment: ""), message: "Missing information:\(incomplete)", preferredStyle: .alert)
-        let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alertController.addAction(okayAction)
-        self.present(alertController, animated: true, completion: nil)
-    }
-    
-    func invalidDate() {
-        let alertController = UIAlertController(title: NSLocalizedString("Invalid Date or Time", comment: ""), message: "Please double check your start and end times", preferredStyle: .alert)
-        let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alertController.addAction(okayAction)
-        self.present(alertController, animated: true, completion:  nil)
-    }
-
-}
-
 class EventFormViewController: FormViewController {
     
     
