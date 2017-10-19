@@ -7,9 +7,9 @@ if (mysqli_connect_errno())
 {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-$user = $_GET['userID'];
-// This SQL statement selects ALL from the table User_Prod where the userID matches
-$sql = "SELECT * FROM User_Prod where UserID = $user";
+$userID = $_GET['userID'];
+// This SQL statement selects ALL from the table Event_Prod
+$sql = "SELECT * FROM User_Prod where userID = $userID";
 
 // Check if there are results
 if ($result = mysqli_query($con, $sql))
