@@ -36,7 +36,7 @@ class MapScreenViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.startMonitoringSignificantLocationChanges()
         getNearEventsTest(count: 25)
         
-        centerMapOn(location: initialLocation)
+        centerMapOn(location: user.getUserPersonal().getLocation())
         createDefaultPins()
 
     }
@@ -86,6 +86,7 @@ class MapScreenViewController: UIViewController, CLLocationManagerDelegate {
             //Repopulate mapView pins
             
             self.currentLocation = locations.last
+            user.getUserPersonal().setLocation(lat: (locations.last?.coordinate.latitude)!, long: (locations.last?.coordinate.longitude)!)
             //self.centerMapOn(location: self.currentLocation)
             
             
@@ -120,7 +121,7 @@ class MapScreenViewController: UIViewController, CLLocationManagerDelegate {
         
         while i < count {
             let event = Event(eventID: i)
-            event.initLoc(add: "Fake News", lat: 40.42284 + drand48()/100.0, long: -86.9214 + drand48()/100.0)
+            event.initLoc(add: "427 South Chauncey Avenue, West Lafayette, Indiana 47906", lat: 40.42284 + drand48()/100.0, long: -86.9214 + drand48()/100.0)
             eventList.add(event)
             i = i + 1
         }

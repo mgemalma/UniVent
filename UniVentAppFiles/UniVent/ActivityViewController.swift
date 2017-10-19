@@ -28,7 +28,7 @@ class ActivityViewController: UIViewController {
 private class ActivityView: UIView {
     
     let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
-    let boundingBoxView = UIView(frame: CGRect.zero)//CGRectZero)
+    let boundingBoxView = UIView(frame: CGRect.zero)
     let messageLabel = UILabel(frame: CGRect.zero)
     
     init() {

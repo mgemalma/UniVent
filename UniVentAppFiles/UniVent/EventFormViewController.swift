@@ -21,7 +21,7 @@ extension EventFormViewController {
     }
     
     func invalidDate() {
-        let alertController = UIAlertController(title: NSLocalizedString("Invalid Dates", comment: ""), message: "Start and End times cannot be the same", preferredStyle: .alert)
+        let alertController = UIAlertController(title: NSLocalizedString("Invalid Date or Time", comment: ""), message: "Please double check your start and end times", preferredStyle: .alert)
         let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(okayAction)
         self.present(alertController, animated: true, completion:  nil)
@@ -41,12 +41,14 @@ class EventFormViewController: FormViewController {
     var eLocation: CLLocation? = nil
     var eStartDate: Date = Date()
     var eEndDate: Date = Date()
-    var eType: String! = ""
+    var eType: Int = -1
     var eInterests: NSArray = []
     var eCreateTime: Date = Date()
     var eHost: Int = 0
     var eDescription: String?
     
+    
+    let types = ["Callout", "Charity/Philanthropy", "Community Service", "Concert", "Conference", "Dance", "Demonstration, Rally or Vigil", "Education", "Festival/Celebration", "Information", "Meeting", "Party", "Recreation/Athletic", "Social", "Travel"]
     
     // MARK: - View Loading
     override func viewWillAppear(_ animated: Bool) {
@@ -156,7 +158,8 @@ class EventFormViewController: FormViewController {
                     from.tableView.deselectRow(at: from.tableView.indexPathForSelectedRow!, animated: false)
                 }
                 .onChange{ row in
-                    self.eType = row.value!
+                    self.eType = self.types.index(of: row.value!)!
+                    self.eType += 1
                 }
         form +++ Section("Extras")
             <<< MultipleSelectorRow<String> {
@@ -196,7 +199,6 @@ class EventFormViewController: FormViewController {
             locationManager.startUpdatingLocation()
             locationManager.stopUpdatingLocation()
             self.eLocation = locationManager.location
-            //print("Use current location")
             self.reverseGeocode(location: self.eLocation!)
             completion("Location received")
         }
@@ -210,25 +212,13 @@ class EventFormViewController: FormViewController {
         
         if validateSave() {
             if validateDate() {
-                print("Title: \(eTitle)")
-                print("Address: \(eAddress ?? "No address provided")")
-                print("Coordinates: \(String(describing: eLocation ?? nil))")
-                print("Start time: \(eStartDate)")
-                eCreateTime = Date()
-                print("End time: \(eEndDate)")
-                print("Event type: \(eType)")
-                print("Event interests: \(eInterests)")
-                print("Event escription: \(eDescription ?? "No description")")
-                print("Event host: \(eHost)")
-                print("Event create time: \(eCreateTime)")
-                print("\nSave")
-        
-                let event = Event(eventID: 9998)
-                event.genInfo(hostID: 110, title: eTitle, type: EventType.Callout, interests: eInterests, description: eDescription!)
-                event.initLoc(add: "No address here", lat: (eLocation?.coordinate.latitude)!, long: (eLocation?.coordinate.longitude)!)
-                event.initStat()
-                event.initTime(sTime: eStartDate, eTime: eEndDate)
-                parseDataToURL(event1: event)
+                if eDescription == nil {
+                    eDescription = ""
+                }
+                
+                print(eStartDate)
+                createEvent(sTime: eStartDate, eTime: eEndDate, add: eAddress!, loc: eLocation!, title: eTitle, type: eType, descript: eDescription!)
+                self.performSegue(withIdentifier: "returnToMap", sender: nil)
             }
         }
     }
@@ -238,9 +228,7 @@ class EventFormViewController: FormViewController {
     
     private func validateSave() -> Bool {
         eAddress = parseAddress()
-//        if eAddress == nil {
-//            return false
-//        }
+
         var incompleteStr = ""
         if eTitle == nil || eTitle == "" {
             incompleteStr.append("\nTitle")
@@ -249,9 +237,29 @@ class EventFormViewController: FormViewController {
             incompleteStr.append("\nAddress")
         }
         if eLocation == nil {
-            incompleteStr.append("\nLocation")
+            if eAddress != nil {
+                LocationManager.sharedInstance.getReverseGeoCodedLocation(address: eAddress!, completionHandler: { (location:CLLocation?, placemark:CLPlacemark?, error:NSError?) in
+                    
+                    if error != nil {
+                        // Bad address, send alert
+                        print((error?.localizedDescription)!)
+                        return
+                    }
+                    if placemark == nil {
+                        // Bad address, send alert
+                        print("Location can't be fetched")
+                        
+                        return
+                    }
+//                    print(placemark?.addressDictionary?.description ?? "")
+                    self.eLocation = CLLocation(latitude: (placemark?.location?.coordinate.latitude)!, longitude: (placemark?.location?.coordinate.longitude)!)
+                })
+            } else {
+                incompleteStr.append("\nLocation")
+            }
+            
         }
-        if eType == nil || eType == "" {
+        if eType == -1 {
             incompleteStr.append("\nType")
         }
         
@@ -270,19 +278,7 @@ class EventFormViewController: FormViewController {
         return true
     }
     
-//    private func validateAddress() {
-//        
-//        CLGeocoder().geocodeAddressString(eAddress!) { (placemarks, error) in
-//            if error != nil {
-//
-//            } else if placemarks?.count != 0 {
-//
-//            } else {
-//
-//            }
-//            
-//        }
-//    }
+
 
     private func reverseGeocode(location: CLLocation) {
 
@@ -303,6 +299,8 @@ class EventFormViewController: FormViewController {
         }
         
     }
+    
+
     
     private func parseAddress() -> String? {
         var addressStr = ""
@@ -356,6 +354,7 @@ class EventFormViewController: FormViewController {
             }
         }
     }
+
 
     /*
     // MARK: - Navigation

@@ -12,6 +12,7 @@ class EventTableViewCell: UITableViewCell {
     
     // MARK: Properties
     @IBOutlet weak var eventTitle: UILabel!
+    @IBOutlet weak var attendingEventIcon: UIImageView!
     
 
     override func awakeFromNib() {

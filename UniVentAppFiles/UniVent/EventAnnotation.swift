@@ -18,7 +18,8 @@ class EventAnnotation: NSObject, MKAnnotation {
     let startTime: Date
     let endTime: Date
     let address: String!
-
+    var secondsLeft: Double
+    let remainingTimeLabel: UILabel
     
     init(event: Event) {
         self.event = event
@@ -28,14 +29,31 @@ class EventAnnotation: NSObject, MKAnnotation {
         self.startTime = event.getTime().getStartTime()
         self.endTime = event.getTime().getEndTime()
         self.address = event.getLoc().getAddress()
-
+        secondsLeft = self.startTime.timeIntervalSince(Date())
+        remainingTimeLabel = UILabel()
         super.init()
+        
+        let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(EventAnnotation.updateCountdown), userInfo: nil, repeats: true)
     }
     
     var subtitle: String? {
-        return ""//address
+        
+        return "" //remainingTimeLabel.text//address
     }
     
+    func updateCountdown() {
+        var hours: Int
+        var minutes: Int
+        var seconds: Int
+        
+        secondsLeft -= 1.0
+        hours = Int(secondsLeft / 3600.0)
+        minutes = Int((secondsLeft.truncatingRemainder(dividingBy: 3600)) / 60.0)
+        seconds = Int((secondsLeft.truncatingRemainder(dividingBy: 3600)).truncatingRemainder(dividingBy: 60.0))
+        //print("\(hours):\(minutes):\(seconds)")
+        
+        remainingTimeLabel.text = ("\(hours):\(minutes):\(seconds)")
+    }
     
     
     

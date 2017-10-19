@@ -19,11 +19,12 @@ extension UITextField {
     }
 }
 
-extension String
-{
+extension String {
     func safelyLimitedTo(length n: Int)->String {
         let c = self.characters
         if (c.count <= n) { return self }
         return String( Array(c).prefix(upTo: n) )
     }
 }
+
+

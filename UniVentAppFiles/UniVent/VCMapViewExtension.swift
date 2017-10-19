@@ -23,11 +23,14 @@ extension MapScreenViewController: MKMapViewDelegate {
                 view.canShowCallout = true
                 view.calloutOffset = CGPoint(x: -5, y: -5)
                 view.rightCalloutAccessoryView = UIButton.init(type: .detailDisclosure) as UIView
+                
             }
             return view
         }
         return nil
     }
+    
+   
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         // Code to navigate to detailed event view here
