@@ -242,8 +242,11 @@ func getUserBasic(ID: Int) -> [String:String]
                 print("error=\(error!)")
                 return
             }
+            if(data != nil)
+            {
             arrayDict5 = parseUser(data)
             sleeper = 1
+            }
             
             if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
                 print("statusCode should be 200, but is \(httpStatus.statusCode)")
@@ -259,5 +262,12 @@ func getUserBasic(ID: Int) -> [String:String]
     {
         // Do nothing
     }
-    return arrayDict5!
+    if(arrayDict5 != nil)
+    {
+        return arrayDict5!
+    }
+    else
+    {
+        return ["Name":"NotFound"]
+    }
 }
