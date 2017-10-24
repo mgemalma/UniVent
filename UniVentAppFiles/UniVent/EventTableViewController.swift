@@ -23,9 +23,15 @@ class EventTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(self.sortTable))
-        // Load from Diks & DB
+        // Load events near user from database ** TEMPORARILY ALL EVENTS **
         DispatchQueue.main.async(execute: { () -> Void in
-            loadEventsDisk()
+            let eventDictionaries = getAllEvents()
+            for i in eventDictionaries {
+                let event = Event()
+                event.updateJSON(dict: i)
+                addEventToEventList(event: event)
+            }
+            //loadEventsDisk()
             self.events = eventList
             self.reload()
         })

@@ -15,9 +15,8 @@ class EventDetailViewController: UIViewController {
     var eventFlagged: Bool = false
     var rsvped: Bool = false
     var secondsLeft: Double = 0.0
-    //var user: User = User(userID: 0, userName: "init")
-    @IBOutlet weak var ratingControl: RatingControl!
     
+    @IBOutlet weak var ratingControl: RatingControl!
     
     @IBOutlet weak var eventTitleLabel: UILabel!
     @IBOutlet weak var eventTypeLabel: UILabel!
@@ -39,7 +38,7 @@ class EventDetailViewController: UIViewController {
     override func viewDidLoad() {
         
         setupViewFor(event: event)
-        let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(EventAnnotation.updateCountdown), userInfo: nil, repeats: true)
+        _ = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(EventAnnotation.updateCountdown), userInfo: nil, repeats: true)
         
         super.viewDidLoad()
     }
