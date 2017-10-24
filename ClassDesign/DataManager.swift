@@ -29,7 +29,7 @@ func loadEventsDB() {
      }*/
 }
 
-func addEvent(event: Event) {
+func addEventToEventList(event: Event) {
     eventList.append(event)
 }
 // Save Event
