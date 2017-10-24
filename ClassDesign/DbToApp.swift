@@ -13,12 +13,12 @@ var arrayDict6 : [String:String]?     // temporary global variable for user
 // Amjad: We might have to reset the above variables after every request. Not sure if necessary?
 
 func reset() {
-    arrayDict = nil
-    arrayDict2 = nil
-    arrayDict3 = nil
-    arrayDict4 = nil
-    arrayDict5 = nil
-    arrayDict6 = nil
+    arrayDict = [[String:String]]()//nil
+    arrayDict2 = [[String:String]]()//nil
+    arrayDict3 = [String:String]()//nil
+    arrayDict4 = [String:String]()//nil
+    arrayDict5 = [String:String]()//nil
+    arrayDict6 = [String:String]()//nil
     id1 = 0
     num = 0
     sleeper = 0
