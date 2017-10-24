@@ -23,7 +23,7 @@ func fbLogin(ID: Int, name: String) {
     // Not In Disk
     else {
         // Load DB User
-        
+        var dict: [String:String]?
         // In DB
         if user.getUserID() == ID {
             // Save to Disk
