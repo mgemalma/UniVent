@@ -36,16 +36,30 @@ func saveEventDB(event: Event) {
 
 /** Disk Operations **/
 // Load User from Disk
-func loadUserDisk() {
+func loadUserDisk()-> Bool {
     // Load Data
     PersistUser.loadUserData()
     
     // Get Dictionary from Disk
-    let dict = PersistUser.data[0].user
+    var dict: [String : String]?
+    if (PersistUser.data.count != 0)
+    {
+        if (PersistUser.data[0]?.user != nil)
+        {
+            dict = PersistUser.data[0]?.user as [String : String]!
+            user.updateJSON(dict: dict!)
+            return true;
+        } else
+        {
+            dict = nil;
+            return false;
+            
+        }
+    }
+    return false;
     
     // Get Object from Dictionary
-    user.updateJSON(dict: dict)
-}
+    }
 
 // Save User
 func saveUserDisk() {

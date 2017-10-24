@@ -11,7 +11,7 @@ class PersistUser: NSObject, NSCoding
     //NOTE I WILL MAKE EVERY FUNCTION STATIC SO THAT WHEN USED NO NEED TO CREATE OBJECTS
     
     //The array that will be stored in the disk which holds the PersistUser class Objects.
-    static var data = [PersistUser]();
+    static var data = [PersistUser?]();
     
     //The only variable of the class
     public var user = [String : String] ();

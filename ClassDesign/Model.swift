@@ -12,14 +12,14 @@ import CoreLocation
 /** FB Login **/
 func fbLogin(ID: Int, name: String) {
     // Load Disk User
-    loadUserDisk()
-    
+    //var isThere = loadUserDisk()
+    if (loadUserDisk()){
     // In Disk
     if user.getUserID() == ID {
         // Push to DB
         insertUser(user1: user)
     }
-    
+    }
     // Not In Disk
     else {
         // Load DB User
