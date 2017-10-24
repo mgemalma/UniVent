@@ -14,31 +14,32 @@ func fbLogin(ID: Int, name: String) {
     // Load Disk User
     //var isThere = loadUserDisk()
     if (loadUserDisk()){
-    // In Disk
-    if user.getUserID() == ID {
-        // Push to DB
-        insertUser(user1: user)
+        // In Disk
+        if user.getUserID() == ID {
+            // Push to DB
+            insertUser(user1: user)
+        }
     }
-    }
-    // Not In Disk
+    // User not in disk
     else {
         // Load DB User
         var dict: [String:String]?
-        if (getUser(userID: ID) != nil)
+        dict = getUser(userID: ID)
+        // User EXISTS in database
+        if (dict?.count != 0 && dict != nil)
         {
-            dict = getUser(userID: ID)
-            //var user = User(userID: 0, userName: "root")
+            // Update user with information from DB
             user.updateJSON(dict: dict!)
+            
+            //If userID was parsed succesfully
+            if user.getUserID() == ID {
+                // Save to Disk
+                saveUserDisk()
+            }
         }
-        // In DB
-        if user.getUserID() == ID {
-            // Save to Disk
-            saveUserDisk()
-        }
-        
-        // Not In DB
+        // User DOES NOT EXIST in databse
         else {
-            // Create Event
+            // Create user
             user = User(userID: ID, userName: name)
             
             // Save to Disk
