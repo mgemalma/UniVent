@@ -206,3 +206,39 @@ func changeFlagCountUser(userID: Int, option: Character) {
             }.resume()
     }
 }
+
+
+
+
+
+// New functions with POST
+
+func sendUser(user: User) {
+    if let url = URL(string: "https://gymbuddyapp.net/insertUser.php?")
+    {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        var postString = "userID=\(user.getUserID())&userName=\(user.getUserName())&flagCount=\(user.getUserHistory().getFlagCount())&postedEvents=Sprint2Lol&attendingEvents=Sprint2Too&interests=0&schedule=Sprint2&deviceID=q324as5d6fty"
+        
+        postString = postString.replacingOccurrences(of: " ", with: "%20")
+        postString = postString.replacingOccurrences(of: "'", with: "''")
+        
+        request.httpBody = postString.data(using: .utf8)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {                                                 // check for fundamental networking error
+                print("error=\(error!)")
+                return
+            }
+            
+            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
+                print("statusCode should be 200, but is \(httpStatus.statusCode)")
+                print("response = \(response!)")
+            }
+            
+            let responseString = String(data: data, encoding: .utf8)
+            print("responseString = \(responseString!)")
+        }
+        task.resume()
+    }
+}
