@@ -51,11 +51,12 @@ func getAllEvents() -> [[String:String]] {
 
 // parseAllEvents is a helper function to getAllEvents.
 // It parses the data in the script into dictionaries.
-func parseAllEvents(_ data:Data) -> [[String:String]] {
+func parseAllEvents(_ data:Data) -> [[String:String]]? {
+    var count = 0
     do {
         let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
         
-        var count = 0
+        
         for element in jsonArray {
             let eventDict = element as! [String:String]
             arrayDict2?.append(eventDict)
@@ -100,11 +101,12 @@ func getEvent(eventID: Int) -> [String:String] {
 
 // parseEvent is a helper function to getEvent
 // It parses the data in the script into a dictionary.
-func parseEvent(_ data:Data) -> [String:String] {
+func parseEvent(_ data:Data) -> [String:String]? {
+    var count = 0
     do {
         let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
         
-        var count = 0
+        
         for element in jsonArray {
             let eventDict = element as! [String:String]
             arrayDict4 = eventDict
@@ -192,11 +194,12 @@ func getUser(userID: Int) -> [String:String] {
 
 // parseUser is a helper function to getUser
 // It parses the data in the script into a dictionary.
-func parseUser(_ data:Data) -> [String:String] {
+func parseUser(_ data:Data) -> [String:String]? {
+    var count = 0
     do {
         let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
         
-        var count = 0
+        
         for element in jsonArray {
             let userDict = element as! [String:String]
             arrayDict6 = userDict

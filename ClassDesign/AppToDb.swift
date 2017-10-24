@@ -72,8 +72,8 @@ func insertUser(user1: User) {
         request.httpMethod = "GET"
         let session = URLSession(configuration: .default)
         session.dataTask(with: request) {data, response, error in
-            //        let requestReply = NSString(data: data!, encoding: String.Encoding.ascii.rawValue)
-            //        print("Request reply: \(requestReply!)")
+                    let requestReply = NSString(data: data!, encoding: String.Encoding.ascii.rawValue)
+                    print("Request reply: \(requestReply!)")
             if error != nil
             {
                 print("Error in request URL")
