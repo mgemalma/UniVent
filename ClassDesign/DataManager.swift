@@ -29,10 +29,15 @@ func loadEventsDB() {
      }*/
 }
 
+func addEvent(event: Event) {
+    eventList.append(event)
+}
 // Save Event
 func saveEventDB(event: Event) {
     insertEvent(event1: event)
 }
+
+
 
 /** Disk Operations **/
 // Load User from Disk
