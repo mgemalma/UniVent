@@ -11,7 +11,7 @@ class PersistUser: NSObject, NSCoding
     //NOTE I WILL MAKE EVERY FUNCTION STATIC SO THAT WHEN USED NO NEED TO CREATE OBJECTS
     
     //The array that will be stored in the disk which holds the PersistUser class Objects.
-    static var data = [PersistUser?]();
+    static var data = [PersistUser]();
     
     //The only variable of the class
     public var user = [String : String] ();
@@ -95,13 +95,13 @@ class PersistUser: NSObject, NSCoding
      */
     public static func saveUserData(val : [String : String])
     {
-        if (data.count > 0)
+        /*if (data.count > 0)
         {
             var s = PersistUser(user : val)
                 data[0] = s
-        }
-        else {
-        data.append(PersistUser(user: val))}
+        }*/
+        //else {
+        data.append(PersistUser(user: val))//}
         //Save data array to the file location
         NSKeyedArchiver.archiveRootObject(data, toFile: filePath);
     }
