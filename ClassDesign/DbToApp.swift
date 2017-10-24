@@ -3,7 +3,7 @@ import UIKit
 
 var id1 = 0     // temporary global variable for unique ID
 var num = 0     // temporary global variable for unique ID
-var sleeper = 0
+var sleeper = 0 // temp sleeper
 var arrayDict : [[String:String]]?     // temporary global variable for allEvents
 var arrayDict2 : [[String:String]]?    // temporary global variable for allEvents
 var arrayDict3 : [String:String]?    // temporary global variable for event
