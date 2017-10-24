@@ -218,3 +218,46 @@ func parseUser(_ data:Data) -> [String:String]? {
         return arrayDict6!
     }
 }
+
+
+
+// New functions with POST
+
+func getUserBasic(ID: Int) -> [String:String]
+{
+    reset()
+    if let url = URL(string: "https://gymbuddyapp.net/getUserAnirudh.php?")
+    {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        var postString = "id=\(ID)"
+        
+        postString = postString.replacingOccurrences(of: " ", with: "%20")
+        postString = postString.replacingOccurrences(of: "'", with: "''")
+        
+        request.httpBody = postString.data(using: .utf8)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {                                                 // check for fundamental networking error
+                print("error=\(error!)")
+                return
+            }
+            arrayDict5 = parseUser(data)
+            sleeper = 1
+            
+            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
+                print("statusCode should be 200, but is \(httpStatus.statusCode)")
+                print("response = \(response!)")
+            }
+            
+            let responseString = String(data: data, encoding: .utf8)
+            print("responseString = \(responseString!)")
+        }
+        task.resume()
+    }
+    while sleeper == 0
+    {
+        // Do nothing
+    }
+    return arrayDict5!
+}
