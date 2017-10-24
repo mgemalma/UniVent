@@ -24,6 +24,12 @@ func fbLogin(ID: Int, name: String) {
     else {
         // Load DB User
         var dict: [String:String]?
+        if (getUser(userID: ID) != nil)
+        {
+            dict = getUser(userID: ID)
+            //var user = User(userID: 0, userName: "root")
+            user.updateJSON(dict: dict!)
+        }
         // In DB
         if user.getUserID() == ID {
             // Save to Disk
