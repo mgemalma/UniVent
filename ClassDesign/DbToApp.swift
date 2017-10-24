@@ -25,6 +25,8 @@ func reset() {
 }
 
 // getAllEvents returns an array of dictionaries containing all the events currently in the database.
+
+
 func getAllEvents() -> [[String:String]] {
     reset()
     let stringURL = "https://gymbuddyapp.net/allEvents.php"
@@ -53,16 +55,24 @@ func parseAllEvents(_ data:Data) -> [[String:String]] {
     do {
         let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
         
-        
+        var count = 0
         for element in jsonArray {
             let eventDict = element as! [String:String]
             arrayDict2?.append(eventDict)
+            count = count + 1
         }
     }
     catch {
         print("Error in parseJSON")
     }
-    return arrayDict2!
+    if(count == 0)
+    {
+        return nil
+    }
+    else
+    {
+        return arrayDict2!
+    }
 }
 
 // getEvent returns a dictionary of a specific event in the database(given its ID)
@@ -94,16 +104,24 @@ func parseEvent(_ data:Data) -> [String:String] {
     do {
         let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
         
-        
+        var count = 0
         for element in jsonArray {
             let eventDict = element as! [String:String]
             arrayDict4 = eventDict
+            count = count + 1
         }
     }
     catch {
         print("Error in parseJSON")
     }
-    return arrayDict4!
+    if(count == 0)
+    {
+        return nil
+    }
+    else
+    {
+        return arrayDict4!
+    }
 }
 
 // getAUniqueID requests a unique ID for an event.
@@ -178,14 +196,22 @@ func parseUser(_ data:Data) -> [String:String] {
     do {
         let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
         
-        
+        var count = 0
         for element in jsonArray {
             let userDict = element as! [String:String]
             arrayDict6 = userDict
+            count = count + 1
         }
     }
     catch {
         print("Error in parseUser")
     }
-    return arrayDict6!
+    if(count == 0)
+    {
+        return nil
+    }
+    else
+    {
+        return arrayDict6!
+    }
 }
