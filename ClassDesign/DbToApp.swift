@@ -27,7 +27,7 @@ func reset() {
 // getAllEvents returns an array of dictionaries containing all the events currently in the database.
 
 
-func getAllEvents() -> [[String:String]] {
+func getAllEvents() -> [[String:String]]? {
     reset()
     let stringURL = "https://gymbuddyapp.net/allEvents.php"
     let Url = URL(string: stringURL)
@@ -46,7 +46,7 @@ func getAllEvents() -> [[String:String]] {
     {
         // Do nothing
     }
-    return arrayDict!
+    return arrayDict
 }
 
 // parseAllEvents is a helper function to getAllEvents.

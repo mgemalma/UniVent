@@ -30,6 +30,7 @@ func loadEventsDB() {
 }
 
 func addEventToEventList(event: Event) {
+    // TODO need to check for repeat adding
     eventList.append(event)
 }
 // Save Event
