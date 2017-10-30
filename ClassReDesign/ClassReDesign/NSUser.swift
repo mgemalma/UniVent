@@ -166,7 +166,7 @@ class NSUser: NSObject, NSCoding {
     }
     
     /** DB Functions **/
-    // Load from Database (Abdtraction of Database Operations)
+    // Load from Database (Abstraction of Database Operations)
     static func loadDB(id: String) -> Bool {
         // Call DB Command
         var dict: [String:String]? = getUserDB(ID: id)

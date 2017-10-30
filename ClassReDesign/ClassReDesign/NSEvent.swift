@@ -219,7 +219,7 @@ class NSEvent: NSObject, NSCoding {
     
     /** Sorts & Filters **/
     //Sorting Events Function
-    static func sorter(sortBy: String,Ascending: bool ,events: [NSEvent] ) {
+    static func sorter(sortBy: String,Ascending: Bool ,events: [NSEvent] ) {
     if(Ascending){
         if(sortBy == "start"){
                 events.sort(by: { $0.start < $1.start })
@@ -234,8 +234,228 @@ class NSEvent: NSObject, NSCoding {
     for event in events {
         print(event.start)
     }
+}
     
     /** DB Functions **/
+    
+    // Send Event Information
+    static func sendEventDB(event: NSEvent) {
+        // Set URL
+        if let url = URL(string: "http://gymbuddyapp.net/setEvent.php?")
+        {
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.latitude)&rat=0&ratC=0&flags=0&heads=0&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription()!)&interests=\(stringer(array: event.getInterest()!)!)"
+            
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            print(postString)
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSEvent: sendEventDB() Connection Error = \(error!)")
+                    return
+                }
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSEvent: sendEventDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: sendEventDB() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                print("NSEvent: sendEventDB() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
+    }
+    
+    // Get Event Information
+    static func getEventDB(ID: String) -> [String:String]? {
+        // Int Wait
+        var wait = 0
+        
+        // Dict
+        var dict: [String:String]?
+        
+        // Set URL
+        if let url = URL(string: "https://gymbuddyapp.net/getEvent.php?") {
+            
+            /** Request **/
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "id=\(ID)"
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSEvent: getEventDB() Connection Error = \(error!)")
+                    return
+                }
+                
+                /** Parse the Data -> Dict **/
+                dict = parseEvent(data)              // Get Dictionary
+                wait = 1                            // Set Wait
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSEvent: getEventDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: getEventDB() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                print("NSEvent: getEventDB() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
+        // Busy Waiting
+        while wait == 0{
+            // Do nothing
+        }
+        
+        // Return
+        return dict
+    }
+    
+    
+    // Get Events within proximity
+    static func getEventsBlock(lat: Float, long: Float) -> [[String:String]]? {
+        // Int Wait
+        var wait = 0
+        
+        // Dict
+        var dict: [[String:String]]?
+        
+        // Set URL
+        if let url = URL(string: "https://gymbuddyapp.net/getEventsNear.php?") {
+            
+            /** Request **/
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "latitude=\(lat)&longitude=\(long)"
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSEvent: getEventsBlock() Connection Error = \(error!)")
+                    return
+                }
+                
+                /** Parse the Data -> Dict **/
+                dict = parseEvents(data)              // Get Dictionary
+                wait = 1                            // Set Wait
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSEvent: getEventsBlock() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: getEventsBlock() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                //                print("NSEvent: getEventsBlock() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
+        // Busy Waiting
+        while wait == 0{
+            // Do nothing
+        }
+        
+        // Return
+        return dict
+    }
+    
+    
+    
+    /** Parsers & Encoders **/
+    // Parse Data into a Dictionary
+    static func parseEvent(_ data:Data) -> [String:String]? {
+        // Dict
+        var dict: [String:String]?
+        
+        // Do
+        do {
+            // Extract JSON
+            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
+            
+            // Extract Dict from JSON
+            for element in jsonArray {
+                let userDict = element as! [String:String]
+                dict = userDict
+            }
+        }
+            
+            // Catch
+        catch {
+            // Print Error Message
+            print("NSEvent: parseEvent() Caught an Exception!")
+        }
+        
+        // Return Dict
+        return dict
+    }
+    
+    
+    // Parse Data into an array of dictionaries
+    static func parseEvents(_ data:Data) -> [[String:String]]? {
+        // Dict
+        var dict: [[String:String]]? = [[String:String]]()
+        
+        // Do
+        do {
+            // Extract JSON
+            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
+            
+            // Extract Dict from JSON
+            for element in jsonArray {
+                let event = element as! [String:String]
+                dict!.append(event)
+            }
+        }
+            
+            // Catch
+        catch {
+            // Print Error Message
+            print("NSEvent: parseEvents() Caught an Exception!")
+        }
+        
+        // Return Dict
+        return dict
+    }
+    
+    
     
     /** Disk Functions **/
     // Save
@@ -299,4 +519,42 @@ class NSEvent: NSObject, NSCoding {
     }
     
     
+    // String -> Array
+    static func arrayer(string: String?) -> [Any]? {
+        // Nil
+        if string == nil {
+            return nil
+        }
+        
+        // Parse to Array
+        let array: [Any]? = string?.components(separatedBy: ",")
+        
+        // Return
+        return array
+    }
+    
+    // Array -> String
+    static func stringer(array: [Any]?) -> String? {
+        // Nil
+        if array == nil {
+            return nil
+        }
+        
+        // Parse to String
+        var string: String = ""
+        for element in array! {
+            string.append(String(describing: element))
+            string.append(",")
+        }
+        
+        // Remove last +
+        string.removeLast()
+        //string.remove(at: string.endIndex)
+        
+        // Return
+        return string
+    }
+    
 }
+    
+
