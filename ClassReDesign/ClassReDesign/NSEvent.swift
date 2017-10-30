@@ -217,6 +217,24 @@ class NSEvent: NSObject, NSCoding {
         // Send to DB
     }
     
+    /** Sorts & Filters **/
+    //Sorting Events Function
+    static func sorter(sortBy: String,Ascending: bool ,events: [NSEvent] ) {
+    if(Ascending){
+        if(sortBy == "start"){
+                events.sort(by: { $0.start < $1.start })
+        }
+    }
+    else{
+        if(sortBy == "start"){
+            events.sort(by: { $0.start > $1.start })
+        }
+    }
+        
+    for event in events {
+        print(event.start)
+    }
+    
     /** DB Functions **/
     
     /** Disk Functions **/
@@ -279,4 +297,6 @@ class NSEvent: NSObject, NSCoding {
             //return false
         }
     }
+    
+    
 }

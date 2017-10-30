@@ -87,7 +87,9 @@ class Event {
         //Enum array problem
         initGen(hostID: Int(dict["hostID"]!)!, title: dict["title"]!, type: Int(dict["type"]!)!, interests: NSArray(), description: dict["description"]!)
     }
-    
+    func sortingEvents(sortBy: String, Ascending: bool) {
+        
+    }
     func objectToDict() -> [String : String]
     {
         var dict = [String : String] ()

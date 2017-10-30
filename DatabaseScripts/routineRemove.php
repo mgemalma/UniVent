@@ -11,14 +11,14 @@ $time = time();
 
 
 $sql = "DELETE FROM Event_Prod
-       where $time >= eTimeStamp";
+       where $time >= endT";
 if (mysqli_query($conn, $sql)) {
     echo "Removed Events";
 } else {
     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 }
 $sql = "DELETE FROM Event_Prod
-       where 15 < flag";
+       where 200 < flag";
 if (mysqli_query($conn, $sql)) {
     echo "Removed Events";
 } else {
