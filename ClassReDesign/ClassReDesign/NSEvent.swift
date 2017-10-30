@@ -219,22 +219,22 @@ class NSEvent: NSObject, NSCoding {
     
     /** Sorts & Filters **/
     //Sorting Events Function
-    static func sorter(sortBy: String,Ascending: Bool ,events: [NSEvent] ) {
-    if(Ascending){
-        if(sortBy == "start"){
-                events.sort(by: { $0.start < $1.start })
-        }
-    }
-    else{
-        if(sortBy == "start"){
-            events.sort(by: { $0.start > $1.start })
-        }
-    }
-        
-    for event in events {
-        print(event.start)
-    }
-}
+//    static func sorter(sortBy: String,Ascending: Bool ,events: [NSEvent] ) {
+//    if(Ascending){
+//        if(sortBy == "start"){
+//                events.sort(by: { $0.start < $1.start })
+//        }
+//    }
+//    else{
+//        if(sortBy == "start"){
+//            events.sort(by: { $0.start > $1.start })
+//        }
+//    }
+//
+//    for event in events {
+//        print(event.start)
+//    }
+//}
     
     /** DB Functions **/
     
