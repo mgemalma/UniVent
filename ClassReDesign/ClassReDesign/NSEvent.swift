@@ -15,6 +15,7 @@
 /** Libraries **/
 import UIKit                // Used for NSObject & NS Coding.
 import CoreLocation         // Used for Location Data.
+import SwiftLocation
 
 /** Class Definition **/
 class NSEvent: NSObject, NSCoding {
@@ -26,6 +27,35 @@ class NSEvent: NSObject, NSCoding {
     static let arclURL = doclDir.appendingPathComponent("eventlDisk")
     static let docaDir = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let arcaURL = docaDir.appendingPathComponent("eventaDisk")
+    
+    // Set Dummy Location (Andrew we will Implements this when you are present!)
+    //static var Uloc = CLLocation();
+    
+    // Static Comparators
+    static func BY_DATE_A(a: NSEvent, b: NSEvent) -> Bool {
+        return a.start! < b.start!
+    }
+    static func BY_DATE_D(a: NSEvent, b: NSEvent) -> Bool {
+        return a.start! > b.start!
+    }
+    static func BY_LOC_A(a: NSEvent, b: NSEvent) -> Bool {
+        var loc = CLLocation()
+        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
+            loc = location
+        }) { (_, last, error) in
+            print("There was a problem: \(error)")
+        }
+        return a.loc!.distance(from: loc) < b.loc!.distance(from: loc)
+    }
+    static func BY_LOC_D(a: NSEvent, b: NSEvent) -> Bool {
+        var loc = CLLocation()
+        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
+            loc = location
+        }) { (_, last, error) in
+            print("There was a problem: \(error)")
+        }
+        return a.loc!.distance(from: loc) > b.loc!.distance(from: loc)
+    }
     
     // Static Lists to Store Events
     static var pEvents : [NSEvent]? = [NSEvent]()
@@ -80,7 +110,9 @@ class NSEvent: NSObject, NSCoding {
         self.start = start
         self.end = end
         self.add = [String:String]()
-        self.add!["building"] = building
+        if(building != nil) {
+            self.add!["building"] = building
+        }
         self.add!["address"] = address
         self.add!["city"] = city
         self.add!["state"] = state
@@ -161,44 +193,25 @@ class NSEvent: NSObject, NSCoding {
 
     
     /** Setter **/
-    func setID(id : String){ self.id = id }
-    func setStartTime(start : Date){ self.start = start }
-    func setEndTime(end : Date) { self.end = end}
-    func setCompleteAddress(add : [String:String]) {self.add = add}
-    func setBuilding(building: String) {self.add!["building"] = building}
-    func setAddress(address: String) {self.add!["address"] = address}
-    func setCity(city: String) {self.add!["city"] = city}
-    func setState(state: String) {self.add!["state"] = state}
-    func setZip(zip: String) {self.add!["zip"] = zip}
-    func setLocation(loc : CLLocation) { self.loc = loc}
-    func setRating(rat : Float) {self.rat = rat}
-    func setRatingCount(ratC : Int) { self.ratC = ratC}
-    func setFlags(flags : Int){self.flags = flags}
-    func setHeadCount(heads : Int){ self.heads = heads}
-    func setHostID(host : String){ self.host = host}
-    func setTitle(title : String) { self.title = title}
-    func setType(type : String) { self.type = type}
-    func setDescription(desc : String){self.desc = desc}
-    func setInterest(interests : [String]) { self.interests = interests}
-    
-    
-    // Disk Encoder (Required by NSCoding)
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(id, forKey: Keys.id)
-        aCoder.encode(start, forKey: Keys.start)
-        aCoder.encode(end, forKey: Keys.end)
-        aCoder.encode(add, forKey: Keys.add)
-        aCoder.encode(loc, forKey: Keys.loc)
-        aCoder.encode(rat, forKey: Keys.rat)
-        aCoder.encode(ratC, forKey: Keys.ratC)
-        aCoder.encode(flags, forKey: Keys.flags)
-        aCoder.encode(heads, forKey: Keys.heads)
-        aCoder.encode(host, forKey: Keys.host)
-        aCoder.encode(title, forKey: Keys.title)
-        aCoder.encode(type, forKey: Keys.type)
-        aCoder.encode(desc, forKey: Keys.desc)
-        aCoder.encode(interests, forKey: Keys.interests)
-    }
+    func setID(id : String?){ self.id = id }
+    func setStartTime(start : Date?){ self.start = start }
+    func setEndTime(end : Date?) { self.end = end}
+    func setCompleteAddress(add : [String:String]?) {self.add = add}
+    func setBuilding(building: String?) {self.add!["building"] = building}
+    func setAddress(address: String?) {self.add!["address"] = address}
+    func setCity(city: String?) {self.add!["city"] = city}
+    func setState(state: String?) {self.add!["state"] = state}
+    func setZip(zip: String?) {self.add!["zip"] = zip}
+    func setLocation(loc : CLLocation?) { self.loc = loc}
+    func setRating(rat : Float?) {self.rat = rat}
+    func setRatingCount(ratC : Int?) { self.ratC = ratC}
+    func setFlags(flags : Int?){self.flags = flags}
+    func setHeadCount(heads : Int?){ self.heads = heads}
+    func setHostID(host : String?){ self.host = host}
+    func setTitle(title : String?) { self.title = title}
+    func setType(type : String?) { self.type = type}
+    func setDescription(desc : String?){self.desc = desc}
+    func setInterest(interests : [String]?) { self.interests = interests}
     
     /** Functions **/
     // Create and Event
@@ -218,25 +231,43 @@ class NSEvent: NSObject, NSCoding {
     }
     
     /** Sorts & Filters **/
-    //Sorting Events Function
-//    static func sorter(sortBy: String,Ascending: Bool ,events: [NSEvent] ) {
-//    if(Ascending){
-//        if(sortBy == "start"){
-//                events.sort(by: { $0.start < $1.start })
-//        }
-//    }
-//    else{
-//        if(sortBy == "start"){
-//            events.sort(by: { $0.start > $1.start })
-//        }
-//    }
-//
-//    for event in events {
-//        print(event.start)
-//    }
-//}
+    // Generic Sorter Which takes a comparator <comp> similar to BY_DATE_A or BY_DATE_D for ascending and decending order.
+    static func sorter(comp: (NSEvent, NSEvent) -> Bool, array: [NSEvent]?) -> [NSEvent]? {
+        // Nil Handler
+        if array == nil {
+            return nil
+        }
+        
+        // Create Array
+        var arr: [NSEvent]?
+
+        // Sort Array
+        arr = array!.sorted(by: comp)
+        
+        // Return Array
+        return arr
+    }
     
     /** DB Functions **/
+    // Load DB()
+    static void loadDB() {
+        // Get Latest Location
+        var loc = CLLocation()
+        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
+        loc = location
+        }) { (_, last, error) in
+        print("There was a problem: \(error)")
+        }
+    
+        // Load Local Events
+        let dictArr = getEventBlock(loc.coordinates.)
+    
+        // Load Attending Events
+    
+    
+        // Load Posted Events
+    
+    }
     
     // Send Event Information
     static func sendEventDB(event: NSEvent) {
@@ -340,7 +371,7 @@ class NSEvent: NSObject, NSCoding {
     
     
     // Get Events within proximity
-    static func getEventsBlock(lat: Float, long: Float) -> [[String:String]]? {
+    static func getEventsBlockDB(lat: Float, long: Float) -> [[String:String]]? {
         // Int Wait
         var wait = 0
         
@@ -400,9 +431,6 @@ class NSEvent: NSObject, NSCoding {
     
     // Delete Event Information
     static func deleteEvent(ID: String) {
-        // Int Wait
-        var wait = 0
-        
         // Set URL
         if let url = URL(string: "https://gymbuddyapp.net/deleteEvent.php?") {
             
@@ -428,9 +456,6 @@ class NSEvent: NSObject, NSCoding {
                     return
                 }
                 
-                /** Parse the Data -> Dict **/
-                wait = 1                            // Set Wait
-                
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
                     print("NSEvent: deleteEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
@@ -442,10 +467,6 @@ class NSEvent: NSObject, NSCoding {
             
             // Start Task
             task.resume()
-        }
-        // Busy Waiting
-        while wait == 0{
-            // Do nothing
         }
     }
     
@@ -474,84 +495,8 @@ class NSEvent: NSObject, NSCoding {
         return id!
     }
     
-    // parseID is a helper function to getAUniqueID
-    // It parses the data in the script into a dictionary.
-    // The ID is returned as an Int. Typically 16 digits long.
-    static func parseID(_ data:Data) -> String {
-        var id2: String?
-        do {
-            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
-            
-            for element in jsonArray {
-                let dict = element as! [String:String]
-                id2 = dict["uniqueID"] as? String
-            }
-        }
-        catch {
-            print("Error in parseID")
-        }
-        return id2!
-    }
     
-    
-    
-    /** Parsers & Encoders **/
-    // Parse Data into a Dictionary
-    static func parseEvent(_ data:Data) -> [String:String]? {
-        // Dict
-        var dict: [String:String]?
-        
-        // Do
-        do {
-            // Extract JSON
-            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
-            
-            // Extract Dict from JSON
-            for element in jsonArray {
-                let userDict = element as! [String:String]
-                dict = userDict
-            }
-        }
-            
-            // Catch
-        catch {
-            // Print Error Message
-            print("NSEvent: parseEvent() Caught an Exception!")
-        }
-        
-        // Return Dict
-        return dict
-    }
-    
-    
-    // Parse Data into an array of dictionaries
-    static func parseEvents(_ data:Data) -> [[String:String]]? {
-        // Dict
-        var dict: [[String:String]]? = [[String:String]]()
-        
-        // Do
-        do {
-            // Extract JSON
-            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
-            
-            // Extract Dict from JSON
-            for element in jsonArray {
-                let event = element as! [String:String]
-                dict!.append(event)
-            }
-        }
-            
-            // Catch
-        catch {
-            // Print Error Message
-            print("NSEvent: parseEvents() Caught an Exception!")
-        }
-        
-        // Return Dict
-        return dict
-    }
-    
-    
+
     
     /** Disk Functions **/
     // Save
@@ -615,6 +560,101 @@ class NSEvent: NSObject, NSCoding {
     }
     
     
+    
+    
+    /** Parser & Encoder **/
+    // parseID is a helper function to getAUniqueID
+    // It parses the data in the script into a dictionary.
+    // The ID is returned as an Int. Typically 16 digits long.
+    static func parseID(_ data:Data) -> String {
+        var id2: String?
+        do {
+            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
+            
+            for element in jsonArray {
+                let dict = element as! [String:String]
+                id2 = dict["uniqueID"] as? String
+            }
+        }
+        catch {
+            print("Error in parseID")
+        }
+        return id2!
+    }
+    
+    // Parse Data into a Dictionary
+    static func parseEvent(_ data:Data) -> [String:String]? {
+        // Dict
+        var dict: [String:String]?
+        
+        // Do
+        do {
+            // Extract JSON
+            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
+            
+            // Extract Dict from JSON
+            for element in jsonArray {
+                let userDict = element as! [String:String]
+                dict = userDict
+            }
+        }
+            
+            // Catch
+        catch {
+            // Print Error Message
+            print("NSEvent: parseEvent() Caught an Exception!")
+        }
+        
+        // Return Dict
+        return dict
+    }
+    
+    
+    // Parse Data into an array of dictionaries
+    static func parseEvents(_ data:Data) -> [[String:String]]? {
+        // Dict
+        var dict: [[String:String]]? = [[String:String]]()
+        
+        // Do
+        do {
+            // Extract JSON
+            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
+            
+            // Extract Dict from JSON
+            for element in jsonArray {
+                let event = element as! [String:String]
+                dict!.append(event)
+            }
+        }
+            
+            // Catch
+        catch {
+            // Print Error Message
+            print("NSEvent: parseEvents() Caught an Exception!")
+        }
+        
+        // Return Dict
+        return dict
+    }
+    
+    // Disk Encoder (Required by NSCoding)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(id, forKey: Keys.id)
+        aCoder.encode(start, forKey: Keys.start)
+        aCoder.encode(end, forKey: Keys.end)
+        aCoder.encode(add, forKey: Keys.add)
+        aCoder.encode(loc, forKey: Keys.loc)
+        aCoder.encode(rat, forKey: Keys.rat)
+        aCoder.encode(ratC, forKey: Keys.ratC)
+        aCoder.encode(flags, forKey: Keys.flags)
+        aCoder.encode(heads, forKey: Keys.heads)
+        aCoder.encode(host, forKey: Keys.host)
+        aCoder.encode(title, forKey: Keys.title)
+        aCoder.encode(type, forKey: Keys.type)
+        aCoder.encode(desc, forKey: Keys.desc)
+        aCoder.encode(interests, forKey: Keys.interests)
+    }
+    
     // String -> Array
     static func arrayer(string: String?) -> [Any]? {
         // Nil
@@ -650,7 +690,4 @@ class NSEvent: NSObject, NSCoding {
         // Return
         return string
     }
-    
 }
-    
-
