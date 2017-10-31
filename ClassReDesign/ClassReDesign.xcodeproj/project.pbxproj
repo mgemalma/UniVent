@@ -16,6 +16,7 @@
 		7BD8FA811F9FF7550060A6FB /* ClassReDesignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD8FA801F9FF7550060A6FB /* ClassReDesignTests.swift */; };
 		7BD8FA8C1F9FF7550060A6FB /* ClassReDesignUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD8FA8B1F9FF7550060A6FB /* ClassReDesignUITests.swift */; };
 		7BD8FA9A1F9FF7980060A6FB /* NSUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD8FA991F9FF7980060A6FB /* NSUser.swift */; };
+		B19EBB8B1FA67FDC00A50201 /* NSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		7BD8FA8B1F9FF7550060A6FB /* ClassReDesignUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassReDesignUITests.swift; sourceTree = "<group>"; };
 		7BD8FA8D1F9FF7550060A6FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7BD8FA991F9FF7980060A6FB /* NSUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSUser.swift; sourceTree = "<group>"; };
+		B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				7BD8FA681F9FF7550060A6FB /* AppDelegate.swift */,
 				7BD8FA6A1F9FF7550060A6FB /* ViewController.swift */,
 				7BD8FA6C1F9FF7550060A6FB /* Main.storyboard */,
+				B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */,
 				7BD8FA721F9FF7550060A6FB /* Assets.xcassets */,
 				7BD8FA741F9FF7550060A6FB /* LaunchScreen.storyboard */,
 				7BD8FA771F9FF7550060A6FB /* Info.plist */,
@@ -265,6 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B19EBB8B1FA67FDC00A50201 /* NSEvent.swift in Sources */,
 				7BD8FA6B1F9FF7550060A6FB /* ViewController.swift in Sources */,
 				7BD8FA711F9FF7550060A6FB /* ClassReDesign.xcdatamodeld in Sources */,
 				7BD8FA691F9FF7550060A6FB /* AppDelegate.swift in Sources */,

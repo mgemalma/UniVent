@@ -1,4 +1,7 @@
 <?php
+require '../vendor/autoload.php';
+use \Firebase\JWT\JWT;
+
 // Create connection
 $con=mysqli_connect("localhost","gymbudd1_UVAdmin","Bo56H!m&","gymbudd1_UniVentDB");
 
@@ -7,9 +10,9 @@ if (mysqli_connect_errno())
 {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-$eventID = $_GET['eventID'];
+$id = $_POST['id'];
 // This SQL statement selects ALL from the table Event_Prod
-$sql = "SELECT * FROM Event_Prod where eventID = $eventID";
+$sql = "SELECT * FROM Event_Prod where id  = $id";
 
 // Check if there are results
 if ($result = mysqli_query($con, $sql))
@@ -28,8 +31,18 @@ if ($result = mysqli_query($con, $sql))
 	}
 
 	// Finally, encode the array to JSON and output the results
-	echo json_encode($resultArray);
+  //declare key used for
+  $key = "UniVent";
+
+  //encode using 256
+  //$jwt = JWT::encode($resultArray, $key);
+
+ echo json_encode($resultArray);;
+
+}else {
+  echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 }
+
 
 //Close connections
 mysqli_close($con);
