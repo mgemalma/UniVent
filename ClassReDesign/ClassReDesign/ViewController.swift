@@ -44,10 +44,28 @@ class ViewController: UIViewController {
 //            print(NSUser.getAttendingEvents())
 ////            print(NSUser.getREvents())
 //        }
-//        NSEvent.postEvent(id: "123456", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "this", "Class"])
+//        NSEvent.postEvent(id: "1", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "this", "Class"])
 //        NSEvent.sendEventDB(event: NSEvent.pEvents![0])
 //        print("Title:", NSEvent.getEventsBlock(lat: 40, long: -86)![99]["title"]!)
-        print("ID: ", NSEvent.getUniqueID())
+//        print("ID: ", NSEvent.getUniqueID())
+//        NSEvent.flagCountEvent(ID: "123456", value: "+10")
+//        NSUser.flagCountUser(ID: "6969", value: "-6")
+//        NSEvent.ratCountEvent(ID: "11111", value: "+1")
+//        NSEvent.headCountEvent(ID: "123456", value: "-1")
+//        NSEvent.removeEvent(ID: "222")
+//        NSEvent.postEvent(id: "2", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"])
+//        NSEvent.postEvent(id: "3", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "this", "Classes"])
+//        var temp = NSEvent.filterType(type: "Nthing", events: NSEvent.pEvents!)
+//        for i in temp {
+//            print("ID: ", i.getID())
+//        }
+//        var temp = [String]()
+//        temp.append("Classes")
+//        temp.append("that")
+//        var filt = NSEvent.filterInterests(interests: temp, events: NSEvent.pEvents!)
+//                for i in filt {
+//                    print("ID: ", i.getID())
+//                }
     }
 
     override func didReceiveMemoryWarning() {

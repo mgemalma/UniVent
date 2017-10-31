@@ -29,7 +29,7 @@ class NSEvent: NSObject, NSCoding {
     static let arcaURL = docaDir.appendingPathComponent("eventaDisk")
     
     // Set Dummy Location (Andrew we will Implements this when you are present!)
-    //static var Uloc = CLLocation();
+    static var Uloc = CLLocation();
     
     // Static Comparators
     static func BY_DATE_A(a: NSEvent, b: NSEvent) -> Bool {
@@ -248,9 +248,39 @@ class NSEvent: NSObject, NSCoding {
         return arr
     }
     
+    /// Filter an array of events based on type.
+    /// Given an array of events and the needed type, return an array of events with that type.
+    static func filterType(type: String, events:[NSEvent]) -> [NSEvent] {
+        var filteredEvents = [NSEvent]()
+        
+        for event in events {
+            if event.getType() == type {
+            filteredEvents.append(event)
+            }
+        }
+        return filteredEvents
+    }
+    
+    /// Filters events based on user's interests.
+    /// Given an array of interests, and an array of events, return an array of events that correspond to the user's interests.
+    static func filterInterests(interests: [String], events: [NSEvent]) -> [NSEvent] {
+        var filteredEvents = [NSEvent]()
+        
+        for event in events {
+            for int in event.getInterest()! {
+                if interests.contains(int) {
+                    filteredEvents.append(event)
+                    break
+                }
+            }
+        }
+        
+        return filteredEvents
+    }
+    
     /** DB Functions **/
     // Load DB()
-    static void loadDB() {
+    static func loadDB() {
         // Get Latest Location
         var loc = CLLocation()
         Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
@@ -260,7 +290,7 @@ class NSEvent: NSObject, NSCoding {
         }
     
         // Load Local Events
-        let dictArr = getEventBlock(loc.coordinates.)
+//        let dictArr = getEventsBlockDB(loc.coordinate.latitude)
     
         // Load Attending Events
     
@@ -429,10 +459,10 @@ class NSEvent: NSObject, NSCoding {
     }
     
     
-    // Delete Event Information
-    static func deleteEvent(ID: String) {
+    // remove Event Information
+    static func removeEvent(ID: String) {
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/deleteEvent.php?") {
+        if let url = URL(string: "https://gymbuddyapp.net/removeEvent.php?") {
             
             /** Request **/
             // Setup Request
@@ -452,17 +482,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: deleteEvent() Connection Error = \(error!)")
+                    print("NSEvent: removeEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: deleteEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: deleteEvent() Response = \(response!)")
+                    print("NSEvent: removeEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: removeEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: deleteEvent() Response Message = \(responseString!)")
+                print("NSEvent: removeEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -493,6 +523,137 @@ class NSEvent: NSObject, NSCoding {
             
         }
         return id!
+    }
+    
+    
+    /// Counters incrementers/decrementers
+    
+    /// Change the event's flag count by value (value must have sign and number, for example: "+3")
+    static func flagCountEvent(ID: String, value: String) {
+        // Set URL
+        if let url = URL(string: "https://gymbuddyapp.net/flagCountEvent.php?") {
+            
+            /** Request **/
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "id=\(ID)&value=\(value)"
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSEvent: flagCountEvent() Connection Error = \(error!)")
+                    return
+                }
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSEvent: flagCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: flagCountEvent() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                print("NSEvent: flagCountEvent() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
+    }
+    
+    
+    /// Change the event's rating count by value (value must have sign and number, for example: "+3")
+    static func ratCountEvent(ID: String, value: String) {
+        // Set URL
+        if let url = URL(string: "https://gymbuddyapp.net/ratCount.php?") {
+            
+            /** Request **/
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "id=\(ID)&value=\(value)"
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSEvent: ratCountEvent() Connection Error = \(error!)")
+                    return
+                }
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSEvent: ratCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: ratCountEvent() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                print("NSEvent: ratCountEvent() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
+    }
+    
+    
+    /// Change the event's head count by value (value must have sign and number, for example: "+3")
+    static func headCountEvent(ID: String, value: String) {
+        // Set URL
+        if let url = URL(string: "https://gymbuddyapp.net/headCount.php?") {
+            
+            /** Request **/
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "id=\(ID)&value=\(value)"
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSEvent: headCountEvent() Connection Error = \(error!)")
+                    return
+                }
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSEvent: headCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: headCountEvent() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                print("NSEvent: headCountEvent() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
     }
     
     
