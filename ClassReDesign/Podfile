@@ -1,0 +1,5 @@
+target ‘ClassReDesign’ do
+use_frameworks!
+pod 'JSONWebToken'
+pod 'JWTDecode', '~> 2.1'
+end

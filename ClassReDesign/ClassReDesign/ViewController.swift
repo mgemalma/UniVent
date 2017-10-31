@@ -44,9 +44,10 @@ class ViewController: UIViewController {
 //            print(NSUser.getAttendingEvents())
 ////            print(NSUser.getREvents())
 //        }
-//        NSEvent.postEvent(id: "13", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "ABC", title: "Party sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "this", "Class"])
+//        NSEvent.postEvent(id: "123456", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "this", "Class"])
 //        NSEvent.sendEventDB(event: NSEvent.pEvents![0])
 //        print("Title:", NSEvent.getEventsBlock(lat: 40, long: -86)![99]["title"]!)
+        print("ID: ", NSEvent.getUniqueID())
     }
 
     override func didReceiveMemoryWarning() {
