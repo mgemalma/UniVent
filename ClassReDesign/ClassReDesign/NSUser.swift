@@ -47,10 +47,10 @@ class NSUser: NSObject, NSCoding {
     private var name: String?           // Stores name associated with id.
     private var flags: Int?             // Stores flag count of the user.
     private var rad: Float?             // Stores the preffered search radius.
-    private var interests: [String]?    //
-    private var pEvents: [Int]?
-    private var aEvents: [Int]?
-    private var rEvents: [Int]?
+    private var interests: [String]?    // Stores the list of Interests of the user. Should change to Enum.
+    private var pEvents: [String]?      // Stores all posted Events as IDs.
+    private var aEvents: [String]?      // Stores all attending Events as IDs.
+    //private var rEvents: [Int]?       // Stores all posted Events as IDs.
     
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
@@ -64,7 +64,7 @@ class NSUser: NSObject, NSCoding {
         static let interests = "interests"
         static let pEvents = "pEvents"
         static let aEvents = "aEvents"
-        static let rEvents = "rEvents"
+        //static let rEvents = "rEvents"
     }
     
     /** Constructor **/
@@ -79,9 +79,9 @@ class NSUser: NSObject, NSCoding {
         let FLAGS = aDecoder.decodeObject(forKey: Keys.flags) as? Int
         let RAD = aDecoder.decodeObject(forKey: Keys.rad) as? Float
         let INTERESTS = aDecoder.decodeObject(forKey: Keys.interests) as? [String]
-        let PEVENTS = aDecoder.decodeObject(forKey: Keys.pEvents) as? [Int]
-        let AEVENTS = aDecoder.decodeObject(forKey: Keys.aEvents) as? [Int]
-        let REVENTS = aDecoder.decodeObject(forKey: Keys.rEvents) as? [Int]
+        let PEVENTS = aDecoder.decodeObject(forKey: Keys.pEvents) as? [String]
+        let AEVENTS = aDecoder.decodeObject(forKey: Keys.aEvents) as? [String]
+        //let REVENTS = aDecoder.decodeObject(forKey: Keys.rEvents) as? [Int]
         
         // Initialize an Instance (Required since this is a Convenience init())
         self.init()
@@ -94,7 +94,7 @@ class NSUser: NSObject, NSCoding {
         interests = INTERESTS
         pEvents = PEVENTS
         aEvents = AEVENTS
-        rEvents = REVENTS
+        //rEvents = REVENTS
     }
     
     /** Getter **/
@@ -103,9 +103,9 @@ class NSUser: NSObject, NSCoding {
     static func getFlags() -> Int? { return user.flags }
     static func getRadius() -> Float? { return user.rad }
     static func getInterests() -> [String]? { return user.interests }
-    static func getPEvents() -> [Int]? { return user.pEvents }
-    static func getAEvents() -> [Int]? { return user.aEvents }
-    static func getREvents() -> [Int]? { return user.rEvents }
+    static func getPostedEvents() -> [String]? { return user.pEvents }
+    static func getAttendingEvents() -> [String]? { return user.aEvents }
+    //static func getREvents() -> [Int]? { return user.rEvents }
     
     /** Setter **/
     static func setID(id: String) { user.id = id }           // Get ID (Static Instance)
@@ -113,9 +113,9 @@ class NSUser: NSObject, NSCoding {
     static func setFlags(flags: Int) { user.flags = flags }
     static func setRadius(rad: Float) { user.rad = rad }
     static func setInterests(interests: [String]) { user.interests = interests }
-    static func setPEvents(pEvents: [Int]) { user.pEvents = pEvents }
-    static func setAEvents(aEvents: [Int]) { user.aEvents = aEvents }
-    static func setREvents(rEvents: [Int]) { user.rEvents = rEvents }
+    static func setPostedEvents(pEvents: [String]) { user.pEvents = pEvents }
+    static func setAttendingEvents(aEvents: [String]) { user.aEvents = aEvents }
+    //static func setREvents(rEvents: [Int]) { user.rEvents = rEvents }
     
     /** Functions **/
     static func boot(id: String, name: String) {
@@ -125,10 +125,10 @@ class NSUser: NSObject, NSCoding {
             // Check Internet
             //if(internet) {
                 // Load DB
-            
+                //loadDB(id: user.id!)
             
                 // Update Disk
-                //saveDisk()
+                saveDisk()
             //}
         }
         else {
@@ -149,7 +149,7 @@ class NSUser: NSObject, NSCoding {
                 saveDisk()
                 
                 // Save DB
-                setUserDB(update: false)
+                saveDB()
             }
         }
         
@@ -161,7 +161,7 @@ class NSUser: NSObject, NSCoding {
             
             // Update DB
             //if(internet)
-            setUserDB(update: true)
+            saveDB()
         }
     }
     
@@ -180,6 +180,11 @@ class NSUser: NSObject, NSCoding {
         // Else Load Values
         user.id = dict!["id"]
         user.name = dict!["name"]
+        user.flags = Int(dict!["flags"]!)
+        user.rad = Float(dict!["rad"]!)
+        user.interests = arrayer(string: dict!["interests"]) as? [String]
+        user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
+        user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
         
         // Return Success
         return true;
@@ -194,7 +199,7 @@ class NSUser: NSObject, NSCoding {
         var dict: [String:String]?
         
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/getUserAnirudh.php?") {
+        if let url = URL(string: "https://gymbuddyapp.net/getUser.php?") {
             
             /** Request **/
             // Setup Request
@@ -244,27 +249,19 @@ class NSUser: NSObject, NSCoding {
     }
     
     // Send User Information
-    static func setUserDB(update: Bool) {
-        // Decide URL
-        var urlString: String
-        if update {
-            urlString = "https://gymbuddyapp.net/updateUserAnirudh.php?"
-        }
-        else {
-            urlString = "https://gymbuddyapp.net/insertUserAnirudh.php?"
-        }
-        
+    static func saveDB() {
         // Set URL
-        if let url = URL(string: urlString)
+        if let url = URL(string: "http://gymbuddyapp.net/updateUser.php?")
         {
             // Setup Request
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             
             // Build Post Request
-            var postString = "id=\(user.id!)&name=\(user.name!)"//"&flagCount=\(user.getUserHistory().getFlagCount())&postedEvents=Sprint2Lol&attendingEvents=Sprint2Too&interests=0&schedule=Sprint2&deviceID=q324as5d6fty"
+            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags!)&rad=\(user.rad!)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
+            print(postString)
             
             // Send Request
             request.httpBody = postString.data(using: .utf8)
@@ -354,6 +351,41 @@ class NSUser: NSObject, NSCoding {
         aCoder.encode(interests, forKey: Keys.interests)
         aCoder.encode(pEvents, forKey: Keys.pEvents)
         aCoder.encode(aEvents, forKey: Keys.aEvents)
-        aCoder.encode(rEvents, forKey: Keys.rEvents)
+        //aCoder.encode(rEvents, forKey: Keys.rEvents)
+    }
+    
+    // String -> Array
+    static func arrayer(string: String?) -> [Any]? {
+        // Nil
+        if string == nil {
+            return nil
+        }
+        
+        // Parse to Array
+        let array: [Any]? = string?.components(separatedBy: ",")
+        
+        // Return
+        return array
+    }
+    
+    // Array -> String
+    static func stringer(array: [Any]?) -> String? {
+        // Nil
+        if array == nil {
+            return nil
+        }
+        
+        // Parse to String
+        var string: String = ""
+        for element in array! {
+            string.append(String(describing: element))
+            string.append(",")
+        }
+        
+        // Remove last +
+        string.removeLast()
+        
+        // Return
+        return string
     }
 }
