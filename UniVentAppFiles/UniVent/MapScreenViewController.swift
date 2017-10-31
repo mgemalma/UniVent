@@ -8,94 +8,94 @@
 
 import UIKit
 import MapKit
+import SwiftLocation
 import CoreLocation
 
 class MapScreenViewController: UIViewController, CLLocationManagerDelegate {
 
     
-    // MARK: - Variables
-    private var locationManager: CLLocationManager!
-    private var currentLocation: CLLocation!
+    // MARK: - Parameters
+    
     var nearbyEvents: NSArray? = nil
     var initialLocation = CLLocation()
     let regionRadius: CLLocationDistance = 100
+    var lastLocation = CLLocation()
     
     // MARK: - Outlets
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var centerMap: UIButton!
     
-    // MARK: - ViewLoading
+    // MARK: - View Loading
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
-        //mapView.setUserTrackingMode(.follow, animated: true)
-    
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.startMonitoringSignificantLocationChanges()
-        getNearEventsTest(count: 25)
         
-        centerMapOn(location: user.getUserPersonal().getLocation())
-        createDefaultPins()
+        // Get initial location
+        Location.autoPauseUpdates = true
+        
+        Location.onReceiveNewLocation = { location in
+            self.initialLocation = location
+            self.centerMapOn(location: self.initialLocation)
+            self.monitorLocationChanges()
+        }
+        
+//        Location.onAddNewRequest = { req in
+//            print("A new request is added to the queue \(req)")
+//        }
+//        Location.onRemoveRequest = { req in
+//            print("An existing request was removed from the queue \(req)")
+//        }
+        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
+            self.initialLocation = location
+        }) { (_, last, error) in
+            print("There was a problem: \(error)")
+        }
+        
+        
 
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         centerMap.isHidden = true
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-//    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-//        print("Update!!")
-//        print(userLocation.coordinate)
-//    }
-    
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         //print("Moving")
-        centerMap.isHidden = false
+        if (mapView.isUserLocationVisible == false) {
+            centerMap.isHidden = false
+        } else {
+            centerMap.isHidden = true
+        }
         
     }
-    
 
-    
-    
     // MARK: - Location Functions
     
     /** Center map on current location **/
     private func centerMapOn(location: CLLocation) {
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 3.0, regionRadius * 3.0)
         mapView.setRegion(coordinateRegion, animated: false)
-        //centerMap.isHidden = true
+        centerMap.isHidden = true
     }
 
     /** Monitor location changes **/
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        DispatchQueue.main.async {
-            //Get info from server here
-            //Update eventList
-            //Repopulate mapView pins
-            
-            self.currentLocation = locations.last
-            user.getUserPersonal().setLocation(lat: (locations.last?.coordinate.latitude)!, long: (locations.last?.coordinate.longitude)!)
-            //self.centerMapOn(location: self.currentLocation)
-            
-            
+    private func monitorLocationChanges() {
+        Location.onReceiveNewLocation = { location in
+            self.lastLocation = location
         }
-    }
-    
-    /** Handle location service error **/
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        NSLog(error as! String)
+        
+        Location.getLocation(accuracy: .city, frequency: .significant, success: {_, location in
+            if self.lastLocation != location {
+                self.lastLocation = location
+                // Get new events here
+            }
+        }) { (_, last, error) in
+            print("There was a problem: \(error)")
+        }
+        
+        
     }
     
     // MARK: - Testing
@@ -105,41 +105,33 @@ class MapScreenViewController: UIViewController, CLLocationManagerDelegate {
             return
         }
         while i < (nearbyEvents?.count)! {
-            let event = nearbyEvents?[i] as! Event
+            let event = nearbyEvents?[i] as! NSEvent
             let eventPin = EventAnnotation(event: event)
             mapView.addAnnotation(eventPin)
             i += 1
         }
     }
-
     
-    
-    
-    func getNearEventsTest(count: Int) -> NSArray {
-        let eventList: NSMutableArray = NSMutableArray()
-        var i = 0
-        
-        while i < count {
-            let event = Event(eventID: i)
-            event.initLoc(add: "427 South Chauncey Avenue, West Lafayette, Indiana 47906", lat: 40.42284 + drand48()/100.0, long: -86.9214 + drand48()/100.0)
-            eventList.add(event)
-            i = i + 1
-        }
-        nearbyEvents = eventList
-        return eventList
-    }
+//    func getNearEventsTest(count: Int) -> NSArray {
+//        let eventList: NSMutableArray = NSMutableArray()
+//        var i = 0
+//        
+//        while i < count {
+//            let event = Event(eventID: i)
+//            event.initLoc(add: "427 South Chauncey Avenue, West Lafayette, Indiana 47906", lat: 40.42284 + drand48()/100.0, long: -86.9214 + drand48()/100.0)
+//            eventList.add(event)
+//            i = i + 1
+//        }
+//        nearbyEvents = eventList
+//        return eventList
+//    }
     
     // MARK: - Buttons
     
     @IBAction func recenterMapOnUser(_ sender: UIButton) {
-        locationManager.startUpdatingLocation()
-        locationManager.stopUpdatingLocation()
-        centerMapOn(location: locationManager.location!)
+        centerMapOn(location: lastLocation)
         centerMap.isHidden = true
-
     }
-
-    
     
     // MARK: - Navigation
 
@@ -147,13 +139,13 @@ class MapScreenViewController: UIViewController, CLLocationManagerDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        
         if segue.identifier == "MapPinToEventDetail" {
             let destVC = segue.destination as! EventDetailViewController
-            destVC.event = sender as! Event
+            destVC.event = sender as! NSEvent
         }
     }
-     
+    
+    
     func createEventCancelled(_ item: UIBarButtonItem) {
         _ = navigationController?.popViewController(animated: true)
         print("Cancel")

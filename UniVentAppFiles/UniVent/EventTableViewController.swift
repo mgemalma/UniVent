@@ -11,10 +11,11 @@ import UIKit
 class EventTableViewController: UITableViewController {
 
     //var eventTitles: [String] = [""]
-    var events: [Event] = []
-    var filterType: Int?
-
+    var events: [NSEvent] = []
+    var filterType: String?
+    let activityViewController = ActivityViewController(message: "Loading events...")
     override func viewDidLoad() {
+        self.present(activityViewController, animated: false, completion: nil)
         super.viewDidLoad()
         //loadDefaults()
     }
@@ -23,18 +24,22 @@ class EventTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(self.sortTable))
+        
         // Load events near user from database ** TEMPORARILY ALL EVENTS **
-        DispatchQueue.main.async(execute: { () -> Void in
-            let eventDictionaries = getAllEvents()
-            for i in eventDictionaries {
-                let event = Event()
-                event.updateJSON(dict: i)
-                addEventToEventList(event: event)
-            }
-            //loadEventsDisk()
-            self.events = eventList
-            self.reload()
-        })
+//        DispatchQueue.main.async(execute: { () -> Void in
+//            if let eventDictionaries = getAllEvents() {
+//                for i in eventDictionaries {
+//                    if !i.isEmpty {
+//                        let event = NSEvent()
+//                        event.updateJSON(dict: i)
+//                        addEventToEventList(event: event)
+//                        
+//                        self.events = eventList
+//                    }
+//                }
+//            }
+//            self.reload()
+//        })
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,10 +60,10 @@ class EventTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! EventTableViewCell
-        cell.eventTitle.text = events[indexPath.row].getGen().getTitle()
+        cell.eventTitle.text = events[indexPath.row].getTitle()//.getGen().getTitle()
         let event = events[indexPath.row]
         //print(event.getEventID())
-        if user.getUserPersonal().findEvent(eventID: event.getEventID()) {
+        if NSUser.getAttendingEvents() != nil && (NSUser.getAttendingEvents()?.contains(event.getID()!))! {
             cell.attendingEventIcon.isHidden = false
         } else {
             cell.attendingEventIcon.isHidden = true
@@ -123,15 +128,15 @@ class EventTableViewController: UITableViewController {
     // MARK: Private Methods
     
     private func loadDefaults() {
- 
-        var i = 0
-        
-        while i < 25 {
-            let event = Event(eventID: i)
-            event.initLoc(add: "427 South Chauncey Avenue, West Lafayette, Indiana 47906", lat: 40.42284 + drand48()/100.0, long: -86.9214 + drand48()/100.0)
-            events.append(event)
-            i = i + 1
-        }
+// 
+//        var i = 0
+//        
+//        while i < 25 {
+//            let event = Event(eventID: i)
+//            event.initLoc(add: "427 South Chauncey Avenue, West Lafayette, Indiana 47906", lat: 40.42284 + drand48()/100.0, long: -86.9214 + drand48()/100.0)
+//            events.append(event)
+//            i = i + 1
+//        }
     }
     
     @objc private func sortTable() {
@@ -142,20 +147,20 @@ class EventTableViewController: UITableViewController {
             case "startTime":
                 print("Sort by startTime")
                 EventSorter.sortByTime()
-                self.events = eventArrSort
+                self.events = NSEvent.sortedEvents!
                 break
             case "distance":
                 print("Sort by distance")
                 EventSorter.sortByDistance()
-                self.events = eventArrSort
+                self.events = NSEvent.sortedEvents!
                 break
             case "type":
                 print("Sort by type")
-                let eType = EventType(rawValue: self.filterType!)
-                print(eType ?? "No type")
-                EventSorter.filter(type: eType!)
-                self.events = eventArrSort
-                print(self.events)
+                //let eType = EventType(rawValue: self.filterType!)
+                print(self.filterType!)
+                EventSorter.filter(type: self.filterType!)
+                self.e vents = NSEvent.sortedEvents!
+                //print(self.events)
                 break
             case "cancel":
                 print("Cancel")
@@ -176,6 +181,7 @@ class EventTableViewController: UITableViewController {
         
     }
     func reload() {
+        self.activityViewController.dismiss(animated: true, completion: nil)
         self.tableView.reloadData()
     }
     
@@ -187,7 +193,7 @@ class EventTableViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         let destVC = segue.destination as? EventDetailViewController
-        destVC?.event = sender as! Event
+        destVC?.event = sender as! NSEvent
         
     }
 

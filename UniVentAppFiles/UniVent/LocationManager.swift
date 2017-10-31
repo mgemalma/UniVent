@@ -55,7 +55,7 @@ class LocationManager: NSObject,CLLocationManagerDelegate {
         locationManager = CLLocationManager()
         locationManager?.desiredAccuracy = locationAccuracy
         locationManager?.delegate = self
-        locationManager?.requestWhenInUseAuthorization()
+        locationManager?.requestAlwaysAuthorization()//requestWhenInUseAuthorization()
         
     }
     
@@ -313,7 +313,7 @@ class LocationManager: NSObject,CLLocationManagerDelegate {
             break
             
         case .notDetermined:
-            self.locationManager?.requestWhenInUseAuthorization()
+            self.locationManager?.requestAlwaysAuthorization()
             break
         }
     }

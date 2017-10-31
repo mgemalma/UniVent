@@ -11,13 +11,12 @@ import UIKit
 class EventDetailViewController: UIViewController {
     
     // MARK: - Properties
-    var event = Event()
+    var event = NSEvent()
     var eventFlagged: Bool = false
     var rsvped: Bool = false
     var secondsLeft: Double = 0.0
     
     @IBOutlet weak var ratingControl: RatingControl!
-    
     @IBOutlet weak var eventTitleLabel: UILabel!
     @IBOutlet weak var eventTypeLabel: UILabel!
     @IBOutlet weak var eventDescriptionText: UITextView!
@@ -37,7 +36,7 @@ class EventDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         
-        setupViewFor(event: event)
+        //setupViewFor(event: event)
         _ = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(EventAnnotation.updateCountdown), userInfo: nil, repeats: true)
         
         super.viewDidLoad()
@@ -47,12 +46,12 @@ class EventDetailViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         
         // Anirudh Patch
-        if(event.getStat().getFlagCount() > 0) {
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-        }
-        else {
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
-        }
+//        if(event.getStat().getFlagCount() > 0) {
+//            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+//        }
+//        else {
+//            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
+//        }
     }
     
     
@@ -68,82 +67,76 @@ class EventDetailViewController: UIViewController {
         case "Cancel":              // Cancel
             self.eventFlagged = false
             self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
-            // Anirudh Patch
-//            self.event.getStat().setNotSoSmartFlagCount()
-//            updateEvent(event1: self.event)
-//            saveEventsDisk()
+            
             break
         case "False":               // False
             self.eventFlagged = true
             self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-            // Anirudh Patch
-            self.event.getStat().setSmartFlagCount()
-            updateEvent(event1: self.event)
-            saveEventsDisk()
+            
             break
         case "Inappropriate":       // Inappropriate
             self.eventFlagged = true
             self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-            // Anirudh Patch
-            self.event.getStat().setSmartFlagCount()
-            updateEvent(event1: self.event)
-            saveEventsDisk()
+            
             break
         case "Duplicate":           // Duplicate
             self.eventFlagged = true
             self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-            // Anirudh Patch
-            self.event.getStat().setSmartFlagCount()
-            updateEvent(event1: self.event)
-            saveEventsDisk()
+            
             break
         case "Other":               // Other
             self.eventFlagged = true
             self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-            // Anirudh Patch
-            self.event.getStat().setSmartFlagCount()
-            updateEvent(event1: self.event)
-            saveEventsDisk()
+           
             break
         case "Undo":                // Undo
             self.eventFlagged = false
             self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
-            // Anirudh Patch
-            self.event.getStat().unsetSmartFlagCount()
-            updateEvent(event1: self.event)
-            saveEventsDisk()
+            
             break
         default:
             print("Error")
             
-        }
+            }
         }
         
     }
     
     @IBAction func rsvpPressed(_ sender: UIButton) {
         if !rsvped {
-            user.getUserPersonal().addEvent(eventID: event.getEventID())
+            var temp = NSUser.getAttendingEvents()
+            temp?.append(event.getID()!)
+            NSUser.setAttendingEvents(aEvents: temp!)
             rsvped = true
             
+            
+            
             // Increase Attendence Count
-            event.getStat().setSmartHeadCount()
-            updateEvent(event1: self.event)
+            //event.getStat().setSmartHeadCount()
+            //updateEvent(event1: self.event)
             
             // Save to Disk
-            saveEventsDisk()
+            //saveEventsDisk()
             
             // Save to DB
         } else {
-            user.getUserPersonal().removeEvent(eventID: event.getEventID())
+            var temp = NSUser.getAttendingEvents()
+            if (temp != nil) {
+                
+                //temp?.remove(at: (temp?.index(of: event.getEventID()))!)
+                temp?.remove(at: (temp?.index(of: event.getID()!))!)
+                NSUser.setAttendingEvents(aEvents: temp!)
+            }
+            //user.getUserPersonal().removeEvent(eventID: event.getEventID())
+            
             rsvped = false
             
             // Decrease Attendence Count
-            event.getStat().unsetSmartHeadCount()
-            updateEvent(event1: self.event)
+//            event.getStat().unsetSmartHeadCount()
+//            updateEvent(event1: self.event)
             
             // Save to Disk
-            saveEventsDisk()
+            //saveEventsDisk()
             
             // Save to DB
         }
@@ -152,32 +145,32 @@ class EventDetailViewController: UIViewController {
     // MARK: - Private Methods
 
     
-    private func setupViewFor(event: Event) {
-        // WE SHOULD HAVE ADDRESS AS A DICTIONARY
-        
-        
-        eventTitleLabel.text = event.getGen().getTitle()
-        eventTypeLabel.text = event.getGen().getTypeString()
-        eventDescriptionText.text = event.getGen().getDescription()
-        startTimeLabel.text = formatDate(date: event.getTime().getStartTime())
-        endTimeLabel.text = formatDate(date: event.getTime().getEndTime())
-        
-        print(event.getTime().getStartTime())
-        secondsLeft = event.getTime().getStartTime().timeIntervalSince(Date())
-        if user.getUserPersonal().findEvent(eventID: event.getEventID()) {
-            rsvped = true
-        } else {
-            rsvped = false
-        }
-        
-        let address = event.getLoc().getAddress().components(separatedBy: ", ")
-        
-        eventAddressLabel.text = address[0]
-        eventCityLabel.text = address[1]
-        eventCityLabel.text?.append(", \(address[2])")
-        
-        
-    }
+//    private func setupViewFor(event: Event) {
+//        // WE SHOULD HAVE ADDRESS AS A DICTIONARY
+//        
+//        
+//        eventTitleLabel.text = event.getGen().getTitle()
+//        eventTypeLabel.text = event.getGen().getTypeString()
+//        eventDescriptionText.text = event.getGen().getDescription()
+//        startTimeLabel.text = formatDate(date: event.getTime().getStartTime())
+//        endTimeLabel.text = formatDate(date: event.getTime().getEndTime())
+//        
+//        print(event.getTime().getStartTime())
+//        secondsLeft = event.getTime().getStartTime().timeIntervalSince(Date())
+//        if user.getUserPersonal().findEvent(eventID: event.getEventID()) {
+//            rsvped = true
+//        } else {
+//            rsvped = false
+//        }
+//        
+//        let address = event.getLoc().getAddress().components(separatedBy: ", ")
+//        
+//        eventAddressLabel.text = address[0]
+//        eventCityLabel.text = address[1]
+//        eventCityLabel.text?.append(", \(address[2])")
+//        
+//        
+//    }
     
     
     /// Formats a given date object to be displayed as a string
@@ -217,7 +210,7 @@ class EventDetailViewController: UIViewController {
         var minutes: Int
         var seconds: Int
         
-        secondsLeft = event.getTime().getStartTime().timeIntervalSince(Date()) - 1.0
+        secondsLeft = (event.getStartTime()?.timeIntervalSince(Date()))! - 1//event.getTime().getStartTime().timeIntervalSince(Date()) - 1.0
         hours = Int(secondsLeft / 3600.0)
         minutes = Int((secondsLeft.truncatingRemainder(dividingBy: 3600)) / 60.0)
         seconds = Int((secondsLeft.truncatingRemainder(dividingBy: 3600)).truncatingRemainder(dividingBy: 60.0))

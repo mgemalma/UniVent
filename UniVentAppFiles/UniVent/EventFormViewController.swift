@@ -11,26 +11,22 @@ import Eureka
 import CoreLocation
 import PostalAddressRow
 import GoogleMaps
+import SwiftLocation
 
 class EventFormViewController: FormViewController {
     
-    
-    // TODO: - Safe save. Only save when certain fields have been filled
-    
-
     // MARK: - Variables
-    var eTitle: String! = ""
-    var eAddress: String? = ""
-    var eLocation: CLLocation? = nil
-    var eStartDate: Date = Date()
-    var eEndDate: Date = Date()
-    var eType: Int = -1
-    var eInterests: NSArray = []
-    var eCreateTime: Date = Date()
-    var eHost: Int = 0
-    var eDescription: String?
-    
-    
+    private var eTitle: String! = ""
+    private var eAddress: String? = ""
+    private var eLocation: CLLocation? = nil
+    private var eStartDate: Date = Date()
+    private var eEndDate: Date = Date()
+    private var eType: Int = -1
+    private var eInterests: NSArray = []
+    private var eCreateTime: Date = Date()
+    private var eHost: Int = 0
+    private var eDescription: String?
+
     let types = ["Callout", "Charity/Philanthropy", "Community Service", "Concert", "Conference", "Dance", "Demonstration, Rally or Vigil", "Education", "Festival/Celebration", "Information", "Meeting", "Party", "Recreation/Athletic", "Social", "Travel"]
     
     // MARK: - View Loading
@@ -39,8 +35,6 @@ class EventFormViewController: FormViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.navigationController?.viewControllers[(self.navigationController?.viewControllers.endIndex)! - 2] as! MapScreenViewController, action: #selector(MapScreenViewController.createEventCancelled(_:)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(EventFormViewController.saveEvent(_:)))
     }
-    
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,7 +136,6 @@ class EventFormViewController: FormViewController {
                 }
                 .onChange{ row in
                     self.eType = self.types.index(of: row.value!)!
-                    self.eType += 1
                 }
         form +++ Section("Extras")
             <<< MultipleSelectorRow<String> {
@@ -191,8 +184,6 @@ class EventFormViewController: FormViewController {
     
     func saveEvent(_ item: UIBarButtonItem) {
         
-        // TODO: - Actually make the address string
-        
         if validateSave() {
             if validateDate() {
                 if eDescription == nil {
@@ -200,7 +191,14 @@ class EventFormViewController: FormViewController {
                 }
                 
                 print(eStartDate)
-                createEvent(sTime: eStartDate, eTime: eEndDate, add: eAddress!, loc: eLocation!, title: eTitle, type: eType, descript: eDescription!)
+                var pEvents = NSUser.getPostedEvents()
+                if pEvents != nil {
+                    pEvents?.append("\(getAUniqueID())")
+                } else {
+                    pEvents = ["\(getAUniqueID())"]
+                }
+                NSUser.setPostedEvents(pEvents: pEvents!)
+                //createEvent(sTime: eStartDate, eTime: eEndDate, add: eAddress!, loc: eLocation!, title: eTitle, type: eType, descript: eDescription!)
                 self.performSegue(withIdentifier: "returnToMap", sender: nil)
             }
         }
@@ -221,22 +219,15 @@ class EventFormViewController: FormViewController {
         }
         if eLocation == nil {
             if eAddress != nil {
-                LocationManager.sharedInstance.getReverseGeoCodedLocation(address: eAddress!, completionHandler: { (location:CLLocation?, placemark:CLPlacemark?, error:NSError?) in
-                    
-                    if error != nil {
-                        // Bad address, send alert
-                        print((error?.localizedDescription)!)
-                        return
+
+                Location.getLocation(forAddress: eAddress!, success: { placemark in
+                    print("Placemark found: \(placemark[0].location?.coordinate)")
+                    if let loc = placemark[0].location {
+                        self.eLocation = CLLocation(latitude: loc.coordinate.latitude , longitude: loc.coordinate.longitude)
                     }
-                    if placemark == nil {
-                        // Bad address, send alert
-                        print("Location can't be fetched")
-                        
-                        return
-                    }
-//                    print(placemark?.addressDictionary?.description ?? "")
-                    self.eLocation = CLLocation(latitude: (placemark?.location?.coordinate.latitude)!, longitude: (placemark?.location?.coordinate.longitude)!)
-                })
+                }) { error in
+                    print("Cannot reverse geocoding due to an error \(error)")
+                }
             } else {
                 incompleteStr.append("\nLocation")
             }

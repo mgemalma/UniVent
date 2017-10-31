@@ -11,9 +11,11 @@ import MapKit
 
 class EventAnnotation: NSObject, MKAnnotation {
     
+
+    
     let title: String?
-    let event: Event
-    let eventID: Int
+    let event: NSEvent
+    let eventID: String
     let coordinate: CLLocationCoordinate2D
     let startTime: Date
     let endTime: Date
@@ -21,14 +23,14 @@ class EventAnnotation: NSObject, MKAnnotation {
     var secondsLeft: Double
     let remainingTimeLabel: UILabel
     
-    init(event: Event) {
+    init(event: NSEvent) {
         self.event = event
-        self.eventID = event.getEventID()
-        self.title = event.getGen().getTitle()
-        self.coordinate = CLLocationCoordinate2D(latitude: event.getLoc().getLatitude(), longitude: event.getLoc().getLongitude())
-        self.startTime = event.getTime().getStartTime()
-        self.endTime = event.getTime().getEndTime()
-        self.address = event.getLoc().getAddress()
+        self.eventID = event.getID()!//event.getEventID()
+        self.title = event.getTitle()//getGen().getTitle()
+        self.coordinate = (event.getLocation()?.coordinate)!//CLLocationCoordinate2D(latitude: event.getLoc().getLatitude(), longitude: event.getLoc().getLongitude())
+        self.startTime = event.getStartTime()!//event.getTime().getStartTime()
+        self.endTime = event.getEndTime()!//event.getTime().getEndTime()
+        self.address = event.getAddress()//event.getLoc().getAddress()
         secondsLeft = self.startTime.timeIntervalSince(Date())
         remainingTimeLabel = UILabel()
         super.init()

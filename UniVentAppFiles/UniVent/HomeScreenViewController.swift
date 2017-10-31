@@ -10,47 +10,19 @@ import UIKit
 import FBSDKLoginKit
 import CoreLocation
 
-class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLocationManagerDelegate {
+class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
 
-    
-    var locationManager: CLLocationManager!
-    var status: CLAuthorizationStatus?
-    var initialLocation: CLLocation?
+    // MARK: - Properties
     var userMayContinue: Bool = false
-    var userEnabledLocation: Bool = false
     var userLoggedIntoFacebook: Bool = false
-    var userName: String! = ""
-    var userID: String! = ""
+    let loginButton = FBSDKLoginButton()
     
+    // MARK: - View Loading
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /* Clear Persist */
-//        PersistEvent.clear()
-//        saveEventsDisk()
-        
         /* Add FacebookSDK login button to view */
-        let loginButton = FBSDKLoginButton()
-        view.addSubview(loginButton)
-        loginButton.frame = CGRect(x: 64, y: 500, width: Int(view.frame.width - 128), height: 40)
-        loginButton.readPermissions = ["public_profile"]
-        loginButton.delegate = self
-        
-        /* Begin asking for location service authorization */
-        self.requestLocationServices() { response in
-            
-            if response == "enabled" {
-                self.userEnabledLocation = true
-                self.locationManager.startUpdatingLocation()
-                self.initialLocation = self.locationManager.location
-                self.locationManager.stopUpdatingLocation()
-
-                print(self.initialLocation ?? "UGH")
-            } else if response == "disabled" {
-                print("FUUUUUU")
-            }
-        
-        }
+        self.setupLoginButton()
         
         self.checkLoginStatus() { response in
             if response == "FB retrieved" {
@@ -58,7 +30,6 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
                 self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
             }
         }
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,13 +38,6 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
 
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
     
     // MARK: - FBSDKLoginButton Methods
     
@@ -82,11 +46,8 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
         if result.isCancelled {
             NSLog("User cancelled login, doing nothing...")
             userLoggedIntoFacebook = false
-            
         } else if result.grantedPermissions.contains("public_profile") {    // User granted requested permissions
-            
             NSLog("User successfully logged in with Facebook. Loading requested info...")
-            userEnabledLocation = true
             userLoggedIntoFacebook = true
             
             // Compile user information here
@@ -95,13 +56,9 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
                 if self.shouldPerformSegue(withIdentifier: "HomeToMap", sender: "initialLogin") {
                     self.performSegue(withIdentifier: "HomeToMap", sender: "initialLogin")
                 } else {
-                    //print("Should not segue")
                     self.handleBadAuthorization()
                 }
             }
-            
-            
-            
         } else {        // Unknown error
             NSLog(error as! String)
             return
@@ -121,13 +78,15 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
                 let connection = FBSDKGraphRequestConnection()
                 
                 connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
-                    
-                    let data = result as! [String: AnyObject]
-                    
-                    self.userName = ((data["name"] as? String)!)
-                    self.userID = ((data["id"] as? String)!)
-
-                    completion("FB retrieved")
+                    if (error == nil) {
+                        let data = result as! [String: AnyObject]
+                        NSUser.boot(id: (data["id"] as? String)!, name: (data["name"] as? String)!)
+                        // UserNew.sharedUser.userID = data["id"] as? String   //self.userID
+                        // UserNew.sharedUser.userName = data["name"] as? String   //self.userName
+                        completion("FB retrieved")
+                    } else {
+                        completion("error")
+                    }
                     
                 } )
                 connection.start()
@@ -143,72 +102,13 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
             NSLog("User logged in to Facebook")
             self.getFacebookUserInfo() { response in
                 completion(response)
-                //self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
-                
             }
         }
-
     }
-    
-    // MARK: - LocationServices
-    
-    private func requestLocationServices(completion: @escaping (_ success: String) -> Void) {
-        DispatchQueue.main.async {
-            self.locationManager = CLLocationManager()
-            self.locationManager.delegate = self
-            self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters //kCLLocationAccuracyBestForNavigation
-            self.locationManager.requestWhenInUseAuthorization()
-            
-            if CLLocationManager.locationServicesEnabled() {
-//                
-//                self.locationManager.startUpdatingLocation()
-//                self.initialLocation = self.locationManager.location!
-                switch(CLLocationManager.authorizationStatus()) {
-                //check if services disallowed for this app particularly
-                case .restricted, .denied:
-                    completion("denied")
-                    let accessAlert = UIAlertController(title: "Location Services Disabled", message: "You need to enable location services in settings.", preferredStyle: UIAlertControllerStyle.alert)
-                    
-                    accessAlert.addAction(UIAlertAction(title: "Okay!", style: .default, handler: { (action: UIAlertAction!) in UIApplication.shared.openURL(NSURL(string:UIApplicationOpenSettingsURLString)! as URL)
-                    }))
-                    
-                    self.present(accessAlert, animated: true, completion: nil)
-                    
-                //check if services are allowed for this app
-                case .authorizedAlways, .authorizedWhenInUse:
-                    completion("enabled")
-                //check if we need to ask for access
-                case .notDetermined:
-                    //print("asking for access...")
-                    self.locationManager.requestWhenInUseAuthorization()
-                }
-            
-            }
-            
-        }
-        
-        
-    
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        self.status = status
-    }
-    
-//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        DispatchQueue.main.async {
-//            manager.stopUpdatingLocation()
-//            self.initialLocation = manager.location!
-//        }
-//    }
 
     // MARK: - Navigation
     
     private func handleBadAuthorization() {
-        if !(CLLocationManager.locationServicesEnabled()){
-            alertForLocationServices()
-        }
-        
         if !userLoggedIntoFacebook {
             alertForFacebook()
         }
@@ -217,7 +117,7 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         handleBadAuthorization()
 
-        if userEnabledLocation && userLoggedIntoFacebook{
+        if userLoggedIntoFacebook{
             return true
         } else {
             return false
@@ -226,41 +126,17 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate, CLLo
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-//        PersistEvent.clear()
-//        saveEventsDisk()
         if segue.identifier == "HomeToMap" {
-            //print(userName)
-            //print(userID)
-            let id = Int(string: userID)
-            fbLogin(ID: id!, name: userName)
-            if let loc = self.initialLocation {
-                user.getUserPersonal().setLocation(lat: loc.coordinate.latitude, long: loc.coordinate.longitude)
-            }
             let destVC = segue.destination as? MapScreenViewController
-            //destVC?.initialLocation = self.initialLocation!
-            //destVC?.locationManager = self.locationManager
         }
     }
     
-    
-    
-    private func verifyUserInDatabase(userID: String!, userName: String!, completion: @escaping (_ success: String) -> Void)  {
-        
-        // Use 'userID' and 'userName' to verify that the user either exists in the database already, or can be added.
-        // If the user is not in the database, add them.
-        // For testing purposes, use my (Andrew) information:
-        // userID: 1730583966965219
-        // userName: Andrew Peterson
-        
-        
-        // Return a completion string stating the result 
-        //         ex:
-        // DispatchQueue.main.async {
-                // var response: String?
-                // All your code for sending/retrieving info (Set 'response' string accordingly ("Success" or "Failure"))
-                // ...
-                // completion(response)
-        // }
+    private func setupLoginButton() {
+        view.addSubview(loginButton)
+        loginButton.frame = CGRect(x: 64, y: 500, width: Int(view.frame.width - 128), height: 40)
+        loginButton.readPermissions = ["public_profile"]
+        loginButton.delegate = self
+
     }
 
 

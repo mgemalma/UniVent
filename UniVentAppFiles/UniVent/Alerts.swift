@@ -68,7 +68,7 @@ extension EventTableViewController {
         let distance = UIAlertAction(title: "Distance", style: .default, handler: {(sortController: UIAlertAction) in completion("distance")} )
         let type = UIAlertAction(title: "Event Type", style: .default, handler: {(sortController: UIAlertAction) in
             self.selectFilter() { choice in
-                self.filterType = Int(string: choice)
+                self.filterType = choice
                 completion("type")}
         })
         let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: {(sortController: UIAlertAction) in
@@ -84,21 +84,21 @@ extension EventTableViewController {
     func selectFilter(completion: @escaping (_ filterChoice: String) -> Void) {
         let filterController = UIAlertController(title: "Select an event type", message: nil, preferredStyle: .alert)
         
-        let calloutAction = UIAlertAction(title: "Callout", style: .default, handler: {(filterController: UIAlertAction) in completion("1")})
-        let charityAction = UIAlertAction(title: "Charity", style: .default, handler: {(filterController: UIAlertAction) in completion("2")})
-        let csAction = UIAlertAction(title: "Community Service", style: .default, handler: {(filterController: UIAlertAction) in completion("3")})
-        let concertAction = UIAlertAction(title: "Concert", style: .default, handler: {(filterController: UIAlertAction) in completion("4")})
-        let conferenceAction = UIAlertAction(title: "Conference", style: .default, handler: {(filterController: UIAlertAction) in completion("5")})
-        let partyAction = UIAlertAction(title: "Party", style: .default, handler: {(filterController: UIAlertAction) in completion("6")})
-        let demonstrationAction = UIAlertAction(title: "Demonstration", style: .default, handler: {(filterController: UIAlertAction) in completion("7")})
-        let educationAction = UIAlertAction(title: "Education", style: .default, handler: {(filterController: UIAlertAction) in completion("8")})
-        let festivalAction = UIAlertAction(title: "Festival", style: .default, handler: {(filterController: UIAlertAction) in completion("9")})
-        let meetingAction = UIAlertAction(title: "Meeting", style: .default, handler: {(filterController: UIAlertAction) in completion("10")})
-        let recreationAction = UIAlertAction(title: "Recreation", style: .default, handler: {(filterController: UIAlertAction) in completion("11")})
-        let socialAction = UIAlertAction(title: "Social", style: .default, handler: {(filterController: UIAlertAction) in completion("12")})
-        let travelAction = UIAlertAction(title: "Travel", style: .default, handler: {(filterController: UIAlertAction) in completion("13")})
-        let infoAction = UIAlertAction(title: "Info", style: .default, handler: {(filterController: UIAlertAction) in completion("14")})
-        let danceAction = UIAlertAction(title: "Dance", style: .default, handler: {(filterController: UIAlertAction) in completion("15")})
+        let calloutAction = UIAlertAction(title: "Callout", style: .default, handler: {(filterController: UIAlertAction) in completion("Callout")})
+        let charityAction = UIAlertAction(title: "Charity", style: .default, handler: {(filterController: UIAlertAction) in completion("Charity")})
+        let csAction = UIAlertAction(title: "Community Service", style: .default, handler: {(filterController: UIAlertAction) in completion("Community Service")})
+        let concertAction = UIAlertAction(title: "Concert", style: .default, handler: {(filterController: UIAlertAction) in completion("Concert")})
+        let conferenceAction = UIAlertAction(title: "Conference", style: .default, handler: {(filterController: UIAlertAction) in completion("Conference")})
+        let partyAction = UIAlertAction(title: "Party", style: .default, handler: {(filterController: UIAlertAction) in completion("Party")})
+        let demonstrationAction = UIAlertAction(title: "Demonstration", style: .default, handler: {(filterController: UIAlertAction) in completion("Demonstration")})
+        let educationAction = UIAlertAction(title: "Education", style: .default, handler: {(filterController: UIAlertAction) in completion("Education")})
+        let festivalAction = UIAlertAction(title: "Festival", style: .default, handler: {(filterController: UIAlertAction) in completion("Festival")})
+        let meetingAction = UIAlertAction(title: "Meeting", style: .default, handler: {(filterController: UIAlertAction) in completion("Meeting")})
+        let recreationAction = UIAlertAction(title: "Recreation", style: .default, handler: {(filterController: UIAlertAction) in completion("Recreation")})
+        let socialAction = UIAlertAction(title: "Social", style: .default, handler: {(filterController: UIAlertAction) in completion("Social")})
+        let travelAction = UIAlertAction(title: "Travel", style: .default, handler: {(filterController: UIAlertAction) in completion("Travel")})
+        let infoAction = UIAlertAction(title: "Info", style: .default, handler: {(filterController: UIAlertAction) in completion("Info")})
+        let danceAction = UIAlertAction(title: "Dance", style: .default, handler: {(filterController: UIAlertAction) in completion("Dance")})
         
         filterController.addAction(calloutAction)
         filterController.addAction(charityAction)
