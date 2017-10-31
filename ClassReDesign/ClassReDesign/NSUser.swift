@@ -50,7 +50,7 @@ class NSUser: NSObject, NSCoding {
     private var interests: [String]?    // Stores the list of Interests of the user. Should change to Enum.
     private var pEvents: [String]?      // Stores all posted Events as IDs.
     private var aEvents: [String]?      // Stores all attending Events as IDs.
-    //private var rEvents: [Int]?       // Stores all posted Events as IDs.
+    private var fEvents: [String]?       // Stores all posted Events as IDs.
     
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
@@ -64,7 +64,7 @@ class NSUser: NSObject, NSCoding {
         static let interests = "interests"
         static let pEvents = "pEvents"
         static let aEvents = "aEvents"
-        //static let rEvents = "rEvents"
+        static let fEvents = "fEvents"
     }
     
     /** Constructor **/
@@ -81,7 +81,7 @@ class NSUser: NSObject, NSCoding {
         let INTERESTS = aDecoder.decodeObject(forKey: Keys.interests) as? [String]
         let PEVENTS = aDecoder.decodeObject(forKey: Keys.pEvents) as? [String]
         let AEVENTS = aDecoder.decodeObject(forKey: Keys.aEvents) as? [String]
-        //let REVENTS = aDecoder.decodeObject(forKey: Keys.rEvents) as? [Int]
+        let FEVENTS = aDecoder.decodeObject(forKey: Keys.fEvents) as? [String]
         
         // Initialize an Instance (Required since this is a Convenience init())
         self.init()
@@ -94,7 +94,7 @@ class NSUser: NSObject, NSCoding {
         interests = INTERESTS
         pEvents = PEVENTS
         aEvents = AEVENTS
-        //rEvents = REVENTS
+        fEvents = FEVENTS
     }
     
     /** Getter **/
@@ -105,17 +105,17 @@ class NSUser: NSObject, NSCoding {
     static func getInterests() -> [String]? { return user.interests }
     static func getPostedEvents() -> [String]? { return user.pEvents }
     static func getAttendingEvents() -> [String]? { return user.aEvents }
-    //static func getREvents() -> [Int]? { return user.rEvents }
+    static func getFlaggedEvents() -> [String]? { return user.fEvents }
     
     /** Setter **/
-    static func setID(id: String) { user.id = id }           // Get ID (Static Instance)
-    static func setName(name: String) { user.name = name }     // Get Name (Static Instance)
-    static func setFlags(flags: Int) { user.flags = flags }
-    static func setRadius(rad: Float) { user.rad = rad }
-    static func setInterests(interests: [String]) { user.interests = interests }
-    static func setPostedEvents(pEvents: [String]) { user.pEvents = pEvents }
-    static func setAttendingEvents(aEvents: [String]) { user.aEvents = aEvents }
-    //static func setREvents(rEvents: [Int]) { user.rEvents = rEvents }
+    static func setID(id: String?) { user.id = id }           // Get ID (Static Instance)
+    static func setName(name: String?) { user.name = name }     // Get Name (Static Instance)
+    static func setFlags(flags: Int?) { user.flags = flags }
+    static func setRadius(rad: Float?) { user.rad = rad }
+    static func setInterests(interests: [String]?) { user.interests = interests }
+    static func setPostedEvents(pEvents: [String]?) { user.pEvents = pEvents }
+    static func setAttendingEvents(aEvents: [String]?) { user.aEvents = aEvents }
+    static func setREvents(fEvents: [String]?) { user.fEvents = fEvents }
     
     /** Functions **/
     static func boot(id: String, name: String) {
@@ -185,6 +185,7 @@ class NSUser: NSObject, NSCoding {
         user.interests = arrayer(string: dict!["interests"]) as? [String]
         user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
         user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
+        user.fEvents = arrayer(string: dict!["fEvents"]) as? [String]
         
         // Return Success
         return true;
@@ -258,7 +259,7 @@ class NSUser: NSObject, NSCoding {
             request.httpMethod = "POST"
             
             // Build Post Request
-            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags!)&rad=\(user.rad!)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)"
+            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags!)&rad=\(user.rad!)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             print(postString)
@@ -351,7 +352,7 @@ class NSUser: NSObject, NSCoding {
         aCoder.encode(interests, forKey: Keys.interests)
         aCoder.encode(pEvents, forKey: Keys.pEvents)
         aCoder.encode(aEvents, forKey: Keys.aEvents)
-        //aCoder.encode(rEvents, forKey: Keys.rEvents)
+        aCoder.encode(fEvents, forKey: Keys.fEvents)
     }
     
     // String -> Array
