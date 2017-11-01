@@ -50,7 +50,8 @@ class NSUser: NSObject, NSCoding {
     private var interests: [String]?    // Stores the list of Interests of the user. Should change to Enum.
     private var pEvents: [String]?      // Stores all posted Events as IDs.
     private var aEvents: [String]?      // Stores all attending Events as IDs.
-    private var fEvents: [String]?       // Stores all posted Events as IDs.
+    private var rEvents: [String]?      // Stores all posted Events as IDs.
+    private var fEvents: [String]?      // Stores all posted Events as IDs.
     
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
@@ -64,6 +65,7 @@ class NSUser: NSObject, NSCoding {
         static let interests = "interests"
         static let pEvents = "pEvents"
         static let aEvents = "aEvents"
+        static let rEvents = "rEvents"
         static let fEvents = "fEvents"
     }
     
@@ -81,6 +83,7 @@ class NSUser: NSObject, NSCoding {
         let INTERESTS = aDecoder.decodeObject(forKey: Keys.interests) as? [String]
         let PEVENTS = aDecoder.decodeObject(forKey: Keys.pEvents) as? [String]
         let AEVENTS = aDecoder.decodeObject(forKey: Keys.aEvents) as? [String]
+        let REVENTS = aDecoder.decodeObject(forKey: Keys.rEvents) as? [String]
         let FEVENTS = aDecoder.decodeObject(forKey: Keys.fEvents) as? [String]
         
         // Initialize an Instance (Required since this is a Convenience init())
@@ -94,6 +97,7 @@ class NSUser: NSObject, NSCoding {
         interests = INTERESTS
         pEvents = PEVENTS
         aEvents = AEVENTS
+        rEvents = REVENTS
         fEvents = FEVENTS
     }
     
@@ -106,6 +110,7 @@ class NSUser: NSObject, NSCoding {
     static func getPostedEvents() -> [String]? { return user.pEvents }
     static func getAttendingEvents() -> [String]? { return user.aEvents }
     static func getFlaggedEvents() -> [String]? { return user.fEvents }
+    static func getRatedEvents() -> [String]? { return user.rEvents }
     
     /** Setter **/
     static func setID(id: String?) { user.id = id }           // Get ID (Static Instance)
@@ -115,7 +120,8 @@ class NSUser: NSObject, NSCoding {
     static func setInterests(interests: [String]?) { user.interests = interests }
     static func setPostedEvents(pEvents: [String]?) { user.pEvents = pEvents }
     static func setAttendingEvents(aEvents: [String]?) { user.aEvents = aEvents }
-    static func setREvents(fEvents: [String]?) { user.fEvents = fEvents }
+    static func setFlaggedEvents(fEvents: [String]?) { user.fEvents = fEvents }
+    static func setRatedEvents(rEvents: [String]?) { user.rEvents = rEvents }
     
     /** Functions **/
     static func boot(id: String, name: String) {
@@ -185,6 +191,7 @@ class NSUser: NSObject, NSCoding {
         user.interests = arrayer(string: dict!["interests"]) as? [String]
         user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
         user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
+        user.rEvents = arrayer(string: dict!["rEvents"]) as? [String]
         user.fEvents = arrayer(string: dict!["fEvents"]) as? [String]
         
         // Return Success
@@ -259,7 +266,7 @@ class NSUser: NSObject, NSCoding {
             request.httpMethod = "POST"
             
             // Build Post Request
-            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags!)&rad=\(user.rad!)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)"
+            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags!)&rad=\(user.rad!)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             print(postString)
@@ -283,50 +290,6 @@ class NSUser: NSObject, NSCoding {
                 }
                 let responseString = String(data: data, encoding: .utf8)
                 print("NSUser: setUserDB() Response Message = \(responseString!)")
-            }
-            
-            // Start Task
-            task.resume()
-        }
-    }
-    
-    /// Counters incrementers/decrementers
-    
-    /// Change the user's flag count by value (value must have sign and number, for example: "+3")
-    static func flagCountUser(ID: String, value: String) {
-        // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/flagCountUser.php?") {
-            
-            /** Request **/
-            // Setup Request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            // Build Post Request
-            var postString = "id=\(ID)&value=\(value)"
-            postString = postString.replacingOccurrences(of: " ", with: "%20")
-            postString = postString.replacingOccurrences(of: "'", with: "''")
-            postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
-            
-            // Send Request
-            request.httpBody = postString.data(using: .utf8)
-            
-            /** Response **/
-            // Setup Task
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                // Error Handler
-                guard let data = data, error == nil else {
-                    print("NSEvent: flagCountUser() Connection Error = \(error!)")
-                    return
-                }
-                
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: flagCountUser() Response = \(response!)")
-                }
-                let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: flagCountUser() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -396,6 +359,7 @@ class NSUser: NSObject, NSCoding {
         aCoder.encode(interests, forKey: Keys.interests)
         aCoder.encode(pEvents, forKey: Keys.pEvents)
         aCoder.encode(aEvents, forKey: Keys.aEvents)
+        aCoder.encode(rEvents, forKey: Keys.rEvents)
         aCoder.encode(fEvents, forKey: Keys.fEvents)
     }
     

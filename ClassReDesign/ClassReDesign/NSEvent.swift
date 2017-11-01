@@ -7,8 +7,7 @@
  
  Authors:           Anirudh Pal (Class Design)
                     Altug Gemalmamz (Persist Data)
-                    Amjad Zahara (DB Operations)
- 
+                    Amjad Zahara (DB Operations & Filters)
  Design:
  **/
 
@@ -29,7 +28,7 @@ class NSEvent: NSObject, NSCoding {
     static let arcaURL = docaDir.appendingPathComponent("eventaDisk")
     
     // Set Dummy Location (Andrew we will Implements this when you are present!)
-    static var Uloc = CLLocation();
+    //static var Uloc = CLLocation();
     
     // Static Comparators
     static func BY_DATE_A(a: NSEvent, b: NSEvent) -> Bool {
@@ -61,6 +60,7 @@ class NSEvent: NSObject, NSCoding {
     static var pEvents : [NSEvent]? = [NSEvent]()
     static var lEvents : [NSEvent]? = [NSEvent]()
     static var aEvents : [NSEvent]? = [NSEvent]()
+    static var sEvents : [NSEvent]? = [NSEvent]()
 
     /** Instance Variables **/
     private var id: String?
@@ -213,29 +213,276 @@ class NSEvent: NSObject, NSCoding {
     func setDescription(desc : String?){self.desc = desc}
     func setInterest(interests : [String]?) { self.interests = interests}
     
+    
     /** Functions **/
+    func incrementHeadCount() -> Bool{
+        // Return if Already Used Before
+        // Get Array
+        var arr = NSUser.getAttendingEvents()
+        
+        // Check if Exists
+        if self.id == nil || (arr != nil && arr!.contains(self.id!)) {
+            return false
+        }
+        
+        // Nil Handler
+        if arr == nil {
+            arr = [String]()
+        }
+        
+        // Add to Array
+        arr!.append(self.id!)
+        
+        // Set to User
+        NSUser.setAttendingEvents(aEvents: arr)
+        
+        // User save to DB & Disk
+        NSUser.saveDB()
+        NSUser.saveDisk()
+        
+        // Update to DB
+        NSEvent.headCountEvent(ID: self.id!, value: "+1")
+        
+        // Nil Handler
+        if NSEvent.aEvents == nil {
+            NSEvent.aEvents = [NSEvent]()
+        }
+        
+        // Save to Disk
+        NSEvent.aEvents!.append(self)
+        NSEvent.saveDisk()
+        
+        // Return
+        return true
+    }
+    
+    // NOT COMPLETE
+    func rateEvent() -> Bool {
+        // Return if Already Used Before
+        // Get Array
+        var arr = NSUser.getRatedEvents()
+        
+        // Check if Exists
+        if self.id == nil || (arr != nil && arr!.contains(self.id!)) {
+            return false
+        }
+        
+        // Nil Handler
+        if arr == nil {
+            arr = [String]()
+        }
+        
+        // Add to Array
+        arr!.append(self.id!)
+        
+        // Set to User
+        NSUser.setRatedEvents(rEvents: arr)
+        
+        // User save to DB & Disk
+        NSUser.saveDB()
+        NSUser.saveDisk()
+        
+        // Update to DB
+        NSEvent.ratCountEvent(ID: self.id!, value: "+1")
+        
+        // Return
+        return true
+    }
+    
+    func flagEvent() -> Bool{
+        // Return if Already Used Before
+        // Get Array
+        var arr = NSUser.getFlaggedEvents()
+        
+        // Check if Exists
+        if self.id == nil || (arr != nil && arr!.contains(self.id!)) {
+            return false
+        }
+        
+        // Nil Handler
+        if arr == nil {
+            arr = [String]()
+        }
+        
+        // Add to Array
+        arr!.append(self.id!)
+        
+        // Set to User
+        NSUser.setFlaggedEvents(fEvents: arr)
+        
+        // User save to DB & Disk
+        NSUser.saveDB()
+        NSUser.saveDisk()
+        
+        // Update to DB
+        NSEvent.flagCountEvent(ID: self.id!, value: "+1")
+        
+        // Return
+        return true
+    }
+    
     // Create and Event
-    static func postEvent(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?) {
-        // Update Event
+    // Will create or update an event based on id value passed. Returns id if successful else nil.
+    static func postEvent(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?) -> String?{
         
-        // Create Event
-        var newEvent: NSEvent = NSEvent(id: id, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests)
+        // Variable to Manipulate Event
+        var newEvent: NSEvent?
         
-        // Add to List
-        pEvents!.append(newEvent)
+        // If ID Nil
+        if(id == nil) {
+            // Get ID
+            let newID: String? = getUniqueID()
+            
+            // Nil Handler
+            if newID == nil {
+                return nil
+            }
+            
+            // Create Event
+            newEvent = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests)
+            
+            // Nil Handler
+            if newEvent == nil {
+                return nil
+            }
+        
+            // Add to List
+            pEvents!.append(newEvent!)
+            
+            // Add to User
+            // Get Array
+            var arr: [String]? = NSUser.getPostedEvents()
+            
+            // Nil Handler
+            if arr == nil {
+                NSUser.setPostedEvents(pEvents: [String]())
+                arr = NSUser.getPostedEvents()
+            }
+            
+            // Add to Array
+            arr!.append(newID!)
+            
+            // Set Array
+            NSUser.setPostedEvents(pEvents: arr)
+            
+            // User save to DB & Disk
+            NSUser.saveDB()
+            NSUser.saveDisk()
+        }
+        
+        // Else
+        else {
+            // Nil Handler
+            if pEvents == nil {
+                return nil
+            }
+            
+            // Find Event
+            for event in pEvents! {
+                if event.id == id {
+                    newEvent = event
+                }
+            }
+            
+            // Nil Handler
+            if newEvent == nil {
+                return nil
+            }
+            
+            // Update all Vars
+            newEvent!.start = start
+            newEvent!.end = end
+            newEvent!.add = [String:String]()
+            if(building != nil) {
+                newEvent!.add!["building"] = building
+            }
+            newEvent!.add!["address"] = address
+            newEvent!.add!["city"] = city
+            newEvent!.add!["state"] = state
+            newEvent!.add!["zip"] = zip
+            newEvent!.loc = loc
+            newEvent!.rat = rat
+            newEvent!.ratC = ratC
+            newEvent!.flags = flags
+            newEvent!.heads = heads
+            newEvent!.host = host
+            newEvent!.title = title
+            newEvent!.type = type
+            newEvent!.desc = desc
+            newEvent!.interests = intrests
+        }
         
         // Save to Disk
         saveDisk()
         
+        // Nil Handler
+        if newEvent == nil {
+            return nil
+        }
+        
         // Send to DB
+        sendEventDB(event: newEvent!)
+        
+        // Return ID
+        return newEvent!.id
     }
     
     /** Sorts & Filters **/
+    /// Filter an array of events based on type.
+    /// Given an array of events and the needed type, return an array of events with that type.
+    static func filterType(type: String) {
+        var filteredEvents = [NSEvent]()
+        
+        // Nil Handler
+        if lEvents == nil {
+            return
+        }
+        
+        for event in lEvents! {
+            if event.getType() == type {
+                filteredEvents.append(event)
+            }
+        }
+        
+        // Set Sorted Events
+        sEvents = filteredEvents
+    }
+    
+    /// Filters events based on user's interests.
+    /// Given an array of interests, and an array of events, return an array of events that correspond to the user's interests.
+    static func filterInterests(interests: [String]) {
+        var filteredEvents = [NSEvent]()
+        
+        // Nil Handler
+        if lEvents == nil {
+            return
+        }
+        
+        for event in lEvents! {
+            // Nil Handler
+            if event.getInterest() == nil {
+                continue
+            }
+            for int in event.getInterest()! {
+                if interests.contains(int) {
+                    filteredEvents.append(event)
+                    break
+                }
+            }
+        }
+        
+        // Set Sorted Events
+        sEvents = filteredEvents
+    }
+    
     // Generic Sorter Which takes a comparator <comp> similar to BY_DATE_A or BY_DATE_D for ascending and decending order.
-    static func sorter(comp: (NSEvent, NSEvent) -> Bool, array: [NSEvent]?) -> [NSEvent]? {
+    static func sorter(comp: (NSEvent, NSEvent) -> Bool) {
+        // Copy Sorted Events
+        let array = sEvents
+        
         // Nil Handler
         if array == nil {
-            return nil
+            return
         }
         
         // Create Array
@@ -245,42 +492,78 @@ class NSEvent: NSObject, NSCoding {
         arr = array!.sorted(by: comp)
         
         // Return Array
-        return arr
-    }
-    
-    /// Filter an array of events based on type.
-    /// Given an array of events and the needed type, return an array of events with that type.
-    static func filterType(type: String, events:[NSEvent]) -> [NSEvent] {
-        var filteredEvents = [NSEvent]()
-        
-        for event in events {
-            if event.getType() == type {
-            filteredEvents.append(event)
-            }
-        }
-        return filteredEvents
-    }
-    
-    /// Filters events based on user's interests.
-    /// Given an array of interests, and an array of events, return an array of events that correspond to the user's interests.
-    static func filterInterests(interests: [String], events: [NSEvent]) -> [NSEvent] {
-        var filteredEvents = [NSEvent]()
-        
-        for event in events {
-            for int in event.getInterest()! {
-                if interests.contains(int) {
-                    filteredEvents.append(event)
-                    break
-                }
-            }
-        }
-        
-        return filteredEvents
+        sEvents = arr
     }
     
     /** DB Functions **/
-    // Load DB()
-    static func loadDB() {
+    
+    // Loads Everything from DB
+    static func loadDB() -> Bool {
+        // Load Everything
+        if loadDBLocal() && loadDBPostAttend(pa: true) && loadDBPostAttend(pa: false) {
+            return true
+        }
+        
+        // Return
+        return false
+    }
+    
+    // Loads Posted events into pEvents from DB
+    static func loadDBPostAttend(pa: Bool) -> Bool {
+        // Array for Events
+        var arr: [NSEvent]? = [NSEvent]()
+        
+        // Get ID Array
+        var IDs: [String]?
+        if pa {
+            IDs = NSUser.getPostedEvents()
+        }
+        else {
+            IDs = NSUser.getAttendingEvents()
+        }
+        
+        // Nill Handler
+        if IDs == nil {
+            return false
+        }
+        
+        // Get Events
+        for id in IDs! {
+            // Get Dict
+            let dict = getEventDB(ID: id)
+            
+            // Nil Handler
+            if dict == nil {
+                return false
+            }
+            
+            // Unwrap
+            let ent = dict!
+            
+            // Create Event (Ask Sultan)
+            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startt"]!)!), end: Date(timeIntervalSince1970: Double(ent["endt"]!)!), building: ent["building"], address: ent["address"], city: ent["city"], state: ent["state"], zip: ent["zip"], loc: CLLocation(latitude: Double(ent["lat"]!)!, longitude: Double(ent["long"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["desc"], intrests: arrayer(string: ent["intrests"]) as? [String])
+            
+            // Add Event
+            arr!.append(event);
+        }
+        
+        // Save to Mem
+        if pa {
+            pEvents = arr
+        }
+        else {
+            aEvents = arr
+        }
+        
+        // Save to Disk
+        saveDisk()
+        
+        // Return
+        return true;
+    }
+    
+    // Loads Local (Proximity) events into lEvents from DD
+    static func loadDBLocal() -> Bool{
         // Get Latest Location
         var loc = CLLocation()
         Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
@@ -289,14 +572,36 @@ class NSEvent: NSObject, NSCoding {
         print("There was a problem: \(error)")
         }
     
-        // Load Local Events
-//        let dictArr = getEventsBlockDB(loc.coordinate.latitude)
-    
-        // Load Attending Events
-    
-    
-        // Load Posted Events
-    
+        /** Load Local Events **/
+        // Array of Events
+        var arr: [NSEvent]? = [NSEvent]()
+        
+        // Get Array of Dict
+        let dictArr : [[String:String]]? = getEventsBlockDB(lat: loc.coordinate.latitude, long: loc.coordinate.longitude)
+        
+        // Nil Handler
+        if dictArr == nil {
+            return false
+        }
+        
+        // Iterate through Dict
+        for ent in dictArr! {
+            // Create Event (Ask Sultan)
+            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startt"]!)!), end: Date(timeIntervalSince1970: Double(ent["endt"]!)!), building: ent["building"], address: ent["address"], city: ent["city"], state: ent["state"], zip: ent["zip"], loc: CLLocation(latitude: Double(ent["lat"]!)!, longitude: Double(ent["long"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["desc"], intrests: arrayer(string: ent["intrests"]) as? [String])
+            
+            // Add Event
+            arr!.append(event);
+        }
+        
+        // Save to Mem
+        lEvents = arr
+        sEvents = lEvents
+        
+        // Save to Disk
+        saveDisk()
+        
+        // Return
+        return true
     }
     
     // Send Event Information
@@ -401,7 +706,7 @@ class NSEvent: NSObject, NSCoding {
     
     
     // Get Events within proximity
-    static func getEventsBlockDB(lat: Float, long: Float) -> [[String:String]]? {
+    static func getEventsBlockDB(lat: Double, long: Double) -> [[String:String]]? {
         // Int Wait
         var wait = 0
         
@@ -459,10 +764,10 @@ class NSEvent: NSObject, NSCoding {
     }
     
     
-    // remove Event Information
-    static func removeEvent(ID: String) {
+    // Delete Event Information
+    static func deleteEvent(ID: String) {
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/removeEvent.php?") {
+        if let url = URL(string: "https://gymbuddyapp.net/deleteEvent.php?") {
             
             /** Request **/
             // Setup Request
@@ -482,17 +787,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: removeEvent() Connection Error = \(error!)")
+                    print("NSEvent: deleteEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: removeEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: removeEvent() Response = \(response!)")
+                    print("NSEvent: deleteEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: deleteEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: removeEvent() Response Message = \(responseString!)")
+                print("NSEvent: deleteEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -501,7 +806,7 @@ class NSEvent: NSObject, NSCoding {
     }
     
     // getAUniqueID requests a unique ID for an event.
-    static func getUniqueID() -> String {
+    static func getUniqueID() -> String? {
         var id: String?
         var control = 0
         let stringURL = "https://gymbuddyapp.net/GetUniqueID.php"
@@ -514,17 +819,83 @@ class NSEvent: NSObject, NSCoding {
                     id = parseID(data!)
                     control = 1
                 }
+                else {
+                    id = nil
+                    control = 1
+                }
             })
             task.resume()
         }
-        while control == 0
-        {
+        while control == 0 {
             // Do nothing
             
         }
-        return id!
+        return id
     }
     
+    
+
+    
+    /** Disk Functions **/
+    // Save
+    static func saveDisk() {
+        // Save Attending Events
+        let savedaData = NSKeyedArchiver.archiveRootObject(aEvents as Any, toFile: arcaURL.path)
+        if (savedaData) {
+            print("Success")
+        } else {
+            print("Failure")
+        }
+        
+        // Save Local Events
+        let savedlData = NSKeyedArchiver.archiveRootObject(lEvents as Any, toFile: arclURL.path)
+        if (savedlData) {
+            print("Success")
+        } else {
+            print("Failure")
+        }
+        
+        // Save Posted Events
+        let savedpData = NSKeyedArchiver.archiveRootObject(pEvents as Any, toFile: arcpURL.path)
+        if (savedpData) {
+            print("Success")
+        } else {
+            print("Failure")
+        }
+    }
+    
+    // Load
+    static func loadDisk() {
+        if let events = NSKeyedUnarchiver.unarchiveObject(withFile: arcaURL.path) as? [NSEvent] {
+            aEvents = events
+            print("Success")
+            //return true
+        }
+        else {
+            print("Failure")
+            //return false
+        }
+        
+        if let events1 = NSKeyedUnarchiver.unarchiveObject(withFile: arclURL.path) as? [NSEvent] {
+            lEvents = events1
+            print("Success")
+            //return true
+        }
+        else {
+            print("Failure")
+            //return false
+        }
+        
+        if let events2 = NSKeyedUnarchiver.unarchiveObject(withFile: arcpURL.path) as? [NSEvent] {
+            pEvents = events2
+            print("Success")
+            //return true
+        }
+        else {
+            print("Failure")
+            //return false
+        }
+    }
     
     /// Counters incrementers/decrementers
     
@@ -653,70 +1024,6 @@ class NSEvent: NSObject, NSCoding {
             
             // Start Task
             task.resume()
-        }
-    }
-    
-    
-
-    
-    /** Disk Functions **/
-    // Save
-    static func saveDisk() {
-        // Save Attending Events
-        let savedaData = NSKeyedArchiver.archiveRootObject(aEvents as Any, toFile: arcaURL.path)
-        if (savedaData) {
-            print("Success")
-        } else {
-            print("Failure")
-        }
-        
-        // Save Local Events
-        let savedlData = NSKeyedArchiver.archiveRootObject(lEvents as Any, toFile: arclURL.path)
-        if (savedlData) {
-            print("Success")
-        } else {
-            print("Failure")
-        }
-        
-        // Save Posted Events
-        let savedpData = NSKeyedArchiver.archiveRootObject(pEvents as Any, toFile: arcpURL.path)
-        if (savedpData) {
-            print("Success")
-        } else {
-            print("Failure")
-        }
-    }
-    
-    // Load
-    static func loadDisk() {
-        if let events = NSKeyedUnarchiver.unarchiveObject(withFile: arcaURL.path) as? [NSEvent] {
-            aEvents = events
-            print("Success")
-            //return true
-        }
-        else {
-            print("Failure")
-            //return false
-        }
-        
-        if let events1 = NSKeyedUnarchiver.unarchiveObject(withFile: arclURL.path) as? [NSEvent] {
-            lEvents = events1
-            print("Success")
-            //return true
-        }
-        else {
-            print("Failure")
-            //return false
-        }
-        
-        if let events2 = NSKeyedUnarchiver.unarchiveObject(withFile: arcpURL.path) as? [NSEvent] {
-            pEvents = events2
-            print("Success")
-            //return true
-        }
-        else {
-            print("Failure")
-            //return false
         }
     }
     
