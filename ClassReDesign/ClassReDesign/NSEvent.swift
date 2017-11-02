@@ -655,7 +655,7 @@ class NSEvent: NSObject, NSCoding {
         var dict: [String:String]?
         
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/getEvent.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/getEvent.php?") {
             
             /** Request **/
             // Setup Request
@@ -714,7 +714,7 @@ class NSEvent: NSObject, NSCoding {
         var dict: [[String:String]]?
         
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/getEventsNear.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/getEventsNear.php?") {
             
             /** Request **/
             // Setup Request
@@ -767,7 +767,7 @@ class NSEvent: NSObject, NSCoding {
     // Delete Event Information
     static func deleteEvent(ID: String) {
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/deleteEvent.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/deleteEvent.php?") {
             
             /** Request **/
             // Setup Request
@@ -809,7 +809,7 @@ class NSEvent: NSObject, NSCoding {
     static func getUniqueID() -> String? {
         var id: String?
         var control = 0
-        let stringURL = "http://gymbuddyapp.net/GetUniqueID.php"
+        let stringURL = "http://gymbuddyapp.net/getUniqueID.php"
         let Url = URL(string: stringURL)
         
         if let url = Url {
@@ -902,7 +902,7 @@ class NSEvent: NSObject, NSCoding {
     /// Change the event's flag count by value (value must have sign and number, for example: "+3")
     static func flagCountEvent(ID: String, value: String) {
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/flagCountEvent.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/flagCountEvent.php?") {
             
             /** Request **/
             // Setup Request
@@ -945,7 +945,7 @@ class NSEvent: NSObject, NSCoding {
     /// Change the event's rating count by value (value must have sign and number, for example: "+3")
     static func ratCountEvent(ID: String, value: String) {
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/ratCount.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/ratCount.php?") {
             
             /** Request **/
             // Setup Request
@@ -988,7 +988,7 @@ class NSEvent: NSObject, NSCoding {
     /// Change the event's head count by value (value must have sign and number, for example: "+3")
     static func headCountEvent(ID: String, value: String) {
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/headCount.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/headCount.php?") {
             
             /** Request **/
             // Setup Request
@@ -1153,7 +1153,7 @@ class NSEvent: NSObject, NSCoding {
         
         // Remove last +
         //string.removeLast()
-        string.remove(at: string.endIndex)
+        string.remove(at: string.index(before: string.endIndex))
         
         // Return
         return string

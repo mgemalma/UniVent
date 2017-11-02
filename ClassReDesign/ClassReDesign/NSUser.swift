@@ -18,6 +18,7 @@
 
 /** Libraries **/
 import UIKit            // Used for NSObject & NS Coding.
+import Foundation
 
 /** Class Definition **/
 class NSUser: NSObject, NSCoding {
@@ -265,19 +266,19 @@ class NSUser: NSObject, NSCoding {
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             
-//            print(user.id)
-//            print(user.name)
-//            print(user.flags)
-//            print(user.rad)
-//            print(NSUser.stringer(array: user.interests))
-//            print(NSUser.stringer(array: user.pEvents))
-//            print(NSUser.stringer(array: user.aEvents))
-//            print(NSUser.stringer(array: user.fEvents))
-//            print(NSUser.stringer(array: user.rEvents))
+            print(user.id)
+            print(user.name)
+            print(user.flags ?? "no flags")
+            print(user.rad ?? "no rad")
+            print(NSUser.stringer(array: user.interests))
+            print(NSUser.stringer(array: user.pEvents))
+            print(NSUser.stringer(array: user.aEvents))
+            print(NSUser.stringer(array: user.fEvents))
+            print(NSUser.stringer(array: user.rEvents))
             
             
             // Build Post Request
-            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags!)&rad=\(user.rad!)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
+            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             print(postString)
@@ -441,14 +442,19 @@ class NSUser: NSObject, NSCoding {
         
         // Parse to String
         var string: String = ""
-        for element in array! {
+        for element in array! {            
             string.append(String(describing: element))
             string.append(",")
         }
         
         // Remove last +
         //string.removeLast()
-        string.remove(at: string.endIndex)
+        print("In stringer: \(string )")
+        if !string.isEmpty || string != "" {
+            string.remove(at: string.index(before: string.endIndex))
+        } else {
+            return ""
+        }
         // Return
         return string
     }
