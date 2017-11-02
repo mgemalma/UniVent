@@ -478,7 +478,7 @@ class NSEvent: NSObject, NSCoding {
     // Generic Sorter Which takes a comparator <comp> similar to BY_DATE_A or BY_DATE_D for ascending and decending order.
     static func sorter(comp: (NSEvent, NSEvent) -> Bool) {
         // Copy Sorted Events
-        let array = sEvents
+        let array = lEvents
         
         // Nil Handler
         if array == nil {
