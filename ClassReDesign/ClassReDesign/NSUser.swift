@@ -1,7 +1,7 @@
 /**
  Name:              NSUser (The new and improved user).
  
- Revision Date:     2 Nov @ 7:30 PM
+ Revision Date:     26 Oct @ 1:00 PM
  
  Description:       The class provides all user associated
                     methods and instance variables and also
@@ -53,7 +53,7 @@ class NSUser: NSObject, NSCoding {
     private var aEvents: [String]?      // Stores all attending Events as IDs.
     private var rEvents: [String]?      // Stores all posted Events as IDs.
     private var fEvents: [String]?      // Stores all posted Events as IDs.
-    private var loc: [CLLocation]?
+    private var loc: CLLocation?
     
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
@@ -104,28 +104,71 @@ class NSUser: NSObject, NSCoding {
     }
     
     /** Getter **/
-    static func getID() -> String? { return user.id }           // Get ID (Static Instance)
-    static func getName() -> String? { return user.name }       // Get Name (Static Instance)
-    static func getFlags() -> Int? { return user.flags }
+    static func getID() -> String? { return user.id }
+    static func getName() -> String? { return user.name }
+    static func getFlags() -> Int? {
+        if ifInternet() || user.id != nil{
+            if loadDB(id: user.id!) {
+                return nil
+            }
+        }
+        return user.flags
+    }
     static func getRadius() -> Float? { return user.rad }
     static func getInterests() -> [String]? { return user.interests }
     static func getPostedEvents() -> [String]? { return user.pEvents }
     static func getAttendingEvents() -> [String]? { return user.aEvents }
     static func getFlaggedEvents() -> [String]? { return user.fEvents }
     static func getRatedEvents() -> [String]? { return user.rEvents }
-    static func getLocation() -> [CLLocation]? { return user.loc }
+    static func getLocation() -> CLLocation? { return user.loc }
     
     /** Setter **/
-    static func setID(id: String?) { user.id = id }           // Get ID (Static Instance)
-    static func setName(name: String?) { user.name = name }     // Get Name (Static Instance)
-    static func setFlags(flags: Int?) { user.flags = flags }
-    static func setRadius(rad: Float?) { user.rad = rad }
-    static func setInterests(interests: [String]?) { user.interests = interests }
-    static func setPostedEvents(pEvents: [String]?) { user.pEvents = pEvents }
-    static func setAttendingEvents(aEvents: [String]?) { user.aEvents = aEvents }
-    static func setFlaggedEvents(fEvents: [String]?) { user.fEvents = fEvents }
-    static func setRatedEvents(rEvents: [String]?) { user.rEvents = rEvents }
-    static func setLocation(loc: [CLLocation]?) { user.loc = loc }
+    static func setID(id: String?) {
+        user.id = id
+        saveDisk()
+        saveDB()
+    }
+    static func setName(name: String?) {
+        user.name = name
+        saveDisk()
+        saveDB()
+    }
+    static func setFlags(flags: Int?) {
+        user.flags = flags
+        saveDisk()
+        saveDB()
+    }
+    static func setRadius(rad: Float?) {
+        user.rad = rad
+        saveDisk()
+        saveDB()
+    }
+    static func setInterests(interests: [String]?) {
+        user.interests = interests
+        saveDisk()
+        saveDB()
+    }
+    static func setPostedEvents(pEvents: [String]?) {
+        user.pEvents = pEvents
+        saveDisk()
+        saveDB()
+    }
+    static func setAttendingEvents(aEvents: [String]?) {
+        user.aEvents = aEvents
+        saveDisk()
+        saveDB()
+    }
+    static func setFlaggedEvents(fEvents: [String]?) {
+        user.fEvents = fEvents
+        saveDisk()
+        saveDB()
+    }
+    static func setRatedEvents(rEvents: [String]?) {
+        user.rEvents = rEvents
+        saveDisk()
+        saveDB()
+    }
+    static func setLocation(loc: CLLocation?) { user.loc = loc }
     
     /** Functions **/
     static func boot(id: String, name: String) {
@@ -306,6 +349,73 @@ class NSUser: NSObject, NSCoding {
             task.resume()
         }
     }
+    
+    /**
+    // Get User Flags
+    static func getFlagsDB() -> Int? {
+        // Int Wait
+        var wait = 0
+        
+        // Dict
+        var dict: [String:String]?
+        
+        // Set URL
+        if let url = URL(string: "http://gymbuddyapp.net/flagUser.php?") {
+            
+            /** Request **/
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Nil Handler
+            if user.id == nil {
+                return nil
+            }
+            
+            // Build Post Request
+            var postString = "id=\(user.id!)"
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSUser: getUserDB() Connection Error = \(error!)")
+                    return
+                }
+                
+                /** Parse the Data -> Dict **/
+                dict = parseUser(data)              // Get Dictionary
+                wait = 1                            // Set Wait
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSUser: getUserDB() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                print("NSUser: getUserDB() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
+        // Busy Waiting
+        while wait == 0{
+            // Do nothing
+        }
+        
+        // Get Flag
+        if dict == nil || dict!["flags"] == nil {
+            return nil
+        }
+        return Int(dict!["flags"]!)
+    }**/
     
     // Check if there is Internet
     static func ifInternet() -> Bool {
