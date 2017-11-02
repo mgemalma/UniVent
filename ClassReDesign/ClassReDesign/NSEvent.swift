@@ -994,6 +994,46 @@ class NSEvent: NSObject, NSCoding {
         }
     }
     
+    static func flagCountUser(ID: String, value: String) {
+        // Set URL
+        if let url = URL(string: "https://gymbuddyapp.net/flagCountUser.php?") {
+            
+            /** Request **/
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "id=\(ID)&value=\(value)"
+            postString = postString.replacingOccurrences(of: " ", with: "%20")
+            postString = postString.replacingOccurrences(of: "'", with: "''")
+            postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            /** Response **/
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let data = data, error == nil else {
+                    print("NSEvent: flagCountUser() Connection Error = \(error!)")
+                    return
+                }
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSEvent: flagCountUser() Response = \(response!)")
+                }
+                let responseString = String(data: data, encoding: .utf8)
+                print("NSEvent: flagCountUser() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
+        }
+    }
     
     /// Change the event's head count by value (value must have sign and number, for example: "+3")
     static func headCountEvent(ID: String, value: String) {
