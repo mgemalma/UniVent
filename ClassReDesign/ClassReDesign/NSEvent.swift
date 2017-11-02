@@ -360,7 +360,9 @@ class NSEvent: NSObject, NSCoding {
             }
             
             // Add to Array
-            arr!.append(newID!)
+            if !arr!.contains(newID!) {
+                arr!.append(newID!)
+            }
             
             // Set Array
             NSUser.setPostedEvents(pEvents: arr)
@@ -500,7 +502,7 @@ class NSEvent: NSObject, NSCoding {
     // Loads Everything from DB
     static func loadDB() -> Bool {
         // Load Everything
-        if loadDBLocal() && loadDBPostAttend(pa: true) && loadDBPostAttend(pa: false) {
+        if /*loadDBLocal() && */loadDBPostAttend(pa: true) && loadDBPostAttend(pa: false) {
             return true
         }
         
@@ -563,14 +565,17 @@ class NSEvent: NSObject, NSCoding {
     }
     
     // Loads Local (Proximity) events into lEvents from DD
-    static func loadDBLocal() -> Bool{
+    static func loadDBLocal(loc: CLLocation) -> Bool{
         // Get Latest Location
-        var loc = CLLocation()
-        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, locat in
-        loc = locat
-        }) { (_, last, error) in
-        print("There was a problem: \(error)")
-        }
+        //var loc = CLLocation()
+//        Location.onReceiveNewLocation = { location in
+//            loc = location
+//        }
+//        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, locat in
+//            loc = locat
+//        }) { (_, last, error) in
+//        print("There was a problem: \(error)")
+//        }
     
         /** Load Local Events **/
         // Array of Events
@@ -588,6 +593,9 @@ class NSEvent: NSObject, NSCoding {
         for ent in dictArr! {
             print(ent)
             // Create Event (Ask Sultan)
+            
+            // TODO: Parse the ["address"] value into a dictionary
+            
             var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startt"]!)!), end: Date(timeIntervalSince1970: Double(ent["endt"]!)!), building: ent["building"], address: ent["address"], city: ent["city"], state: ent["state"], zip: ent["zip"], loc: CLLocation(latitude: Double(ent["lat"]!)!, longitude: Double(ent["long"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["desc"], intrests: arrayer(string: ent["intrests"]) as? [String])
             
             // Add Event
@@ -727,6 +735,7 @@ class NSEvent: NSObject, NSCoding {
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             
+            print(postString)
             // Send Request
             request.httpBody = postString.data(using: .utf8)
             
