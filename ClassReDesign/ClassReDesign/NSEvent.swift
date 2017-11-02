@@ -1159,4 +1159,50 @@ class NSEvent: NSObject, NSCoding {
         // Return
         return string
     }
+    
+    
+    // Converts a dictionary to a JSON String
+    static func dictToString(dict: [String: String]?) -> String? {
+        // Nil
+        if dict == nil {
+            return ""
+        }
+        
+        // Parse to String
+        var string: String = "[{"
+        for element in dict! {
+            string.append("\"")
+            string.append(String(describing: element.key))
+            string.append("\"")
+            string.append(":")
+            string.append("\"")
+            string.append(String(describing: element.value))
+            string.append("\"")
+            string.append(",")
+        }
+        
+        // Remove last +
+        //string.removeLast()
+        string.remove(at: string.index(before: string.endIndex))
+        string.append("}")
+        string.append("]")
+        
+        // Return
+        return string
+    }
+    
+    
+    // Converts a JSON String to a dictionary
+    static func dicter(string: String?) -> [String: String]? {
+        // Nil
+        if string == nil {
+            return nil
+        }
+        // Parse to Array
+        var temp = string!.data(using: .utf8)
+        var dict = NSEvent.parseEvent(temp!)
+        
+        // Return
+        return dict
+    }
 }
