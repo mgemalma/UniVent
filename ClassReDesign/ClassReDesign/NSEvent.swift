@@ -360,9 +360,7 @@ class NSEvent: NSObject, NSCoding {
             }
             
             // Add to Array
-            if !arr!.contains(newID!) {
-                arr!.append(newID!)
-            }
+            arr!.append(newID!)
             
             // Set Array
             NSUser.setPostedEvents(pEvents: arr)
@@ -502,7 +500,7 @@ class NSEvent: NSObject, NSCoding {
     // Loads Everything from DB
     static func loadDB() -> Bool {
         // Load Everything
-        if /*loadDBLocal() && */loadDBPostAttend(pa: true) && loadDBPostAttend(pa: false) {
+        if loadDBLocal() && loadDBPostAttend(pa: true) && loadDBPostAttend(pa: false) {
             return true
         }
         
@@ -541,9 +539,10 @@ class NSEvent: NSObject, NSCoding {
             
             // Unwrap
             let ent = dict!
+            let addressComponents = NSEvent.dicter(string: ent["addr"])!
             
             // Create Event (Ask Sultan)
-            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startt"]!)!), end: Date(timeIntervalSince1970: Double(ent["endt"]!)!), building: ent["building"], address: ent["address"], city: ent["city"], state: ent["state"], zip: ent["zip"], loc: CLLocation(latitude: Double(ent["lat"]!)!, longitude: Double(ent["long"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["desc"], intrests: arrayer(string: ent["intrests"]) as? [String])
+            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String])
             
             // Add Event
             arr!.append(event);
@@ -565,17 +564,14 @@ class NSEvent: NSObject, NSCoding {
     }
     
     // Loads Local (Proximity) events into lEvents from DD
-    static func loadDBLocal(loc: CLLocation) -> Bool{
+    static func loadDBLocal() -> Bool{
         // Get Latest Location
-        //var loc = CLLocation()
-//        Location.onReceiveNewLocation = { location in
-//            loc = location
-//        }
-//        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, locat in
-//            loc = locat
-//        }) { (_, last, error) in
-//        print("There was a problem: \(error)")
-//        }
+        var loc = CLLocation()
+        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, locat in
+        loc = locat
+        }) { (_, last, error) in
+        print("There was a problem: \(error)")
+        }
     
         /** Load Local Events **/
         // Array of Events
@@ -590,13 +586,12 @@ class NSEvent: NSObject, NSCoding {
         }
         
         // Iterate through Dict
-        for ent in dictArr! {
-            print(ent)
+        for dict in dictArr! {
+            let ent = dict
+            let addressComponents = NSEvent.dicter(string: ent["addr"])!
+//            print(ent)
             // Create Event (Ask Sultan)
-            
-            // TODO: Parse the ["address"] value into a dictionary
-            
-            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startt"]!)!), end: Date(timeIntervalSince1970: Double(ent["endt"]!)!), building: ent["building"], address: ent["address"], city: ent["city"], state: ent["state"], zip: ent["zip"], loc: CLLocation(latitude: Double(ent["lat"]!)!, longitude: Double(ent["long"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["desc"], intrests: arrayer(string: ent["intrests"]) as? [String])
+            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String])
             
             // Add Event
             arr!.append(event);
@@ -621,9 +616,10 @@ class NSEvent: NSObject, NSCoding {
             // Setup Request
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
+            //let addressString = dictToString(dict: event.getCompleteAddress())!
             
             // Build Post Request
-            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=0&ratC=0&flags=0&heads=0&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()!) ?? "")"
+            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&add=\(dictToString(dict: event.getCompleteAddress())!)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=\(event.getRating()!)&ratC=\(event.getRatingCount()!)&flags=\(event.getFlags()!)&heads=\(event.getHeadCount()!)&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()!) ?? "")"
             
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
@@ -735,7 +731,6 @@ class NSEvent: NSObject, NSCoding {
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             
-            print(postString)
             // Send Request
             request.httpBody = postString.data(using: .utf8)
             
@@ -1207,5 +1202,51 @@ class NSEvent: NSObject, NSCoding {
         
         // Return
         return string
+    }
+    
+    
+    // Converts a dictionary to a JSON String
+    static func dictToString(dict: [String: String]?) -> String? {
+        // Nil
+        if dict == nil {
+            return ""
+        }
+        
+        // Parse to String
+        var string: String = "[{"
+        for element in dict! {
+            string.append("\"")
+            string.append(String(describing: element.key))
+            string.append("\"")
+            string.append(":")
+            string.append("\"")
+            string.append(String(describing: element.value))
+            string.append("\"")
+            string.append(",")
+        }
+        
+        // Remove last +
+        //string.removeLast()
+        string.remove(at: string.index(before: string.endIndex))
+        string.append("}")
+        string.append("]")
+        
+        // Return
+        return string
+    }
+    
+    
+    // Converts a JSON String to a dictionary
+    static func dicter(string: String?) -> [String: String]? {
+        // Nil
+        if string == nil {
+            return nil
+        }
+        // Parse to Array
+        var temp = string!.data(using: .utf8)
+        var dict = NSEvent.parseEvent(temp!)
+        
+        // Return
+        return dict
     }
 }
