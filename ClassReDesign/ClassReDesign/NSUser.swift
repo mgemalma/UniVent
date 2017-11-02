@@ -1,7 +1,7 @@
 /**
  Name:              NSUser (The new and improved user).
  
- Revision Date:     26 Oct @ 1:00 PM
+ Revision Date:     2 Nov @ 7:30 PM
  
  Description:       The class provides all user associated
                     methods and instance variables and also
@@ -133,13 +133,13 @@ class NSUser: NSObject, NSCoding {
         if(loadDisk() && id == user.id) {
             /** Disk Yes **/
             // Check Internet
-            //if(internet) {
+            if ifInternet() {
                 // Load DB
-                //loadDB(id: user.id!)
-            
-                // Update Disk
-                saveDisk()
-            //}
+                if loadDB(id: user.id!) {
+                    // Update Disk
+                    saveDisk()
+                }
+            }
         }
         else {
             /** Disk No & Diff **/
@@ -170,8 +170,9 @@ class NSUser: NSObject, NSCoding {
             saveDisk()
             
             // Update DB
-            //if(internet)
-            saveDB()
+            if ifInternet() {
+                saveDB()
+            }
         }
     }
     
@@ -269,16 +270,10 @@ class NSUser: NSObject, NSCoding {
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             
-//            print(user.id)
-//            print(user.name)
-//            print(user.flags ?? "no flags")
-//            print(user.rad ?? "no rad")
-//            print(NSUser.stringer(array: user.interests))
-//            print(NSUser.stringer(array: user.pEvents))
-//            print(NSUser.stringer(array: user.aEvents))
-//            print(NSUser.stringer(array: user.fEvents))
-//            print(NSUser.stringer(array: user.rEvents))
-            
+            // Nil Handler
+            if user.id == nil || user.name == nil {
+                return
+            }
             
             // Build Post Request
             var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
@@ -312,23 +307,27 @@ class NSUser: NSObject, NSCoding {
         }
     }
     
-    /// Counters incrementers/decrementers
-    
-    /// Change the user's flag count by value (value must have sign and number, for example: "+3")
-    static func flagCountUser(ID: String, value: String) {
+    // Check if there is Internet
+    static func ifInternet() -> Bool {
+        // Int Wait
+        var wait = 0
+        
+        // Store Response
+        var responseString: String?
+        
         // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/flagCountUser.php?") {
-            
-            /** Request **/
+        if let url = URL(string: "http://gymbuddyapp.net/connected.php?")
+        {
             // Setup Request
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             
+            
             // Build Post Request
-            var postString = "id=\(ID)&value=\(value)"
+            var postString = ""
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
+            print(postString)
             
             // Send Request
             request.httpBody = postString.data(using: .utf8)
@@ -338,22 +337,36 @@ class NSUser: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: flagCountUser() Connection Error = \(error!)")
+                    print("NSUser: setUserDB() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: flagCountUser() Response = \(response!)")
+                    print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    print("NSUser: getUserDB() Response = \(response!)")
                 }
-                let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: flagCountUser() Response Message = \(responseString!)")
+                responseString = String(data: data, encoding: .utf8)
+                print("NSUser: setUserDB() Response Message = \(responseString!)")
+                
+                // Set Wait
+                wait = 1
             }
             
             // Start Task
             task.resume()
         }
+        
+        // Busy Waiting
+        while wait == 0{
+            // Do nothing
+        }
+        
+        // Return
+        if responseString == nil {
+            return false
+        }
+        return responseString! == "true"
     }
     
     /** Disk Functions **/
