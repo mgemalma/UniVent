@@ -809,7 +809,7 @@ class NSEvent: NSObject, NSCoding {
     static func getUniqueID() -> String? {
         var id: String?
         var control = 0
-        let stringURL = "https://gymbuddyapp.net/GetUniqueID.php"
+        let stringURL = "http://gymbuddyapp.net/GetUniqueID.php"
         let Url = URL(string: stringURL)
         
         if let url = Url {
