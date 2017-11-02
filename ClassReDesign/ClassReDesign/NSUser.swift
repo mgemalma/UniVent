@@ -18,6 +18,7 @@
 
 /** Libraries **/
 import UIKit            // Used for NSObject & NS Coding.
+import CoreLocation
 
 /** Class Definition **/
 class NSUser: NSObject, NSCoding {
@@ -52,6 +53,7 @@ class NSUser: NSObject, NSCoding {
     private var aEvents: [String]?      // Stores all attending Events as IDs.
     private var rEvents: [String]?      // Stores all posted Events as IDs.
     private var fEvents: [String]?      // Stores all posted Events as IDs.
+    private var loc: [CLLocation]?
     
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
@@ -111,6 +113,7 @@ class NSUser: NSObject, NSCoding {
     static func getAttendingEvents() -> [String]? { return user.aEvents }
     static func getFlaggedEvents() -> [String]? { return user.fEvents }
     static func getRatedEvents() -> [String]? { return user.rEvents }
+    static func getLocation() -> [CLLocation]? { return user.loc }
     
     /** Setter **/
     static func setID(id: String?) { user.id = id }           // Get ID (Static Instance)
@@ -122,6 +125,7 @@ class NSUser: NSObject, NSCoding {
     static func setAttendingEvents(aEvents: [String]?) { user.aEvents = aEvents }
     static func setFlaggedEvents(fEvents: [String]?) { user.fEvents = fEvents }
     static func setRatedEvents(rEvents: [String]?) { user.rEvents = rEvents }
+    static func setLocation(loc: [CLLocation]?) { user.loc = loc }
     
     /** Functions **/
     static func boot(id: String, name: String) {
