@@ -18,7 +18,6 @@
 
 /** Libraries **/
 import UIKit            // Used for NSObject & NS Coding.
-import Foundation
 
 /** Class Definition **/
 class NSUser: NSObject, NSCoding {
@@ -266,15 +265,15 @@ class NSUser: NSObject, NSCoding {
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             
-            print(user.id)
-            print(user.name)
-            print(user.flags ?? "no flags")
-            print(user.rad ?? "no rad")
-            print(NSUser.stringer(array: user.interests))
-            print(NSUser.stringer(array: user.pEvents))
-            print(NSUser.stringer(array: user.aEvents))
-            print(NSUser.stringer(array: user.fEvents))
-            print(NSUser.stringer(array: user.rEvents))
+//            print(user.id)
+//            print(user.name)
+//            print(user.flags ?? "no flags")
+//            print(user.rad ?? "no rad")
+//            print(NSUser.stringer(array: user.interests))
+//            print(NSUser.stringer(array: user.pEvents))
+//            print(NSUser.stringer(array: user.aEvents))
+//            print(NSUser.stringer(array: user.fEvents))
+//            print(NSUser.stringer(array: user.rEvents))
             
             
             // Build Post Request
@@ -449,7 +448,6 @@ class NSUser: NSObject, NSCoding {
         
         // Remove last +
         //string.removeLast()
-        print("In stringer: \(string )")
         if !string.isEmpty || string != "" {
             string.remove(at: string.index(before: string.endIndex))
         } else {

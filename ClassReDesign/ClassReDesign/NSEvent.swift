@@ -566,8 +566,8 @@ class NSEvent: NSObject, NSCoding {
     static func loadDBLocal() -> Bool{
         // Get Latest Location
         var loc = CLLocation()
-        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
-        loc = location
+        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, locat in
+        loc = locat
         }) { (_, last, error) in
         print("There was a problem: \(error)")
         }
@@ -586,6 +586,7 @@ class NSEvent: NSObject, NSCoding {
         
         // Iterate through Dict
         for ent in dictArr! {
+            print(ent)
             // Create Event (Ask Sultan)
             var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startt"]!)!), end: Date(timeIntervalSince1970: Double(ent["endt"]!)!), building: ent["building"], address: ent["address"], city: ent["city"], state: ent["state"], zip: ent["zip"], loc: CLLocation(latitude: Double(ent["lat"]!)!, longitude: Double(ent["long"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["desc"], intrests: arrayer(string: ent["intrests"]) as? [String])
             
@@ -614,11 +615,11 @@ class NSEvent: NSObject, NSCoding {
             request.httpMethod = "POST"
             
             // Build Post Request
-            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.latitude)&rat=0&ratC=0&flags=0&heads=0&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription()!)&interests=\(stringer(array: event.getInterest()!)!)"
+            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=0&ratC=0&flags=0&heads=0&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()!) ?? "")"
             
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            print(postString)
+            //print(postString)
             
             // Send Request
             request.httpBody = postString.data(using: .utf8)
