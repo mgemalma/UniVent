@@ -265,6 +265,17 @@ class NSUser: NSObject, NSCoding {
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             
+//            print(user.id)
+//            print(user.name)
+//            print(user.flags)
+//            print(user.rad)
+//            print(NSUser.stringer(array: user.interests))
+//            print(NSUser.stringer(array: user.pEvents))
+//            print(NSUser.stringer(array: user.aEvents))
+//            print(NSUser.stringer(array: user.fEvents))
+//            print(NSUser.stringer(array: user.rEvents))
+            
+            
             // Build Post Request
             var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags!)&rad=\(user.rad!)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
@@ -425,7 +436,7 @@ class NSUser: NSObject, NSCoding {
     static func stringer(array: [Any]?) -> String? {
         // Nil
         if array == nil {
-            return nil
+            return ""
         }
         
         // Parse to String

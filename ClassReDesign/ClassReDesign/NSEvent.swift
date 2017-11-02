@@ -1034,7 +1034,7 @@ class NSEvent: NSObject, NSCoding {
     // parseID is a helper function to getAUniqueID
     // It parses the data in the script into a dictionary.
     // The ID is returned as an Int. Typically 16 digits long.
-    static func parseID(_ data:Data) -> String {
+    static func parseID(_ data:Data) -> String? {
         var id2: String?
         do {
             let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
@@ -1047,7 +1047,7 @@ class NSEvent: NSObject, NSCoding {
         catch {
             print("Error in parseID")
         }
-        return id2!
+        return id2
     }
     
     // Parse Data into a Dictionary
