@@ -392,8 +392,8 @@ class NSUser: NSObject, NSCoding {
         }
         
         // Remove last +
-        string.removeLast()
-        
+        //string.removeLast()
+        string.remove(at: string.endIndex)
         // Return
         return string
     }

@@ -1152,8 +1152,8 @@ class NSEvent: NSObject, NSCoding {
         }
         
         // Remove last +
-        string.removeLast()
-        //string.remove(at: string.endIndex)
+        //string.removeLast()
+        string.remove(at: string.endIndex)
         
         // Return
         return string
