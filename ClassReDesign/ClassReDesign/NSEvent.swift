@@ -101,7 +101,7 @@ class NSEvent: NSObject, NSCoding {
     
     /** Constructor **/
     // Creation Constructor
-    convenience init(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?) {
+    convenience init(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?) {
         // Initialize Empty
         self.init()
         
@@ -127,6 +127,7 @@ class NSEvent: NSObject, NSCoding {
         self.type = type
         self.desc = desc
         self.interests = intrests
+        self.add = addr
     }
     
     // Decoder (Required by NSCoding)
@@ -323,7 +324,7 @@ class NSEvent: NSObject, NSCoding {
     
     // Create and Event
     // Will create or update an event based on id value passed. Returns id if successful else nil.
-    static func postEvent(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?) -> String?{
+    static func postEvent(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?) -> String?{
         
         // Variable to Manipulate Event
         var newEvent: NSEvent?
@@ -339,7 +340,7 @@ class NSEvent: NSObject, NSCoding {
             }
             
             // Create Event
-            newEvent = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests)
+            newEvent = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
             
             // Nil Handler
             if newEvent == nil {
@@ -542,7 +543,7 @@ class NSEvent: NSObject, NSCoding {
             let addressComponents = NSEvent.dicter(string: ent["addr"])!
             
             // Create Event (Ask Sultan)
-            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String])
+            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
             
             // Add Event
             arr!.append(event);
@@ -566,13 +567,7 @@ class NSEvent: NSObject, NSCoding {
     // Loads Local (Proximity) events into lEvents from DD
     static func loadDBLocal() -> Bool{
         // Get Latest Location
-        var loc = CLLocation()
-        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, locat in
-        loc = locat
-        }) { (_, last, error) in
-        print("There was a problem: \(error)")
-        }
-    
+        var loc = NSUser.getLocation()    
         /** Load Local Events **/
         // Array of Events
         var arr: [NSEvent]? = [NSEvent]()
@@ -591,7 +586,7 @@ class NSEvent: NSObject, NSCoding {
             let addressComponents = NSEvent.dicter(string: ent["addr"])!
 //            print(ent)
             // Create Event (Ask Sultan)
-            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String])
+            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
             
             // Add Event
             arr!.append(event);
