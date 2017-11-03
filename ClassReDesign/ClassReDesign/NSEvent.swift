@@ -263,7 +263,7 @@ class NSEvent: NSObject, NSCoding {
         else {
             sEvents![index!].incHeadCount(inc: -1)
         }
-
+    
         // Update to DB
         if inc {
             NSEvent.headCountEvent(ID: id!, value: "+1")
@@ -335,21 +335,28 @@ class NSEvent: NSObject, NSCoding {
         }
         if inc {
             // Add to Array
-            arr!.append(id!)
+//            arr!.append(id!)
             
             // Set to User
             NSUser.setFlaggedEvents(fEvents: arr)
             
-            // User save to DB & Disk
-            NSUser.saveDB()
-            NSUser.saveDisk()
-            
             // Update to DB
             NSEvent.flagCountEvent(ID: id!, value: "+1")
             
+            // Find Host
+            var event :NSEvent?
+            for eve in lEvents! {
+                if eve.getID() == id! {
+                    event = eve
+                }
+            }
+            if event != nil && event!.getHostID() != nil {
+                flagCountUser(ID: event!.getHostID()!, value: "+1")
+            }
+            
         } else {
             // Add to Array
-            arr!.remove(at: (arr?.index(of: id!)!)!)
+//            arr!.remove(at: (arr?.index(of: id!)!)!)
             
             // Set to User
             NSUser.setFlaggedEvents(fEvents: arr)
@@ -360,6 +367,17 @@ class NSEvent: NSObject, NSCoding {
             
             // Update to DB
             NSEvent.flagCountEvent(ID: id!, value: "-1")
+            
+            // Find Host
+            var event :NSEvent?
+            for eve in lEvents! {
+                if eve.getID() == id! {
+                    event = eve
+                }
+            }
+            if event != nil && event!.getHostID() != nil {
+                flagCountUser(ID: event!.getHostID()!, value: "-1")
+            }
         }
         // Return
         return true
@@ -944,6 +962,9 @@ class NSEvent: NSObject, NSCoding {
     
     /// Change the event's flag count by value (value must have sign and number, for example: "+3")
     static func flagCountEvent(ID: String, value: String) {
+        // Int Wait
+        var wait = 0
+        
         // Set URL
         if let url = URL(string: "http://gymbuddyapp.net/flagCountEvent.php?") {
             
@@ -977,10 +998,15 @@ class NSEvent: NSObject, NSCoding {
                 }
                 let responseString = String(data: data, encoding: .utf8)
                 print("NSEvent: flagCountEvent() Response Message = \(responseString!)")
+                
+                wait = 1
             }
             
             // Start Task
             task.resume()
+        }
+        while wait == 0 {
+            
         }
     }
     
@@ -1040,7 +1066,7 @@ class NSEvent: NSObject, NSCoding {
             var postString = "id=\(ID)&value=\(value)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
+            postString = postString.replacingOccurrences(of: "+", with: "- -") // if curious, ask Amjad
             
             // Send Request
             request.httpBody = postString.data(using: .utf8)
