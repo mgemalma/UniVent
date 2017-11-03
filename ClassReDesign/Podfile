@@ -1,5 +1,10 @@
 target ‘ClassReDesign’ do
 use_frameworks!
+
+target ‘ClassReDesignTests’ do
+    inherit! :search_paths
+    pod 'SwiftLocation'
+    end
 pod 'JSONWebToken'
 pod 'JWTDecode', '~> 2.1'
 pod 'SwiftLocation'
