@@ -1244,4 +1244,13 @@ class NSEvent: NSObject, NSCoding {
         // Return
         return dict
     }
+    
+    
+    func updateRating(rating: Float) {
+        self.ratC = self.ratC! + 1
+        if self.rat == -1.0 {
+            self.rat = 0.0
+        }
+        self.rat = ((self.rat! * (Float(ratC! - 1))) + rating)/Float(ratC!)
+    }
 }

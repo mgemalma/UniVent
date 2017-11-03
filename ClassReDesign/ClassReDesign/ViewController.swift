@@ -56,9 +56,11 @@ class ViewController: UIViewController {
 //        NSEvent.removeEvent(ID: "222")
         /**NSEvent.postEvent(id: nil, start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"])**/
 //        NSEvent.sendEventDB(event: NSEvent(id: "ABC", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"]))
+        NSEvent.sendEventDB(event: NSEvent(id: "AAA", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "that", "Class"], addr: ["Test":"1"]))
+        
 //        NSEvent.sendEventDB(event: NSEvent(id: "ABdddc", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "696969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"]))
-        NSUser.setPostedEvents(pEvents: ["ABC","ABdddc"])
-        NSEvent.loadDBPostAttend(pa: true)
+//        NSUser.setPostedEvents(pEvents: ["ABC","ABdddc"])
+//        NSEvent.loadDBPostAttend(pa: true)
 //        NSEvent.loadDBPostAttend(pa: true)
 //        NSEvent.postEvent(id: "3", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "this", "Classes"])
 //        var temp = NSEvent.filterType(type: "Nthing", events: NSEvent.pEvents!)
