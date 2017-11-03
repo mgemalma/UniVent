@@ -37,6 +37,12 @@ class NSEvent: NSObject, NSCoding {
     static func BY_DATE_D(a: NSEvent, b: NSEvent) -> Bool {
         return a.start! > b.start!
     }
+    static func BY_RAT_A(a: NSEvent, b: NSEvent) -> Bool {
+        return a.rat! < b.rat!
+    }
+    static func BY_RAT_D(a: NSEvent, b: NSEvent) -> Bool {
+        return a.rat! > b.rat!
+    }
     static func BY_LOC_A(a: NSEvent, b: NSEvent) -> Bool {
         var loc = CLLocation()
         Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
