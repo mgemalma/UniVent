@@ -296,13 +296,13 @@ class NSEvent: NSObject, NSCoding {
         return true
     }
     
-    func flagEvent() -> Bool{
+    func flagEvent(inc: Bool) -> Bool{
         // Return if Already Used Before
         // Get Array
         var arr = NSUser.getFlaggedEvents()
         
         // Check if Exists
-        if self.id == nil || (arr != nil && arr!.contains(self.id!)) {
+        if self.id == nil || (arr != nil) {
             return false
         }
         
@@ -310,20 +310,33 @@ class NSEvent: NSObject, NSCoding {
         if arr == nil {
             arr = [String]()
         }
-        
-        // Add to Array
-        arr!.append(self.id!)
-        
-        // Set to User
-        NSUser.setFlaggedEvents(fEvents: arr)
-        
-        // User save to DB & Disk
-        NSUser.saveDB()
-        NSUser.saveDisk()
-        
-        // Update to DB
-        NSEvent.flagCountEvent(ID: self.id!, value: "+1")
-        
+        if inc {
+            // Add to Array
+            arr!.append(self.id!)
+            
+            // Set to User
+            NSUser.setFlaggedEvents(fEvents: arr)
+            
+            // User save to DB & Disk
+            NSUser.saveDB()
+            NSUser.saveDisk()
+            
+            // Update to DB
+            NSEvent.flagCountEvent(ID: self.id!, value: "+1")
+        } else {
+            // Add to Array
+            arr!.remove(at: (arr?.index(of: self.id!)!)!)
+            
+            // Set to User
+            NSUser.setFlaggedEvents(fEvents: arr)
+            
+            // User save to DB & Disk
+            NSUser.saveDB()
+            NSUser.saveDisk()
+            
+            // Update to DB
+            NSEvent.flagCountEvent(ID: self.id!, value: "-1")
+        }
         // Return
         return true
     }
@@ -579,7 +592,7 @@ class NSEvent: NSObject, NSCoding {
         var arr: [NSEvent]? = [NSEvent]()
         
         // Get Array of Dict
-        let dictArr : [[String:String]]? = getEventsBlockDB(lat: loc.coordinate.latitude, long: loc.coordinate.longitude)
+        let dictArr : [[String:String]]? = getEventsBlockDB(lat: (loc?.coordinate.latitude)!, long: (loc?.coordinate.longitude)!)
         
         // Nil Handler
         if dictArr == nil {
