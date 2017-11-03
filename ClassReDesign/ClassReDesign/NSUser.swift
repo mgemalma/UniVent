@@ -172,6 +172,17 @@ class NSUser: NSObject, NSCoding {
     
     /** Functions **/
     static func boot(id: String, name: String) {
+        // Device APN setup
+        let userDefaults = UserDefaults.standard
+        if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
+            if let oldIDValue = userDefaults.object(forKey: "UniVentOldDevID") as? String {
+                if newIDValue == "" {
+                    // Send old value to DB
+                    self.sendDeviceID(id: id, devID: oldIDValue)
+                }
+            }
+        }
+        
         /** Attempt Load Disk **/
         if(loadDisk() && id == user.id) {
             /** Disk Yes **/
@@ -216,6 +227,42 @@ class NSUser: NSObject, NSCoding {
             if ifInternet() {
                 saveDB()
             }
+        }
+    }
+    
+    static func sendDeviceID(id: String, devID: String) {
+        // Set URL
+        if let url = URL(string: "http://gymbuddyapp.net/sendDeviceID.php?") {
+            
+            // Setup Request
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            // Build Post Request
+            var postString = "userID=\(id)&deviceID=\(devID)"
+            
+            // Send Request
+            request.httpBody = postString.data(using: .utf8)
+            
+            // Setup Task
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                // Error Handler
+                guard let _ = data, error == nil else {
+                    //print("NSUser: setDeviceID Connection Error = \(error!)")
+                    return
+                }
+                
+                // Respond Back
+                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                    //print("NSUser: sendDeviceID() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSUser: sendDeviceID() Response = \(response!)")
+                }
+                let responseString = String(data: data!, encoding: .utf8)
+                print("NSUser: setDeviceID() Response Message = \(responseString!)")
+            }
+            
+            // Start Task
+            task.resume()
         }
     }
     
@@ -322,7 +369,7 @@ class NSUser: NSObject, NSCoding {
             var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            print(postString)
+            //print(postString)
             
             // Send Request
             request.httpBody = postString.data(using: .utf8)
@@ -484,9 +531,9 @@ class NSUser: NSObject, NSCoding {
     static func saveDisk() {
         let savedData = NSKeyedArchiver.archiveRootObject(user, toFile: arcURL.path)
         if (savedData) {
-            print("Success")
+            print("Success saving disk")
         } else {
-            print("Failure")
+            print("Failure saving disk")
         }
     }
     
@@ -495,11 +542,11 @@ class NSUser: NSObject, NSCoding {
     {
         if let sharedUser = NSKeyedUnarchiver.unarchiveObject(withFile: arcURL.path) as? NSUser {
             user = sharedUser
-            print("Success")
+            print("Success loading disk")
             return true
         }
         else {
-            print("Failure")
+            print("Failure loading disk")
             return false
         }
     }
