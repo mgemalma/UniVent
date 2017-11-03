@@ -783,7 +783,7 @@ class NSEvent: NSObject, NSCoding {
                     print("NSEvent: getEventDB() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: getEventDB() Response Message = \(responseString!)")
+                //print("NSEvent: getEventDB() Response Message = \(responseString!)")
             }
             
             // Start Task
