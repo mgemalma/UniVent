@@ -275,7 +275,7 @@ class NSUser: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSUser: getUserDB() Connection Error = \(error!)")
+                    //print("NSUser: getUserDB() Connection Error = \(error!)")
                     return
                 }
                 
@@ -285,11 +285,11 @@ class NSUser: NSObject, NSCoding {
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSUser: getUserDB() Response = \(response!)")
+                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSUser: getUserDB() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSUser: getUserDB() Response Message = \(responseString!)")
+                //print("NSUser: getUserDB() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -332,17 +332,17 @@ class NSUser: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSUser: setUserDB() Connection Error = \(error!)")
+                    //print("NSUser: setUserDB() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSUser: getUserDB() Response = \(response!)")
+                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSUser: getUserDB() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSUser: setUserDB() Response Message = \(responseString!)")
+                //print("NSUser: setUserDB() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -568,9 +568,11 @@ class NSUser: NSObject, NSCoding {
         
         // Parse to String
         var string: String = ""
-        for element in array! {            
-            string.append(String(describing: element))
-            string.append(",")
+        for element in array! {
+            if String(describing: element) != "" {
+                string.append(String(describing: element))
+                string.append(",")
+            }
         }
         
         // Remove last +

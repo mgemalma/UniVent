@@ -26,6 +26,7 @@ class NSEvent: NSObject, NSCoding {
     static let arclURL = doclDir.appendingPathComponent("eventlDisk")
     static let docaDir = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let arcaURL = docaDir.appendingPathComponent("eventaDisk")
+    static var loc: CLLocation?
     
     // Set Dummy Location (Andrew we will Implements this when you are present!)
     //static var Uloc = CLLocation();
@@ -38,28 +39,16 @@ class NSEvent: NSObject, NSCoding {
         return a.start! > b.start!
     }
     static func BY_RAT_A(a: NSEvent, b: NSEvent) -> Bool {
-        return a.rat! < b.rat!
-    }
-    static func BY_RAT_D(a: NSEvent, b: NSEvent) -> Bool {
         return a.rat! > b.rat!
     }
+    static func BY_RAT_D(a: NSEvent, b: NSEvent) -> Bool {
+        return a.rat! < b.rat!
+    }
     static func BY_LOC_A(a: NSEvent, b: NSEvent) -> Bool {
-        var loc = CLLocation()
-        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
-            loc = location
-        }) { (_, last, error) in
-            print("There was a problem: \(error)")
-        }
-        return a.loc!.distance(from: loc) < b.loc!.distance(from: loc)
+        return a.loc!.distance(from: loc!) < b.loc!.distance(from: loc!)
     }
     static func BY_LOC_D(a: NSEvent, b: NSEvent) -> Bool {
-        var loc = CLLocation()
-        Location.getLocation(accuracy: .house, frequency: .oneShot, success: {_, location in
-            loc = location
-        }) { (_, last, error) in
-            print("There was a problem: \(error)")
-        }
-        return a.loc!.distance(from: loc) > b.loc!.distance(from: loc)
+        return a.loc!.distance(from: loc!) > b.loc!.distance(from: loc!)
     }
     
     // Static Lists to Store Events
@@ -317,15 +306,33 @@ class NSEvent: NSObject, NSCoding {
             arr = [String]()
         }
         
+        // If Contains
         if arr!.contains(id!) {
             return false
         }
+        
+        // Add to Array
+        arr!.append(id!)
             
         // Set to User
         NSUser.setFlaggedEvents(fEvents: arr)
-            
+        
+        // Update Event
+        var index: Int?
+        if lEvents != nil {
+            for eve in lEvents! {
+                if eve.getID() != nil || eve.getID()! == id! {
+                    index = lEvents!.index(of: eve)
+                }
+            }
+        }
+        if index == nil {
+            return false
+        }
+        lEvents![index!].updateRating(rating: rat)
+        
         // Update to DB
-        NSEvent.ratCountEvent(ID: id!, value: "+1", rat: rat)
+        NSEvent.ratCountEvent(ID: id!, value: "+1", rat: lEvents![index!].getRating()!)
         
         // Return
         return true
@@ -524,13 +531,14 @@ class NSEvent: NSObject, NSCoding {
     
     /// Filters events based on user's interests.
     /// Given an array of interests, and an array of events, return an array of events that correspond to the user's interests.
-    static func filterInterests(interests: [String]) {
+    static func filterInterests(interests: [String]?) {
         var filteredEvents = [NSEvent]()
         
         // Nil Handler
-        if lEvents == nil {
+        if lEvents == nil || interests == nil{
             return
         }
+        
         
         for event in lEvents! {
             // Nil Handler
@@ -538,7 +546,7 @@ class NSEvent: NSObject, NSCoding {
                 continue
             }
             for int in event.getInterest()! {
-                if interests.contains(int) {
+                if interests!.contains(int) {
                     filteredEvents.append(event)
                     break
                 }
@@ -551,6 +559,14 @@ class NSEvent: NSObject, NSCoding {
     
     // Generic Sorter Which takes a comparator <comp> similar to BY_DATE_A or BY_DATE_D for ascending and decending order.
     static func sorter(comp: (NSEvent, NSEvent) -> Bool) {
+        // Set Location
+        NSEvent.loc = NSUser.getLocation()
+        
+        // No Location
+        if NSEvent.loc == nil {
+            return
+        }
+        
         // Copy Sorted Events
         let array = lEvents
         
@@ -576,6 +592,11 @@ class NSEvent: NSObject, NSCoding {
         // Load Everything
         if loadDBLocal() && loadDBPostAttend(pa: true) && loadDBPostAttend(pa: false) {
             return true
+        }
+        
+        // Call Intrest Filter
+        if NSUser.getInterests() != nil {
+            filterInterests(interests: NSUser.getInterests())
         }
         
         // Return
