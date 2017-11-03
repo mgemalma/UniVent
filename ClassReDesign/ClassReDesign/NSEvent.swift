@@ -221,34 +221,56 @@ class NSEvent: NSObject, NSCoding {
     func setInterest(interests : [String]?) { self.interests = interests}
     
     
-    /** Functions **/
-    func incrementHeadCount() -> Bool{
-        // Return if Already Used Before
-        // Get Array
-        var arr = NSUser.getAttendingEvents()
+    func incHeadCount(inc: Int = 1) {
+        // Nil Handler
+        if self.heads == nil {
+            self.heads = 0
+        }
         
-        // Check if Exists
-        if self.id == nil || (arr != nil && arr!.contains(self.id!)) {
+        // Increment
+        self.heads = self.heads! + inc
+        
+        // Bound Check
+        if self.heads! < 0 {
+            self.heads = 0
+        }
+    }
+    
+    /** Functions **/
+    static func incrementHeadCount(id: String?, inc: Bool = true) -> Bool{
+        // Return if Already Used Before
+        
+        // Check if Exists in NSUser
+        if id == nil || lEvents == nil {
             return false
         }
         
-        // Nil Handler
-        if arr == nil {
-            arr = [String]()
+        // Check if Exists in NSEvent
+        var index: Int?
+        for event in sEvents! {
+            if id == event.getID() {
+                index = sEvents!.index(of: event)
+            }
+        }
+        if index == nil {
+            return false
         }
         
-        // Add to Array
-        arr!.append(self.id!)
-        
-        // Set to User
-        NSUser.setAttendingEvents(aEvents: arr)
-        
-        // User save to DB & Disk
-        NSUser.saveDB()
-        NSUser.saveDisk()
-        
+        // Set to NSEvents
+        if inc {
+            sEvents![index!].incHeadCount()
+        }
+        else {
+            sEvents![index!].incHeadCount(inc: -1)
+        }
+
         // Update to DB
-        NSEvent.headCountEvent(ID: self.id!, value: "+1")
+        if inc {
+            NSEvent.headCountEvent(ID: id!, value: "+1")
+        }
+        else {
+            NSEvent.headCountEvent(ID: id!, value: "-1")
+        }
         
         // Nil Handler
         if NSEvent.aEvents == nil {
@@ -256,14 +278,15 @@ class NSEvent: NSObject, NSCoding {
         }
         
         // Save to Disk
-        NSEvent.aEvents!.append(self)
+        if inc {
+            
+            NSEvent.aEvents!.append(sEvents![index!])
+        }
         NSEvent.saveDisk()
         
         // Return
         return true
-    }
-    
-    // NOT COMPLETE
+    }    // NOT COMPLETE
     func rateEvent() -> Bool {
         // Return if Already Used Before
         // Get Array
