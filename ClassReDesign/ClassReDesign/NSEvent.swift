@@ -219,6 +219,19 @@ class NSEvent: NSObject, NSCoding {
     func setType(type : String?) { self.type = type}
     func setDescription(desc : String?){self.desc = desc}
     func setInterest(interests : [String]?) { self.interests = interests}
+    func updateRating(rating: Float) {
+        if self.ratC == nil {
+            self.ratC = 0
+        }
+        if self.rat == nil {
+            self.rat = 0.0
+        }
+        self.ratC = self.ratC! + 1
+        if self.rat == -1.0 {
+            self.rat = 0.0
+        }
+        self.rat = ((self.rat! * (Float(ratC! - 1))) + rating)/Float(ratC!)
+    }
     
     
     func incHeadCount(inc: Int = 1) {
@@ -286,14 +299,16 @@ class NSEvent: NSObject, NSCoding {
         
         // Return
         return true
-    }    // NOT COMPLETE
-    func rateEvent() -> Bool {
+    }
+    
+    // Rating Count
+    static func rateEvent(id: String?, rat: Float) -> Bool {
         // Return if Already Used Before
         // Get Array
         var arr = NSUser.getRatedEvents()
         
         // Check if Exists
-        if self.id == nil || (arr != nil && arr!.contains(self.id!)) {
+        if id == nil {
             return false
         }
         
@@ -302,18 +317,15 @@ class NSEvent: NSObject, NSCoding {
             arr = [String]()
         }
         
-        // Add to Array
-        arr!.append(self.id!)
-        
+        if arr!.contains(id!) {
+            return false
+        }
+            
         // Set to User
-        NSUser.setRatedEvents(rEvents: arr)
-        
-        // User save to DB & Disk
-        NSUser.saveDB()
-        NSUser.saveDisk()
-        
+        NSUser.setFlaggedEvents(fEvents: arr)
+            
         // Update to DB
-        NSEvent.ratCountEvent(ID: self.id!, value: "+1")
+        NSEvent.ratCountEvent(ID: id!, value: "+1", rat: rat)
         
         // Return
         return true
@@ -1012,7 +1024,7 @@ class NSEvent: NSObject, NSCoding {
     
     
     /// Change the event's rating count by value (value must have sign and number, for example: "+3")
-    static func ratCountEvent(ID: String, value: String) {
+    static func ratCountEvent(ID: String, value: String, rat: Float) {
         // Set URL
         if let url = URL(string: "http://gymbuddyapp.net/ratCount.php?") {
             
@@ -1022,7 +1034,7 @@ class NSEvent: NSObject, NSCoding {
             request.httpMethod = "POST"
             
             // Build Post Request
-            var postString = "id=\(ID)&value=\(value)"
+            var postString = "id=\(ID)&value=\(value)&rat=\(rat)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
@@ -1315,11 +1327,5 @@ class NSEvent: NSObject, NSCoding {
     }
     
     
-    func updateRating(rating: Float) {
-        self.ratC = self.ratC! + 1
-        if self.rat == -1.0 {
-            self.rat = 0.0
-        }
-        self.rat = ((self.rat! * (Float(ratC! - 1))) + rating)/Float(ratC!)
-    }
+    
 }
