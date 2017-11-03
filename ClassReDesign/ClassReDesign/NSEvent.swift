@@ -296,13 +296,13 @@ class NSEvent: NSObject, NSCoding {
         return true
     }
     
-    func flagEvent(inc: Bool) -> Bool{
+    static func flagEvent(id: String?, inc: Bool) -> Bool{
         // Return if Already Used Before
         // Get Array
         var arr = NSUser.getFlaggedEvents()
         
         // Check if Exists
-        if self.id == nil || (arr != nil) {
+        if id == nil {
             return false
         }
         
@@ -312,7 +312,7 @@ class NSEvent: NSObject, NSCoding {
         }
         if inc {
             // Add to Array
-            arr!.append(self.id!)
+            arr!.append(id!)
             
             // Set to User
             NSUser.setFlaggedEvents(fEvents: arr)
@@ -322,10 +322,11 @@ class NSEvent: NSObject, NSCoding {
             NSUser.saveDisk()
             
             // Update to DB
-            NSEvent.flagCountEvent(ID: self.id!, value: "+1")
+            NSEvent.flagCountEvent(ID: id!, value: "+1")
+            
         } else {
             // Add to Array
-            arr!.remove(at: (arr?.index(of: self.id!)!)!)
+            arr!.remove(at: (arr?.index(of: id!)!)!)
             
             // Set to User
             NSUser.setFlaggedEvents(fEvents: arr)
@@ -335,7 +336,7 @@ class NSEvent: NSObject, NSCoding {
             NSUser.saveDisk()
             
             // Update to DB
-            NSEvent.flagCountEvent(ID: self.id!, value: "-1")
+            NSEvent.flagCountEvent(ID: id!, value: "-1")
         }
         // Return
         return true
