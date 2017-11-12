@@ -12,7 +12,7 @@ if (mysqli_connect_errno())
 }
 $id = $_POST['id'];
 // This SQL statement selects ALL from the table Event_Prod
-$sql = "SELECT * FROM User_Prod where id  = $id";
+$sql = "SELECT * FROM User_Prod where id  = '$id'";
 
 // Check if there are results
 if ($result = mysqli_query($con, $sql))
@@ -31,12 +31,6 @@ if ($result = mysqli_query($con, $sql))
 	}
 
 	// Finally, encode the array to JSON and output the results
-  //declare key used for
-  $key = "UniVent";
-
-  //encode using 256
-  //$jwt = JWT::encode($resultArray, $key);
-
  echo json_encode($resultArray);;
 
 }else {

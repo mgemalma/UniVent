@@ -8,9 +8,11 @@ $con=mysqli_connect("localhost","gymbudd1_UVAdmin","Bo56H!m&","gymbudd1_UniVentD
 // Check connection
 if (mysqli_connect_errno())
 {
+  //http_response_code();
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }else {
-echo "Connected successfully.";
+//http_response_code(201);
+echo "true";
 }
 
 mysqli_close($con);

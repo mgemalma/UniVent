@@ -7,18 +7,21 @@ if (mysqli_connect_errno())
 {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-
-$eventID = $_POST['id'];
+//get the value
+$id = $_POST['id'];
 $rat = $_POST['rat'];
 $value = $_POST['value'];
 
-$ratC = mysqli_query($conn,"SELECT ratC FROM Event_Prod WHERE id = '$eventID'");
+//get the ratC count through exicuting the sql querry and fetching the specific value into an array
+$ratC = mysqli_query($conn,"SELECT ratC FROM Event_Prod WHERE id = '$id'");
 $tempArray = Array();
 $tempArray = $ratC->fetch_object();
-$sql = "UPDATE Event_Prod set rat = $rat, ratC=$tempArray->ratC $value WHERE id = '$eventID'";
+
+//create the querry string to update the number of ratC with value of -- to increase by that value or - to decrease by the value
+$sql = "UPDATE Event_Prod set rat = $rat, ratC=$tempArray->ratC $value WHERE id = '$id'";
 //echo $sql;
 if (mysqli_query($conn, $sql)) {
-    echo "New record created successfully";
+      echo "Event $id ratC updated";
 } else {
     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 }
