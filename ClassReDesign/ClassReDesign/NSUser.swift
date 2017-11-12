@@ -342,6 +342,15 @@ class NSUser: NSObject, NSCoding {
     }
     // Function for DeviceAPN
     static func sendDeviceID(id: String, devID: String) {
+        // Check internet status: 'isConnected' is true if we can reach the network
+        let connection = Reachability.shared.isConnectedToNetwork()
+        let isConnected = connection.connected || connection.cellular
+        
+        if isConnected == false {
+            print("NSUser: getUserDB() Not connected to internet!")
+            return
+        }
+        
         // Set URL
         if let url = URL(string: "http://gymbuddyapp.net/sendDeviceID.php?") {
             
@@ -454,6 +463,14 @@ class NSUser: NSObject, NSCoding {
     static func getUserDB(ID: String, completionHandler: @escaping CompletionHandler) {
         // Dict
         //var dict: [String:String]?
+        // Check internet status: 'isConnected' is true if we can reach the network
+        let connection = Reachability.shared.isConnectedToNetwork()
+        let isConnected = connection.connected || connection.cellular
+        
+        if isConnected == false {
+            print("NSUser: getUserDB() Not connected to internet!")
+            return
+        }
         
         // Set URL
         if let url = URL(string: "https://gymbuddyapp.net/getUser.php?") {
@@ -558,6 +575,14 @@ class NSUser: NSObject, NSCoding {
     // Send User Information
     static func saveDB() {
         // print("Updating users DB")
+        // Check internet status: 'isConnected' is true if we can reach the network
+        let connection = Reachability.shared.isConnectedToNetwork()
+        let isConnected = connection.connected || connection.cellular
+        
+        if isConnected == false {
+            print("NSUser: saveDB() Not connected to internet!")
+            return
+        }
         // Queue this process as low priority
         DispatchQueue.global(qos: .utility).async {
             // Set URL
