@@ -55,6 +55,18 @@ class NSUser: NSObject, NSCoding {
     private var fEvents: [String]?      // Stores all posted Events as IDs.
     private var loc: CLLocation?
     
+  /*  //////Unit Test Version
+    public var id: String?             // Stores id assigned by FB.
+    public var name: String?           // Stores name associated with id.
+    public var flags: Int?             // Stores flag count of the user.
+    public var rad: Float?             // Stores the preffered search radius.
+    public var interests: [String]?    // Stores the list of Interests of the user. Should change to Enum.
+    public var pEvents: [String]?      // Stores all posted Events as IDs.
+    public var aEvents: [String]?      // Stores all attending Events as IDs.
+    public var rEvents: [String]?      // Stores all posted Events as IDs.
+    public var fEvents: [String]?      // Stores all posted Events as IDs.
+    public var loc: CLLocation?*/
+    
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
                      from <<Key>:<Value>> pairs. These pairs are used both in DB & Disk.
@@ -73,11 +85,11 @@ class NSUser: NSObject, NSCoding {
     
     /** Constructor **/
     /** Description: The decoder is classified as a constructor because it initializes the class
-                     based on data from the Disk. This init() is called internally by NSCoding.
+     based on data from the Disk. This init() is called internally by NSCoding.
      **/
-    // Decoder (Required by NSCoding) (Problem: Every save call creates a new instance I think.)
+    // Decoder (Required by NSCoding) (Problem: Every call creates a new instance and creates the NSUser object based on the data)
     required convenience init?(coder aDecoder: NSCoder) {
-        // Get from Storage
+        // Get every variable from disk from the path where we saved the value
         let ID = aDecoder.decodeObject(forKey: Keys.id) as? String
         let NAME = aDecoder.decodeObject(forKey: Keys.name) as? String
         let FLAGS = aDecoder.decodeObject(forKey: Keys.flags) as? Int
@@ -91,6 +103,7 @@ class NSUser: NSObject, NSCoding {
         // Initialize an Instance (Required since this is a Convenience init())
         self.init()
         
+        
         // Assign to Current Instance (Which should be Singelton)
         id = ID
         name = NAME
@@ -101,6 +114,22 @@ class NSUser: NSObject, NSCoding {
         aEvents = AEVENTS
         rEvents = REVENTS
         fEvents = FEVENTS
+        //Do error checking for the values that are received from the disk, these are the values that shouldn't be nil
+        if (flags == nil || id == nil || name == nil || rad == nil )
+        {
+            if (flags == nil){
+                print("required convenience init() -> NSUser.swift : \"flags value was nil\"")
+            }
+            if (id == nil){
+                print("required convenience init() -> NSUser.swift : \"id value was nil\"")
+            }
+            if (name == nil){
+                print("required convenience init() -> NSUser.swift : \"name value was nil\"")
+            }
+            if (rad == nil){
+                print("required convenience init() -> NSUser.swift : \"flags value was nil\"")
+            }
+        }
     }
     
     /** Getter **/
@@ -124,21 +153,37 @@ class NSUser: NSObject, NSCoding {
     
     /** Setter **/
     static func setID(id: String?) {
+        if ( id == nil)
+        {
+            print("setID() -> NSUser.swift \"the id value is set to nil\"")
+        }
         user.id = id
         saveDisk()
         saveDB()
     }
     static func setName(name: String?) {
+        if ( name == nil)
+        {
+            print("setName() -> NSUser.swift \"the name value is set to nil\"")
+        }
         user.name = name
         saveDisk()
         saveDB()
     }
     static func setFlags(flags: Int?) {
+        if ( flags == nil)
+        {
+            print("setFlags() -> NSUser.swift \"the flags value is set to nil\"")
+        }
         user.flags = flags
         saveDisk()
         saveDB()
     }
     static func setRadius(rad: Float?) {
+        if ( rad == nil)
+        {
+            print("setRadius() -> NSUser.swift \"the radius value is set to nil\"")
+        }
         user.rad = rad
         saveDisk()
         saveDB()
@@ -314,18 +359,21 @@ class NSUser: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let _ = data, error == nil else {
-                    //print("NSUser: setDeviceID Connection Error = \(error!)")
+                    print("NSUser: sendDeviceID Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    //print("NSUser: sendDeviceID() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    //print("NSUser: sendDeviceID() Response = \(response!)")
                     
                 }
                 let responseString = String(data: data!, encoding: .utf8)
-                print("NSUser: setDeviceID() Response Message = \(responseString!)")
+                if responseString == nil {
+                    print("NSUser: sendDeviceID() Response String is nil")
+                }
+                else {
+                    print("NSUser: sendDeviceID() Response Message = \(responseString!)")
+                }
             }
             
             // Start Task
@@ -429,10 +477,15 @@ class NSUser: NSObject, NSCoding {
                 
                 if let _ = data, error == nil {
                     DispatchQueue.main.async {
-                        let dict = parseUser(data!)
-                        //let responseString = String(data: data!, encoding: .utf8)
-                        //print("NSUser: getUserDB() Response Message = \(responseString!)")
-                        completionHandler(dict)
+                        if data == nil {
+                            print("NSUser: getUserDB() Error connection to DB")
+                        }
+                        else {
+                            let dict = parseUser(data!)
+                            let responseString = String(data: data!, encoding: .utf8)
+                            print("NSUser: getUserDB() Response Message = \(responseString!)")
+                            completionHandler(dict)
+                        }
                     }
                 } else {
                     completionHandler(nil)
@@ -508,7 +561,7 @@ class NSUser: NSObject, NSCoding {
         // Queue this process as low priority
         DispatchQueue.global(qos: .utility).async {
             // Set URL
-            if let url = URL(string: "http://gymbuddyapp.net/updateUser.php?")
+            if let url = URL(string: "http://gymbuddyapp.net/setUser.php?")
             {
                 // Setup Request
                 var request = URLRequest(url: url)
@@ -516,12 +569,12 @@ class NSUser: NSObject, NSCoding {
                 
                 // Nil Handler
                 if user.id == nil || user.name == nil {
-                    //print("returning nil")
+                    print("NSUser: saveDB() User ID or Name is nil")
                     return
                 }
                 
                 // Build Post Request
-                var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
+                var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests) ?? "interests nil")&pEvents=\(stringer(array: user.pEvents) ?? "pEvents nil")&aEvents=\(stringer(array: user.aEvents) ?? "aEvents nil")&fEvents=\(stringer(array: user.fEvents) ?? "fEvents nil")&rEvents=\(stringer(array: user.rEvents) ?? "rEvents nil")"
                 postString = postString.replacingOccurrences(of: " ", with: "%20")
                 postString = postString.replacingOccurrences(of: "'", with: "''")
                 //print(postString)
@@ -541,11 +594,14 @@ class NSUser: NSObject, NSCoding {
                     
                     // Respond Back
                     if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                        //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                        //print("NSUser: getUserDB() Response = \(response!)")
                     }
                     let responseString = String(data: data, encoding: .utf8)
-                    //print("NSUser: setUserDB() Response Message = \(responseString!)")
+                    if responseString == nil {
+                        print("NSUser: saveDB() Response String is nil")
+                    }
+                    else {
+                        print("NSUser: saveDB() Response Message = \(responseString!)")
+                    }
                 }
                 
                 // Start Task
@@ -621,89 +677,32 @@ class NSUser: NSObject, NSCoding {
         return Int(dict!["flags"]!)
     }**/
     
-    // Check if there is Internet
-    static func ifInternet() -> Bool {
-        // Int Wait
-        var wait = 0
-        
-        // Store Response
-        var responseString: String?
-        
-        // Set URL
-        if let url = URL(string: "http://gymbuddyapp.net/connected.php?")
-        {
-            // Setup Request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            
-            // Build Post Request
-            var postString = ""
-            postString = postString.replacingOccurrences(of: " ", with: "%20")
-            postString = postString.replacingOccurrences(of: "'", with: "''")
-            //print(postString)
-            
-            // Send Request
-            request.httpBody = postString.data(using: .utf8)
-            
-            /** Response **/
-            // Setup Task
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                // Error Handler
-                guard let data = data, error == nil else {
-                    print("NSUser: setUserDB() Connection Error = \(error!)")
-                    return
-                }
-                
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    //print("NSUser: getUserDB() Response = \(response!)")
-                }
-                responseString = String(data: data, encoding: .utf8)
-                //print("NSUser: setUserDB() Response Message = \(responseString!)")
-                
-                // Set Wait
-                wait = 1
-            }
-            
-            // Start Task
-            task.resume()
-        }
-        
-        // Busy Waiting
-        while wait == 0{
-            // Do nothing
-        }
-        
-        // Return
-        if responseString == nil {
-            return false
-        }
-        return responseString! == "true"
-    }
+    
     
     /** Disk Functions **/
-    // Save
+    // This function saves the user data to the disk
     static func saveDisk() {
+        //Saves the user data to the disk in here "user" to "arcURL.path" this is the file path where the data is going to be stored
         let savedData = NSKeyedArchiver.archiveRootObject(user, toFile: arcURL.path)
         if (savedData) {
-            print("Success saving disk")
+            print("saveDisk() -> NSUser.swift \"Success saving NSUser singleton user to the disk\"")
         } else {
-            print("Failure saving disk")
+            print("saveDisk() -> NSUser.swift \"Failure saving NSUser singleton user to the disk\"")
         }
     }
     
-    // Load
+    // This function loads user data from the disk and returns true if the user is loaded properly
     static func loadDisk() -> Bool
     {
+        //From the file path get the user data from the disk
         if let sharedUser = NSKeyedUnarchiver.unarchiveObject(withFile: arcURL.path) as? NSUser {
+            //Assign the new user object to the singleton user
             user = sharedUser
-            print("Success loading disk")
+            print("loadDisk() -> NSUser.swift \"Success loading NSUser from the disk\"")
             return true
         }
         else {
-            print("Failure loading disk")
+            print("loadDisk() -> NSUser.swift \"Failure loading NSUser from the disk\"")
             return false
         }
     }
@@ -736,8 +735,26 @@ class NSUser: NSObject, NSCoding {
         return dict
     }
     
-    // Disk Encoder (Required by NSCoding)
+    
+    // Disk Encoder (Required by NSCoding) this function encodes the variables so that they are secure when saved to the disk.
     func encode(with aCoder: NSCoder) {
+        //Do error checking to make sure they variables are not nil, if it is print the error
+        if (flags == nil || id == nil || name == nil || rad == nil )
+        {
+            if (flags == nil){
+                print("encode() -> NSUser.swift : \"flags value was nil\"")
+            }
+            if (id == nil){
+                print("encode() -> NSUser.swift : \"id value was nil\"")
+            }
+            if (name == nil){
+                print("encode() -> NSUser.swift : \"name value was nil\"")
+            }
+            if (rad == nil){
+                print("encode() -> NSUser.swift : \"flags value was nil\"")
+            }
+        }
+        //Encode every each variable in order to save the variables to the disk later on.
         aCoder.encode(id, forKey: Keys.id)
         aCoder.encode(name, forKey: Keys.name)
         aCoder.encode(flags, forKey: Keys.flags)
@@ -749,7 +766,6 @@ class NSUser: NSObject, NSCoding {
         aCoder.encode(fEvents, forKey: Keys.fEvents)
     }
     
-    // String -> Array
     static func arrayer(string: String?) -> [Any]? {
         // Nil
         if string == nil {
@@ -757,35 +773,29 @@ class NSUser: NSObject, NSCoding {
         }
         
         // Parse to Array
-        let array: [Any]? = string?.components(separatedBy: ",")
+        let array: [Any]? = string?.components(separatedBy: "^")
         
         // Return
         return array
     }
     
-    // Array -> String
     static func stringer(array: [Any]?) -> String? {
         // Nil
         if array == nil {
-            return ""
+            return nil
         }
         
         // Parse to String
         var string: String = ""
         for element in array! {
-            if String(describing: element) != "" {
-                string.append(String(describing: element))
-                string.append(",")
-            }
+            string.append(String(describing: element))
+            string.append("^")
         }
         
         // Remove last +
         //string.removeLast()
-        if !string.isEmpty || string != "" {
-            string.remove(at: string.index(before: string.endIndex))
-        } else {
-            return ""
-        }
+        string.remove(at: string.index(before: string.endIndex))
+        
         // Return
         return string
     }
