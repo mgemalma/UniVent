@@ -55,7 +55,7 @@ class NSUser: NSObject, NSCoding {
     private var fEvents: [String]?      // Stores all posted Events as IDs.
     private var loc: CLLocation?
     
-  /*  //////Unit Test Version
+    /*//////Unit Test Version
     public var id: String?             // Stores id assigned by FB.
     public var name: String?           // Stores name associated with id.
     public var flags: Int?             // Stores flag count of the user.
@@ -802,6 +802,19 @@ class NSUser: NSObject, NSCoding {
         
         // Return
         return array
+    }
+    //Function to complete erase the disk contents no file will be left at the disk after calling this function returning true when succeed, returning false otherwise
+    static func eraseDisk() -> Bool{
+        do {
+            //If the file exists in the file path remove the file
+            try FileManager().removeItem(at: NSUser.arcURL)
+            return true
+        }
+        catch let error as NSError {
+            //Catch the error
+            print("eraseDisk() -> NSUser.swift: error trying to erase the disk \(error)")
+            }
+        return false
     }
     
     static func stringer(array: [Any]?) -> String? {
