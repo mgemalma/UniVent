@@ -54,12 +54,15 @@ class ViewController: UIViewController {
 //        NSEvent.headCountEvent(ID: "123456", value: "-1")
 //        print("Title:", NSEvent.getEventDB(ID: "6969")!["title"]!)
 //        NSEvent.removeEvent(ID: "222")
-        /**NSEvent.postEvent(id: nil, start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"])**/
+//        *NSEvent.postEvent(id: nil, start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"])*
 //        NSEvent.sendEventDB(event: NSEvent(id: "ABC", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"]))
 //        NSEvent.sendEventDB(event: NSEvent(id: "AAA", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "that", "Class"], addr: ["Test":"1"]))
         
 //        NSEvent.sendEventDB(event: NSEvent(id: "ABdddc", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "696969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"]))
 //        NSUser.setPostedEvents(pEvents: ["ABC","ABdddc"])
+//        NSUser.setID(id: "6969")
+//        var event1 = NSEvent(id: "ABCDE", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Something", desc: "Dont!", intrests: ["Test", "that", "Class"], addr: ["Test":"1"])
+//        NSEvent.flagCountUser(ID: "6969", value: "+30")
 //        NSEvent.loadDBPostAttend(pa: true)
 //        NSEvent.loadDBPostAttend(pa: true)
 //        NSEvent.postEvent(id: "3", start: Date(timeIntervalSince1970: 1), end: Date(), building: "My House", address: "Some Street", city: "Los Santos", state: "California", zip: "12345", loc: CLLocation(), rat: 9.9, ratC: 10, flags: 1, heads: 20, host: "6969", title: "Test flag sultan", type: "Nothing", desc: "Dont!", intrests: ["Test", "this", "Classes"])
@@ -81,9 +84,8 @@ class ViewController: UIViewController {
         
 //        print("ID: ", temp1!["ID"])
 //        print(NSEvent.dicter(string: str)!)
-        print(NSEvent.getUniqueID()!)
-        print(NSEvent.getUniqueID()!)
-        print(NSEvent.getUniqueID()!)
+//        NSEvent.trim()
+//        NSEvent.sendEventDB(event: event1)
     }
 
     override func didReceiveMemoryWarning() {

@@ -15,7 +15,7 @@ extension UITextField {
             addTarget(self, action: #selector(fixField), for: .editingChanged)
         }
     }
-    func fixField(textField: UITextField) {
+    @objc func fixField(textField: UITextField) {
         let t = textField.text
         textField.text = t?.safelyLimitedTo(length: maxLength)
     }
@@ -116,7 +116,7 @@ func arrayer(string: String?) -> [Any]? {
     }
     
     // Parse to Array
-    let array: [Any]? = string?.components(separatedBy: ",")
+    let array: [Any]? = string?.components(separatedBy: "^")
     
     // Return
     return array
@@ -132,7 +132,7 @@ func stringer(array: [Any]?) -> String? {
     var string: String = ""
     for element in array! {
         string.append(String(describing: element))
-        string.append(",")
+        string.append("^")
     }
     
     // Remove last +

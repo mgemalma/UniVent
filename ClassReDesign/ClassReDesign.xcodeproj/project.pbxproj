@@ -18,7 +18,9 @@
 		7BD8FA8C1F9FF7550060A6FB /* ClassReDesignUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD8FA8B1F9FF7550060A6FB /* ClassReDesignUITests.swift */; };
 		7BD8FA9A1F9FF7980060A6FB /* NSUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD8FA991F9FF7980060A6FB /* NSUser.swift */; };
 		81C5C73EAC66E27FFFAE102F /* Pods_ClassReDesign.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E23A37889131A9C1D4A32302 /* Pods_ClassReDesign.framework */; };
+		B1217E1B1FB8E88B00C26F88 /* Handy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1217E1A1FB8E88B00C26F88 /* Handy.swift */; };
 		B19EBB8B1FA67FDC00A50201 /* NSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */; };
+		B1AAFEC91FAC13A3005A8FC6 /* NSUserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1AAFEC81FAC13A3005A8FC6 /* NSUserTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,7 +60,9 @@
 		7BD8FA991F9FF7980060A6FB /* NSUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSUser.swift; sourceTree = "<group>"; };
 		8B9AF59BB22F7750C95AC08E /* Pods-ClassReDesignTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClassReDesignTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ClassReDesignTests/Pods-ClassReDesignTests.release.xcconfig"; sourceTree = "<group>"; };
 		9B436EF92450BB5FD8AE38F5 /* Pods-ClassReDesign.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClassReDesign.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ClassReDesign/Pods-ClassReDesign.debug.xcconfig"; sourceTree = "<group>"; };
+		B1217E1A1FB8E88B00C26F88 /* Handy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Handy.swift; path = ../../Handy.swift; sourceTree = "<group>"; };
 		B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSEvent.swift; sourceTree = "<group>"; };
+		B1AAFEC81FAC13A3005A8FC6 /* NSUserTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSUserTest.swift; sourceTree = "<group>"; };
 		B9578396ED65F6C12CCE2BD3 /* Pods-ClassReDesignTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClassReDesignTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ClassReDesignTests/Pods-ClassReDesignTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E23A37889131A9C1D4A32302 /* Pods_ClassReDesign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ClassReDesign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -125,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				7BD8FA681F9FF7550060A6FB /* AppDelegate.swift */,
+				B1217E1A1FB8E88B00C26F88 /* Handy.swift */,
 				7BD8FA6A1F9FF7550060A6FB /* ViewController.swift */,
 				7BD8FA6C1F9FF7550060A6FB /* Main.storyboard */,
 				B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */,
@@ -133,6 +138,7 @@
 				7BD8FA771F9FF7550060A6FB /* Info.plist */,
 				7BD8FA6F1F9FF7550060A6FB /* ClassReDesign.xcdatamodeld */,
 				7BD8FA991F9FF7980060A6FB /* NSUser.swift */,
+				B1AAFEC81FAC13A3005A8FC6 /* NSUserTest.swift */,
 			);
 			path = ClassReDesign;
 			sourceTree = "<group>";
@@ -419,7 +425,9 @@
 				7BD8FA6B1F9FF7550060A6FB /* ViewController.swift in Sources */,
 				7BD8FA711F9FF7550060A6FB /* ClassReDesign.xcdatamodeld in Sources */,
 				7BD8FA691F9FF7550060A6FB /* AppDelegate.swift in Sources */,
+				B1217E1B1FB8E88B00C26F88 /* Handy.swift in Sources */,
 				7BD8FA9A1F9FF7980060A6FB /* NSUser.swift in Sources */,
+				B1AAFEC91FAC13A3005A8FC6 /* NSUserTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
