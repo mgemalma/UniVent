@@ -278,12 +278,12 @@ class NSEvent: NSObject, NSCoding {
         // Save to Disk
         if inc {
             NSEvent.aEvents!.append(sEvents![index!])
-            print("Appended to attending events")
+            //print("Appended to attending events")
         } else if !inc {
             // Should be safely unwrappable
             for aIndex in NSEvent.aEvents! {
                 if aIndex.getID() == id {
-                    print("Removing from attending events")
+                    //print("Removing from attending events")
                     NSEvent.aEvents!.remove(at: (NSEvent.aEvents?.index(of: aIndex))!)
                     break
                 }
@@ -565,22 +565,26 @@ class NSEvent: NSObject, NSCoding {
     static func loadDB(completionHandler: @escaping boolCompletion) {
         let queue = DispatchQueue.global(qos: .userInitiated)
         // Load Everything
-        queue.async {
-            loadDBLocal() { boolLocal in
-                if boolLocal {
-                    loadDBPostAttend(pa: true) { boolP in
-                        if (boolP != nil) {
-                            loadDBPostAttend(pa: false) { boolA in
-                                if (boolA != nil) {
-                                    //print("All Events loaded")
-                                    completionHandler(true)
+        if let _ = NSUser.getLocation(){
+            queue.async {
+                loadDBLocal() { boolLocal in
+                    if boolLocal {
+                        loadDBPostAttend(pa: true) { boolP in
+                            if (boolP != nil) {
+                                loadDBPostAttend(pa: false) { boolA in
+                                    if (boolA != nil) {
+                                        //print("All Events loaded")
+                                        completionHandler(true)
+                                    }
                                 }
                             }
                         }
+                        //completionHandler(true)
                     }
-                    //completionHandler(true)
                 }
+                completionHandler(false)
             }
+        } else {
             completionHandler(false)
         }
     }
@@ -715,7 +719,7 @@ class NSEvent: NSObject, NSCoding {
             var postString = "id=\(ID)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            print(postString)
+            //print(postString)
             // Send Request
             request.httpBody = postString.data(using: .utf8)
             
@@ -761,7 +765,8 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let _ = data, error == nil else {
-                    print("NSEvent: getEventsBlock() Connection Error = \(error!)")
+                    //print("NSEvent: getEventsBlock() Connection Error = \(error!)")
+                    completionHandler(nil)
                     return
                 }
                 if let _ = data {
@@ -801,17 +806,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: deleteEvent() Connection Error = \(error!)")
+                    //print("NSEvent: deleteEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: deleteEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: deleteEvent() Response = \(response!)")
+                    //print("NSEvent: deleteEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: deleteEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: deleteEvent() Response Message = \(responseString!)")
+                //print("NSEvent: deleteEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -847,25 +852,25 @@ class NSEvent: NSObject, NSCoding {
         // Save Attending Events
         let savedaData = NSKeyedArchiver.archiveRootObject(aEvents as Any, toFile: arcaURL.path)
         if (savedaData) {
-            print("Success")
+            print("Success saving aEvents")
         } else {
-            print("Failure")
+            print("Failure saving aEvents")
         }
         
         // Save Local Events
         let savedlData = NSKeyedArchiver.archiveRootObject(lEvents as Any, toFile: arclURL.path)
         if (savedlData) {
-            print("Success")
+            print("Success saving lEvents")
         } else {
-            print("Failure")
+            print("Failure saving lEvents")
         }
         
         // Save Posted Events
         let savedpData = NSKeyedArchiver.archiveRootObject(pEvents as Any, toFile: arcpURL.path)
         if (savedpData) {
-            print("Success")
+            print("Success saving pEvents")
         } else {
-            print("Failure")
+            print("Failure saving pEvents")
         }
     }
     
@@ -873,31 +878,31 @@ class NSEvent: NSObject, NSCoding {
     static func loadDisk() {
         if let events = NSKeyedUnarchiver.unarchiveObject(withFile: arcaURL.path) as? [NSEvent] {
             aEvents = events
-            print("Success")
+            print("Success loading aEvents")
             //return true
         }
         else {
-            print("Failure")
+            print("Failure loading aEvents")
             //return false
         }
         
         if let events1 = NSKeyedUnarchiver.unarchiveObject(withFile: arclURL.path) as? [NSEvent] {
             lEvents = events1
-            print("Success")
+            print("Success loading lEvents")
             //return true
         }
         else {
-            print("Failure")
+            print("Failure loading lEvents")
             //return false
         }
         
         if let events2 = NSKeyedUnarchiver.unarchiveObject(withFile: arcpURL.path) as? [NSEvent] {
             pEvents = events2
-            print("Success")
+            print("Success loading pEvents")
             //return true
         }
         else {
-            print("Failure")
+            print("Failure loading pEvents")
             //return false
         }
     }
@@ -929,17 +934,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: flagCountEvent() Connection Error = \(error!)")
+                    //print("NSEvent: flagCountEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: flagCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: flagCountEvent() Response = \(response!)")
+                    //print("NSEvent: flagCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: flagCountEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: flagCountEvent() Response Message = \(responseString!)")
+                //print("NSEvent: flagCountEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -972,17 +977,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: ratCountEvent() Connection Error = \(error!)")
+                    //print("NSEvent: ratCountEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: ratCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: ratCountEvent() Response = \(response!)")
+                   // print("NSEvent: ratCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                   // print("NSEvent: ratCountEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: ratCountEvent() Response Message = \(responseString!)")
+                //print("NSEvent: ratCountEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -1013,17 +1018,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: flagCountUser() Connection Error = \(error!)")
+                    //print("NSEvent: flagCountUser() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: flagCountUser() Response = \(response!)")
+                    //print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: flagCountUser() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: flagCountUser() Response Message = \(responseString!)")
+                //print("NSEvent: flagCountUser() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -1046,7 +1051,7 @@ class NSEvent: NSObject, NSCoding {
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
-            print(postString)
+            //print(postString)
             // Send Request
             request.httpBody = postString.data(using: .utf8)
             
@@ -1055,17 +1060,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: headCountEvent() Connection Error = \(error!)")
+                    //print("NSEvent: headCountEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: headCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: headCountEvent() Response = \(response!)")
+                    //print("NSEvent: headCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: headCountEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: headCountEvent() Response Message = \(responseString!)")
+                //print("NSEvent: headCountEvent() Response Message = \(responseString!)")
             }
             
             // Start Task

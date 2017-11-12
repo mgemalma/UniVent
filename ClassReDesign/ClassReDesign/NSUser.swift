@@ -211,8 +211,8 @@ class NSUser: NSObject, NSCoding {
                                 saveDB()
                             }
                         }
-                    NSEvent.loadDB() { _ in
-                    }
+//                    NSEvent.loadDB() { _ in
+//                    }
 
                     } else {
                         saveDB()
@@ -272,8 +272,9 @@ class NSUser: NSObject, NSCoding {
                     // Save DB
                     saveDB()
                     
-                    NSEvent.loadDB() { _ in
-                    }
+//                    NSEvent.loadDB() { _ in
+//                        
+//                    }
                 }
             }
         }
@@ -515,7 +516,7 @@ class NSUser: NSObject, NSCoding {
                 
                 // Nil Handler
                 if user.id == nil || user.name == nil {
-                    print("returning nil")
+                    //print("returning nil")
                     return
                 }
                 
@@ -523,7 +524,7 @@ class NSUser: NSObject, NSCoding {
                 var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
                 postString = postString.replacingOccurrences(of: " ", with: "%20")
                 postString = postString.replacingOccurrences(of: "'", with: "''")
-                print(postString)
+                //print(postString)
                 
                 // Send Request
                 request.httpBody = postString.data(using: .utf8)
@@ -531,7 +532,7 @@ class NSUser: NSObject, NSCoding {
                 /** Response **/
                 // Setup Task
                 let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                    print(data)
+                    //print(data)
                     // Error Handler
                     guard let data = data, error == nil else {
                         print("NSUser: setUserDB() Connection Error = \(error!)")
@@ -540,11 +541,11 @@ class NSUser: NSObject, NSCoding {
                     
                     // Respond Back
                     if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                        print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                        print("NSUser: getUserDB() Response = \(response!)")
+                        //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                        //print("NSUser: getUserDB() Response = \(response!)")
                     }
                     let responseString = String(data: data, encoding: .utf8)
-                    print("NSUser: setUserDB() Response Message = \(responseString!)")
+                    //print("NSUser: setUserDB() Response Message = \(responseString!)")
                 }
                 
                 // Start Task
@@ -640,7 +641,7 @@ class NSUser: NSObject, NSCoding {
             var postString = ""
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            print(postString)
+            //print(postString)
             
             // Send Request
             request.httpBody = postString.data(using: .utf8)
@@ -656,11 +657,11 @@ class NSUser: NSObject, NSCoding {
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSUser: getUserDB() Response = \(response!)")
+                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSUser: getUserDB() Response = \(response!)")
                 }
                 responseString = String(data: data, encoding: .utf8)
-                print("NSUser: setUserDB() Response Message = \(responseString!)")
+                //print("NSUser: setUserDB() Response Message = \(responseString!)")
                 
                 // Set Wait
                 wait = 1
