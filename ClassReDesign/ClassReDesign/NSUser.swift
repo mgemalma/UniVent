@@ -107,11 +107,11 @@ class NSUser: NSObject, NSCoding {
     static func getID() -> String? { return user.id }
     static func getName() -> String? { return user.name }
     static func getFlags() -> Int? {
-        if ifInternet() || user.id != nil{
-            if loadDB(id: user.id!) {
-                return nil
-            }
-        }
+//        if ifInternet() || user.id != nil{
+//            if loadDB(id: user.id!) {
+//                return nil
+//            }
+//        }
         return user.flags
     }
     static func getRadius() -> Float? { return user.rad }
@@ -172,64 +172,130 @@ class NSUser: NSObject, NSCoding {
     
     /** Functions **/
     static func boot(id: String, name: String) {
+        // Check internet status: 'isConnected' is true if we can reach the network
+        let connection = Reachability.shared.isConnectedToNetwork()
+        let isConnected = connection.connected || connection.cellular
+        
         // Device APN setup
-        let userDefaults = UserDefaults.standard
-        if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
-            if let oldIDValue = userDefaults.object(forKey: "UniVentOldDevID") as? String {
-                if newIDValue == "" {
-                    // Send old value to DB
-                    self.sendDeviceID(id: id, devID: oldIDValue)
+        if isConnected {
+            let userDefaults = UserDefaults.standard
+            if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
+                if let oldIDValue = userDefaults.object(forKey: "UniVentOldDevID") as? String {
+                    if newIDValue == "" {
+                        // Send old value to DB
+                        self.sendDeviceID(id: id, devID: oldIDValue)
+                    }
                 }
             }
         }
+        
+        // VERSION WITHOUT PRINTS OR TESTING
         
         /** Attempt Load Disk **/
         if(loadDisk() && id == user.id) {
+            print("loadDisk and User")
             /** Disk Yes **/
             // Check Internet
-            if ifInternet() {
-                // Load DB
-                if loadDB(id: user.id!) {
-                    // Update Disk
-                    saveDisk()
+            if isConnected {
+                print("is Connected")
+                // Load DB'
+                loadDB(id: user.id!) { success in
+                    if success == "Success" {
+                        
+                        saveDisk()
+                        if name != user.name {
+                            // Update Mem & Disk
+                            user.name = name
+                            saveDisk()
+                            if isConnected {
+                                saveDB()
+                            }
+                        }
+//                    NSEvent.loadDB() { _ in
+//                    }
+
+                    } else {
+                        saveDB()
+                    }
                 }
             }
         }
+        
+//        // VERSION WITH PRINTS AND TESTING
+//        let changedNameExample = "Andrew Peterson"   // SET THIS TO WHICHEVER NAME YOU ARE LOADING FROM DB, CHANGE IT TO
+//                                                         // TEST UPDATING THAT DB ENTRY
+//        /** Attempt Load Disk **/
+//        if(loadDisk() && id == user.id) {
+//            /** Disk Yes **/
+//            // Check Internet
+//            if isConnected/*ifInternet()*/ {
+//                // Load DB
+//                //print("going to load from DB")
+//                loadDB(id: user.id!) { success in
+//                    //print("Something was loaded!")
+//                    if success == "Success" {
+//                        //print("The user was set")
+//                        saveDisk()
+//                    } //else {
+//                        //print("The user was NOT set")
+//                    //}
+//                    
+//                    if changedNameExample != user.name {
+//                        print("name is not the same")
+//                        // Update Mem & Disk
+//                        user.name = changedNameExample//name
+//                        print(user.name ?? "Impossible error")
+//                        saveDisk()
+//                        if isConnected/*ifInternet()*/ {
+//                            print("going to save to DB")
+//                            saveDB()
+//                        }
+//                    } else {
+//                        print("name is the same")
+//                    }
+//                }
+//            }
+//        }
         else {
-            /** Disk No & Diff **/
+            /** No Disk or ID Diff **/
             // Attempt Load DB
-            if(loadDB(id: id)) {
-                /** DB Yes **/
-                // Save Disk
-                saveDisk()
-            }
-            else {
-                /** DB No **/
-                // Set User
-                user.id = id;
-                user.name = name
+            loadDB(id: id) { success in
+                if success == "Success" {
+                    saveDisk()
+                } else {
+                    user.id = id
+                    user.name = name
                 
-                // Save Disk
-                saveDisk()
+                    // Save Disk
+                    saveDisk()
                 
-                // Save DB
-                saveDB()
+                    // Save DB
+                    saveDB()
+                    
+//                    NSEvent.loadDB() { _ in
+//                        
+//                    }
+                }
             }
         }
         
-        // Check Username
-        if(name != user.name) {
-            // Update Mem & Disk
-            user.name = name
-            saveDisk()
-            
-            // Update DB
-            if ifInternet() {
-                saveDB()
-            }
-        }
+        // THIS SHOULD BE TAKEN OUT
+//        // Check Username
+//        if(name != user.name) {
+//            print("name is not the same")
+//            // Update Mem & Disk
+//            user.name = name
+//            saveDisk()
+//            
+//            // Update DB
+//            if isConnected/*ifInternet()*/ {
+//                saveDB()
+//            }
+//        } else {
+//            print("name is the same")
+//        }
     }
-    
+    // Function for DeviceAPN
     static func sendDeviceID(id: String, devID: String) {
         // Set URL
         if let url = URL(string: "http://gymbuddyapp.net/sendDeviceID.php?") {
@@ -256,6 +322,7 @@ class NSUser: NSObject, NSCoding {
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
                     //print("NSUser: sendDeviceID() Response statusCode should be 200, but is \(httpStatus.statusCode)")
                     //print("NSUser: sendDeviceID() Response = \(response!)")
+                    
                 }
                 let responseString = String(data: data!, encoding: .utf8)
                 print("NSUser: setDeviceID() Response Message = \(responseString!)")
@@ -267,39 +334,78 @@ class NSUser: NSObject, NSCoding {
     }
     
     /** DB Functions **/
-    // Load from Database (Abdtraction of Database Operations)
-    static func loadDB(id: String) -> Bool {
-        // Call DB Command
-        var dict: [String:String]? = getUserDB(ID: id)
-        
-        // If Not in DB
-        if dict == nil {
-            // Return Fail
-            return false
-        }
-        
-        // Else Load Values
-        user.id = dict!["id"]
-        user.name = dict!["name"]
-        user.flags = Int(dict!["flags"]!)
-        user.rad = Float(dict!["rad"]!)
-        user.interests = arrayer(string: dict!["interests"]) as? [String]
-        user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
-        user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
-        user.rEvents = arrayer(string: dict!["rEvents"]) as? [String]
-        user.fEvents = arrayer(string: dict!["fEvents"]) as? [String]
-        
-        // Return Success
-        return true;
-    }
     
+    // UPDATED loadDB. USES CORRECT MAIN THREAD PARALLEL EXECUTION. USE THE PRINT STATEMENTS TO WATCH THE EXECUTION PROCESS
+    
+    // Load from Database (Abdtraction of Database Operations)
+    typealias loadDBHandler = (_ success: String) -> Void
+    static func loadDB(id: String, completionHandler: @escaping loadDBHandler) {
+        DispatchQueue.main.async {
+            //print("Let me go first")
+            getUserDB(ID: id) { success in
+                //print("My turn!")
+                if success != nil {
+                    let dict = success
+                    user.id = dict!["id"]
+                    user.name = dict!["name"]
+                    user.flags = Int(dict!["flags"]!)
+                    user.rad = Float(dict!["rad"]!)
+                    user.interests = arrayer(string: dict!["interests"]) as? [String]
+                    user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
+                    user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
+                    user.rEvents = arrayer(string: dict!["rEvents"]) as? [String]
+                    user.fEvents = arrayer(string: dict!["fEvents"]) as? [String]
+                    completionHandler("Success")
+                } else {
+                    completionHandler("Failure")
+                }
+            }
+        }
+    }
+
+//    // Load from Database (Abdtraction of Database Operations)
+//    static func loadDB(id: String) -> Bool {
+//        // Call DB Command
+//        //var dict: [String:String]? = getUserDB(ID: id)
+//        var dict: [String:String]?
+//        
+//        // Should run completely before the rest is executed
+//        DispatchQueue.main.async {
+//            print("Let me go first")
+//            getUserDB(ID: id) { success in
+//                dict = success
+//            }
+//        }
+//        
+//        print("Now the rest can run")
+//        // If Not in DB
+//        if dict == nil {
+//            // Return Fail
+//            print("Not in DB")
+//            return false
+//        }
+//        
+//        // Else Load Values
+//        user.id = dict!["id"]
+//        user.name = dict!["name"]
+//        user.flags = Int(dict!["flags"]!)
+//        user.rad = Float(dict!["rad"]!)
+//        user.interests = arrayer(string: dict!["interests"]) as? [String]
+//        user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
+//        user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
+//        user.rEvents = arrayer(string: dict!["rEvents"]) as? [String]
+//        user.fEvents = arrayer(string: dict!["fEvents"]) as? [String]
+//        
+//        // Return Success
+//        return true;
+//    }
+    
+    // UPDATED getUserDB. USES CORRECT PARALLEL EXECUTION RATHER THAN A MAIN THREAD WHILE LOOP
     // Get User Information
-    static func getUserDB(ID: String) -> [String:String]? {
-        // Int Wait
-        var wait = 0
-        
+    typealias CompletionHandler = (_ success: [String : String]?) -> Void
+    static func getUserDB(ID: String, completionHandler: @escaping CompletionHandler) {
         // Dict
-        var dict: [String:String]?
+        //var dict: [String:String]?
         
         // Set URL
         if let url = URL(string: "https://gymbuddyapp.net/getUser.php?") {
@@ -320,80 +426,131 @@ class NSUser: NSObject, NSCoding {
             /** Response **/
             // Setup Task
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                // Error Handler
-                guard let data = data, error == nil else {
-                    //print("NSUser: getUserDB() Connection Error = \(error!)")
-                    return
-                }
                 
-                /** Parse the Data -> Dict **/
-                dict = parseUser(data)              // Get Dictionary
-                wait = 1                            // Set Wait
-                
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    //print("NSUser: getUserDB() Response = \(response!)")
+                if let _ = data, error == nil {
+                    DispatchQueue.main.async {
+                        let dict = parseUser(data!)
+                        //let responseString = String(data: data!, encoding: .utf8)
+                        //print("NSUser: getUserDB() Response Message = \(responseString!)")
+                        completionHandler(dict)
+                    }
+                } else {
+                    completionHandler(nil)
                 }
-                let responseString = String(data: data, encoding: .utf8)
-                //print("NSUser: getUserDB() Response Message = \(responseString!)")
             }
             
             // Start Task
             task.resume()
         }
-        // Busy Waiting
-        while wait == 0{
-            // Do nothing
-        }
-        
-        // Return
-        return dict
     }
+    
+//    // Get User Information
+//    static func getUserDB(ID: String) -> [String:String]? {
+//        // Int Wait
+//        var wait = 0
+//        
+//        // Dict
+//        var dict: [String:String]?
+//        
+//        // Set URL
+//        if let url = URL(string: "https://gymbuddyapp.net/getUser.php?") {
+//            
+//            /** Request **/
+//            // Setup Request
+//            var request = URLRequest(url: url)
+//            request.httpMethod = "POST"
+//            
+//            // Build Post Request
+//            var postString = "id=\(ID)"
+//            postString = postString.replacingOccurrences(of: " ", with: "%20")
+//            postString = postString.replacingOccurrences(of: "'", with: "''")
+//            
+//            // Send Request
+//            request.httpBody = postString.data(using: .utf8)
+//            
+//            /** Response **/
+//            // Setup Task
+//            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//                // Error Handler
+//                guard let data = data, error == nil else {
+//                    //print("NSUser: getUserDB() Connection Error = \(error!)")
+//                    return
+//                }
+//                
+//                /** Parse the Data -> Dict **/
+//                dict = parseUser(data)              // Get Dictionary
+//                wait = 1                            // Set Wait
+//                
+//                // Respond Back
+//                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+//                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+//                    //print("NSUser: getUserDB() Response = \(response!)")
+//                }
+//                let responseString = String(data: data, encoding: .utf8)
+//                //print("NSUser: getUserDB() Response Message = \(responseString!)")
+//            }
+//            
+//            // Start Task
+//            task.resume()
+//        }
+//        // Busy Waiting
+//        while wait == 0{
+//            // Do nothing
+//        }
+//        
+//        // Return
+//        return dict
+//    }
     
     // Send User Information
     static func saveDB() {
-        // Set URL
-        if let url = URL(string: "http://gymbuddyapp.net/updateUser.php?")
-        {
-            // Setup Request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            // Nil Handler
-            if user.id == nil || user.name == nil {
-                return
-            }
-            
-            // Build Post Request
-            var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
-            postString = postString.replacingOccurrences(of: " ", with: "%20")
-            postString = postString.replacingOccurrences(of: "'", with: "''")
-            //print(postString)
-            
-            // Send Request
-            request.httpBody = postString.data(using: .utf8)
-            
-            /** Response **/
-            // Setup Task
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                // Error Handler
-                guard let data = data, error == nil else {
-                    //print("NSUser: setUserDB() Connection Error = \(error!)")
+        // print("Updating users DB")
+        // Queue this process as low priority
+        DispatchQueue.global(qos: .utility).async {
+            // Set URL
+            if let url = URL(string: "http://gymbuddyapp.net/updateUser.php?")
+            {
+                // Setup Request
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                
+                // Nil Handler
+                if user.id == nil || user.name == nil {
+                    //print("returning nil")
                     return
                 }
                 
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    //print("NSUser: getUserDB() Response = \(response!)")
+                // Build Post Request
+                var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests)!)&pEvents=\(stringer(array: user.pEvents)!)&aEvents=\(stringer(array: user.aEvents)!)&fEvents=\(stringer(array: user.fEvents)!)&rEvents=\(stringer(array: user.rEvents)!)"
+                postString = postString.replacingOccurrences(of: " ", with: "%20")
+                postString = postString.replacingOccurrences(of: "'", with: "''")
+                //print(postString)
+                
+                // Send Request
+                request.httpBody = postString.data(using: .utf8)
+                
+                /** Response **/
+                // Setup Task
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    //print(data)
+                    // Error Handler
+                    guard let data = data, error == nil else {
+                        print("NSUser: setUserDB() Connection Error = \(error!)")
+                        return
+                    }
+                    
+                    // Respond Back
+                    if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
+                        //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                        //print("NSUser: getUserDB() Response = \(response!)")
+                    }
+                    let responseString = String(data: data, encoding: .utf8)
+                    //print("NSUser: setUserDB() Response Message = \(responseString!)")
                 }
-                let responseString = String(data: data, encoding: .utf8)
-                //print("NSUser: setUserDB() Response Message = \(responseString!)")
+                
+                // Start Task
+                task.resume()
             }
-            
-            // Start Task
-            task.resume()
         }
     }
     
@@ -484,7 +641,7 @@ class NSUser: NSObject, NSCoding {
             var postString = ""
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            print(postString)
+            //print(postString)
             
             // Send Request
             request.httpBody = postString.data(using: .utf8)
@@ -500,11 +657,11 @@ class NSUser: NSObject, NSCoding {
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSUser: getUserDB() Response = \(response!)")
+                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSUser: getUserDB() Response = \(response!)")
                 }
                 responseString = String(data: data, encoding: .utf8)
-                print("NSUser: setUserDB() Response Message = \(responseString!)")
+                //print("NSUser: setUserDB() Response Message = \(responseString!)")
                 
                 // Set Wait
                 wait = 1

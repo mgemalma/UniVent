@@ -1,63 +1,57 @@
-/**
- Name:              NSEvent (The new and improved event).
- 
- Revision Date:
- 
- Description:
- 
- Authors:           Anirudh Pal (Class Design)
-                    Altug Gemalmamz (Persist Data)
-                    Amjad Zahara (DB Operations & Filters)
- Design:
- **/
+
 
 /** Libraries **/
 import UIKit                // Used for NSObject & NS Coding.
 import CoreLocation         // Used for Location Data.
 import SwiftLocation
 
-/** Class Definition **/
+/**
+ Name:              NSEvent (The new and improved event).
+ 
+ Revision Date:     11.06.17
+ 
+ Description:
+ 
+ Authors:           Anirudh Pal (Class Design)
+ Altug Gemalmamz (Persist Data)
+ Amjad Zahara (DB Operations & Filters)
+ Design:
+ */
 class NSEvent: NSObject, NSCoding {
+    
+    // MARK: - Completion Handlers
+    typealias stringCompletion = (_ success: String?) -> Void
+    typealias eventCompletion = (_ success: NSEvent?) -> Void
+    typealias eventArrayCompletion = (_ success: [NSEvent]?) -> Void
+    typealias dictArrayCompletion = (_ success: [[String : String]]?) -> Void
+    typealias boolCompletion = (_ success: Bool) -> Void
+    typealias dictCompletion = (_ success: [String : String]?) -> Void
+
+
     /** Static Variables **/
     // Altug Needs to Figure Out.
+    // MARK: - Core Data File Paths
     static let docpDir = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let arcpURL = docpDir.appendingPathComponent("eventpDisk")
     static let doclDir = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let arclURL = doclDir.appendingPathComponent("eventlDisk")
     static let docaDir = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let arcaURL = docaDir.appendingPathComponent("eventaDisk")
+    
     static var loc: CLLocation?
     
     // Set Dummy Location (Andrew we will Implements this when you are present!)
     //static var Uloc = CLLocation();
     
-    // Static Comparators
-    static func BY_DATE_A(a: NSEvent, b: NSEvent) -> Bool {
-        return a.start! < b.start!
-    }
-    static func BY_DATE_D(a: NSEvent, b: NSEvent) -> Bool {
-        return a.start! > b.start!
-    }
-    static func BY_RAT_A(a: NSEvent, b: NSEvent) -> Bool {
-        return a.rat! > b.rat!
-    }
-    static func BY_RAT_D(a: NSEvent, b: NSEvent) -> Bool {
-        return a.rat! < b.rat!
-    }
-    static func BY_LOC_A(a: NSEvent, b: NSEvent) -> Bool {
-        return a.loc!.distance(from: loc!) < b.loc!.distance(from: loc!)
-    }
-    static func BY_LOC_D(a: NSEvent, b: NSEvent) -> Bool {
-        return a.loc!.distance(from: loc!) > b.loc!.distance(from: loc!)
-    }
-    
     // Static Lists to Store Events
+    // MARK: - Event Lists
     static var pEvents : [NSEvent]? = [NSEvent]()
     static var lEvents : [NSEvent]? = [NSEvent]()
     static var aEvents : [NSEvent]? = [NSEvent]()
     static var sEvents : [NSEvent]? = [NSEvent]()
 
     /** Instance Variables **/
+    // MARK: - Properties
     private var id: String?
     private var start : Date?
     private var end: Date?
@@ -76,7 +70,8 @@ class NSEvent: NSObject, NSCoding {
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
      from <<Key>:<Value>> pairs. These pairs are used both in DB & Disk.
-     **/
+     */
+    // MARK: - Data Persistance Keys
     struct Keys {
         static let id = "id"
         static let start = "start"
@@ -96,6 +91,7 @@ class NSEvent: NSObject, NSCoding {
     
     /** Constructor **/
     // Creation Constructor
+    // MARK: - Initializers
     convenience init(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?) {
         // Initialize Empty
         self.init()
@@ -105,9 +101,7 @@ class NSEvent: NSObject, NSCoding {
         self.start = start
         self.end = end
         self.add = [String:String]()
-        if(building != nil) {
-            self.add!["building"] = building
-        }
+        self.add!["building"] = building
         self.add!["address"] = address
         self.add!["city"] = city
         self.add!["state"] = state
@@ -165,6 +159,7 @@ class NSEvent: NSObject, NSCoding {
     }
     
     /** Getter **/
+    // MARK: - Getters
     func getID() -> String? { return id }
     func getStartTime() -> Date? { return start }
     func getEndTime() -> Date? {return end}
@@ -189,6 +184,7 @@ class NSEvent: NSObject, NSCoding {
 
     
     /** Setter **/
+    // MARK: - Setters
     func setID(id : String?){ self.id = id }
     func setStartTime(start : Date?){ self.start = start }
     func setEndTime(end : Date?) { self.end = end}
@@ -239,7 +235,9 @@ class NSEvent: NSObject, NSCoding {
     }
     
     /** Functions **/
-    static func incrementHeadCount(id: String?, inc: Bool = true) -> Bool{
+    // MARK: - Database Abstractions
+    static func incrementHeadCount(id: String?, inc: Bool = true) -> Bool {
+        //print("Changing head count")
         // Return if Already Used Before
         
         // Check if Exists in NSUser
@@ -247,10 +245,12 @@ class NSEvent: NSObject, NSCoding {
             return false
         }
         
+        
         // Check if Exists in NSEvent
         var index: Int?
         for event in sEvents! {
             if id == event.getID() {
+                //print("Found the event")
                 index = sEvents!.index(of: event)
             }
         }
@@ -258,20 +258,16 @@ class NSEvent: NSObject, NSCoding {
             return false
         }
         
-        // Set to NSEvents
+        // Set to NSEvents & Update to DB
         if inc {
             sEvents![index!].incHeadCount()
+            NSEvent.headCountEvent(ID: id!, value: "+1")
+            //print("Should have incremented")
         }
         else {
             sEvents![index!].incHeadCount(inc: -1)
-        }
-    
-        // Update to DB
-        if inc {
-            NSEvent.headCountEvent(ID: id!, value: "+1")
-        }
-        else {
             NSEvent.headCountEvent(ID: id!, value: "-1")
+            //print("Should have decremented")
         }
         
         // Nil Handler
@@ -281,8 +277,17 @@ class NSEvent: NSObject, NSCoding {
         
         // Save to Disk
         if inc {
-            
             NSEvent.aEvents!.append(sEvents![index!])
+            //print("Appended to attending events")
+        } else if !inc {
+            // Should be safely unwrappable
+            for aIndex in NSEvent.aEvents! {
+                if aIndex.getID() == id {
+                    //print("Removing from attending events")
+                    NSEvent.aEvents!.remove(at: (NSEvent.aEvents?.index(of: aIndex))!)
+                    break
+                }
+            }
         }
         NSEvent.saveDisk()
         
@@ -404,111 +409,78 @@ class NSEvent: NSObject, NSCoding {
     
     // Create and Event
     // Will create or update an event based on id value passed. Returns id if successful else nil.
-    static func postEvent(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?) -> String?{
+    static func postEvent(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?, completionHandler: @escaping stringCompletion) {
         
         // Variable to Manipulate Event
-        var newEvent: NSEvent?
+        var event: NSEvent?
         
         // If ID Nil
-        if(id == nil) {
+        if(id == nil) {     // Post a new event
             // Get ID
-            let newID: String? = getUniqueID()
-            
-            // Nil Handler
-            if newID == nil {
-                return nil
-            }
-            
-            // Create Event
-            newEvent = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
-            
-            // Nil Handler
-            if newEvent == nil {
-                return nil
-            }
-        
-            // Add to List
-            pEvents!.append(newEvent!)
-            
-            // Add to User
-            // Get Array
-            var arr: [String]? = NSUser.getPostedEvents()
-            
-            // Nil Handler
-            if arr == nil {
-                NSUser.setPostedEvents(pEvents: [String]())
-                arr = NSUser.getPostedEvents()
-            }
-            
-            // Add to Array
-            arr!.append(newID!)
-            
-            // Set Array
-            NSUser.setPostedEvents(pEvents: arr)
-            
-            // User save to DB & Disk
-            NSUser.saveDB()
-            NSUser.saveDisk()
-        }
-        
-        // Else
-        else {
-            // Nil Handler
-            if pEvents == nil {
-                return nil
-            }
-            
-            // Find Event
-            for event in pEvents! {
-                if event.id == id {
-                    newEvent = event
+            getUniqueID() { success in
+                if success != nil {
+                    let newID = success
+                    // Create Event
+                    event = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
+                    if event == nil { completionHandler(nil) }
+                    
+                    // Add the new event everywhere
+                    pEvents!.append(event!)
+                    var arr: [String]? = NSUser.getPostedEvents()
+                    if arr != nil {
+                        arr!.append(newID!)
+                    } else {
+                        arr = [newID!]
+                    }
+                    NSUser.setPostedEvents(pEvents: arr)
+                    sendEventDB(event: event!)
+                    completionHandler(newID)
+                } else {
+                    completionHandler(nil)
                 }
             }
-            
-            // Nil Handler
-            if newEvent == nil {
-                return nil
-            }
-            
-            // Update all Vars
-            newEvent!.start = start
-            newEvent!.end = end
-            newEvent!.add = [String:String]()
-            if(building != nil) {
-                newEvent!.add!["building"] = building
-            }
-            newEvent!.add!["address"] = address
-            newEvent!.add!["city"] = city
-            newEvent!.add!["state"] = state
-            newEvent!.add!["zip"] = zip
-            newEvent!.loc = loc
-            newEvent!.rat = rat
-            newEvent!.ratC = ratC
-            newEvent!.flags = flags
-            newEvent!.heads = heads
-            newEvent!.host = host
-            newEvent!.title = title
-            newEvent!.type = type
-            newEvent!.desc = desc
-            newEvent!.interests = intrests
         }
-        
-        // Save to Disk
-        saveDisk()
-        
-        // Nil Handler
-        if newEvent == nil {
-            return nil
+        // Else
+        else {
+            if let pE = pEvents {
+                // Find Event
+                for e in pE {
+                    if e.id == id {
+                        // Update all Vars
+                        e.start = start
+                        e.end = end
+                        e.add = [String:String]()
+                        if(building != nil) {
+                            e.add!["building"] = building
+                        }
+                        e.add!["address"] = address
+                        e.add!["city"] = city
+                        e.add!["state"] = state
+                        e.add!["zip"] = zip
+                        e.loc = loc
+                        e.rat = rat
+                        e.ratC = ratC
+                        e.flags = flags
+                        e.heads = heads
+                        e.host = host
+                        e.title = title
+                        e.type = type
+                        e.desc = desc
+                        e.interests = intrests
+                        
+                        saveDisk()
+                        sendEventDB(event: e)
+                        completionHandler(e.id)
+                    }
+                }
+                completionHandler(nil)
+            }
+            completionHandler(nil)
         }
-        
-        // Send to DB
-        sendEventDB(event: newEvent!)
-        
-        // Return ID
-        return newEvent!.id
     }
     
     /** Sorts & Filters **/
+    // MARK: - Sorting & Filtering
     /// Filter an array of events based on type.
     /// Given an array of events and the needed type, return an array of events with that type.
     static func filterType(type: String) {
@@ -587,114 +559,109 @@ class NSEvent: NSObject, NSCoding {
     
     /** DB Functions **/
     
+    // MARK: - Database Functions
     // Loads Everything from DB
-    static func loadDB() -> Bool {
+    
+    static func loadDB(completionHandler: @escaping boolCompletion) {
+        let queue = DispatchQueue.global(qos: .userInitiated)
         // Load Everything
-        if loadDBLocal() && loadDBPostAttend(pa: true) && loadDBPostAttend(pa: false) {
-            return true
+        if let _ = NSUser.getLocation(){
+            queue.async {
+                loadDBLocal() { boolLocal in
+                    if boolLocal {
+                        loadDBPostAttend(pa: true) { boolP in
+                            if (boolP != nil) {
+                                loadDBPostAttend(pa: false) { boolA in
+                                    if (boolA != nil) {
+                                        //print("All Events loaded")
+                                        completionHandler(true)
+                                    }
+                                }
+                            }
+                        }
+                        //completionHandler(true)
+                    }
+                }
+                completionHandler(false)
+            }
+        } else {
+            completionHandler(false)
         }
-        
-        // Call Intrest Filter
-        if NSUser.getInterests() != nil {
-            filterInterests(interests: NSUser.getInterests())
-        }
-        
-        // Return
-        return false
     }
     
     // Loads Posted events into pEvents from DB
-    static func loadDBPostAttend(pa: Bool) -> Bool {
+    static func loadDBPostAttend(pa: Bool, completionHandler: @escaping eventArrayCompletion) {
         // Array for Events
         var arr: [NSEvent]? = [NSEvent]()
         
         // Get ID Array
-        var IDs: [String]?
-        if pa {
-            IDs = NSUser.getPostedEvents()
-        }
-        else {
-            IDs = NSUser.getAttendingEvents()
-        }
+        var eventIDs: [String]?
+        if pa { eventIDs = NSUser.getPostedEvents() }
+        else { eventIDs = NSUser.getAttendingEvents() }
         
-        // Nill Handler
-        if IDs == nil {
-            return false
-        }
-        
-        // Get Events
-        for id in IDs! {
-            // Get Dict
-            let dict = getEventDB(ID: id)
-            
-            // Nil Handler
-            if dict == nil {
-                return false
+        // Nil Handler
+        if eventIDs != nil {
+            // Get Events
+            for id in eventIDs! {
+                // Get Dict
+                getEventDB(ID: id) { success in
+                    
+                    if let ent = success {
+                        //print("SUCCESS: \(success)")
+                        let addressComponents = dicter(string: ent["addr"])!
+                        let event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
+                        
+                        // Add Event
+                        arr!.append(event);
+                        
+                        // Save to Mem
+                        if pa { NSEvent.pEvents = arr }
+                        else { NSEvent.aEvents = arr }
+                    }
+                    if id == eventIDs?[(eventIDs?.endIndex)! - 1] {
+                        // Save to Disk
+                        saveDisk()
+                        completionHandler(arr)
+                    }
+                }
             }
-            
-            // Unwrap
-            let ent = dict!
-            let addressComponents = NSEvent.dicter(string: ent["addr"])!
-            
-            // Create Event (Ask Sultan)
-            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
-            
-            // Add Event
-            arr!.append(event);
+        } else {
+            completionHandler(nil)
         }
-        
-        // Save to Mem
-        if pa {
-            pEvents = arr
-        }
-        else {
-            aEvents = arr
-        }
-        
-        // Save to Disk
-        saveDisk()
-        
-        // Return
-        return true;
     }
     
     // Loads Local (Proximity) events into lEvents from DD
-    static func loadDBLocal() -> Bool{
+    static func loadDBLocal(completionHandler: @escaping boolCompletion) {
         // Get Latest Location
-        var loc = NSUser.getLocation()    
+        let loc = NSUser.getLocation()
+        let lat = loc?.coordinate.latitude
+        let lon = loc?.coordinate.longitude
+        
         /** Load Local Events **/
-        // Array of Events
-        var arr: [NSEvent]? = [NSEvent]()
-        
-        // Get Array of Dict
-        let dictArr : [[String:String]]? = getEventsBlockDB(lat: (loc?.coordinate.latitude)!, long: (loc?.coordinate.longitude)!)
-        
-        // Nil Handler
-        if dictArr == nil {
-            return false
+        // Get Array of Event Dicts
+        getEventsBlockDB(lat: lat!, long: lon!) { success in
+            if success != nil {
+                var arr: [NSEvent]? = [NSEvent]()
+                let dictArr = success
+                // Iterate through Dict
+                for dict in dictArr! {
+                    let ent = dict
+                    let addressComponents = dicter(string: ent["addr"])!
+                    let event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
+                    
+                    // Add Event
+                    arr!.append(event);
+                }
+                // Save to Mem
+                lEvents = arr
+                sEvents = lEvents
+                // Save to Disk
+                saveDisk()
+                completionHandler(true)
+            } else {
+                completionHandler(false)
+            }
         }
-        
-        // Iterate through Dict
-        for dict in dictArr! {
-            let ent = dict
-            let addressComponents = NSEvent.dicter(string: ent["addr"])!
-//            print(ent)
-            // Create Event (Ask Sultan)
-            var event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
-            
-            // Add Event
-            arr!.append(event);
-        }
-        
-        // Save to Mem
-        lEvents = arr
-        sEvents = lEvents
-        
-        // Save to Disk
-        saveDisk()
-        
-        // Return
-        return true
     }
     
     // Send Event Information
@@ -722,35 +689,27 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: sendEventDB() Connection Error = \(error!)")
+                    //print("NSEvent: sendEventDB() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: sendEventDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: sendEventDB() Response = \(response!)")
+                    //print("NSEvent: sendEventDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: sendEventDB() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: sendEventDB() Response Message = \(responseString!)")
+                //print("NSEvent: sendEventDB() Response Message = \(responseString!)")
             }
             
             // Start Task
             task.resume()
         }
     }
-    
     // Get Event Information
-    static func getEventDB(ID: String) -> [String:String]? {
-        // Int Wait
-        var wait = 0
-        
-        // Dict
-        var dict: [String:String]?
-        
+    static func getEventDB(ID: String, completionHandler: @escaping dictCompletion) {
         // Set URL
         if let url = URL(string: "http://gymbuddyapp.net/getEvent.php?") {
-            
             /** Request **/
             // Setup Request
             var request = URLRequest(url: url)
@@ -760,57 +719,36 @@ class NSEvent: NSObject, NSCoding {
             var postString = "id=\(ID)"
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
-            
+            //print(postString)
             // Send Request
             request.httpBody = postString.data(using: .utf8)
             
             /** Response **/
             // Setup Task
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                // Error Handler
-                guard let data = data, error == nil else {
-                    print("NSEvent: getEventDB() Connection Error = \(error!)")
-                    return
-                }
                 
-                /** Parse the Data -> Dict **/
-                dict = parseEvent(data)              // Get Dictionary
-                wait = 1                            // Set Wait
-                
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: getEventDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: getEventDB() Response = \(response!)")
+                if let _ = data {
+                    DispatchQueue.main.async {
+                        let dict = NSEvent.parseEvent(data!)
+                        completionHandler(dict)
+                    }
+                } else {
+                    completionHandler(nil)
                 }
-                let responseString = String(data: data, encoding: .utf8)
-                //print("NSEvent: getEventDB() Response Message = \(responseString!)")
             }
-            
             // Start Task
             task.resume()
         }
-        // Busy Waiting
-        while wait == 0{
-            // Do nothing
-        }
-        
-        // Return
-        return dict
     }
     
-    
     // Get Events within proximity
-    static func getEventsBlockDB(lat: Double, long: Double) -> [[String:String]]? {
-        // Int Wait
-        var wait = 0
-        
+    static func getEventsBlockDB(lat: Double, long: Double, completionHandler: @escaping dictArrayCompletion) {
         // Dict
         var dict: [[String:String]]?
         
         // Set URL
         if let url = URL(string: "http://gymbuddyapp.net/getEventsNear.php?") {
             
-            /** Request **/
             // Setup Request
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
@@ -823,40 +761,27 @@ class NSEvent: NSObject, NSCoding {
             // Send Request
             request.httpBody = postString.data(using: .utf8)
             
-            /** Response **/
             // Setup Task
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
-                guard let data = data, error == nil else {
-                    print("NSEvent: getEventsBlock() Connection Error = \(error!)")
+                guard let _ = data, error == nil else {
+                    //print("NSEvent: getEventsBlock() Connection Error = \(error!)")
+                    completionHandler(nil)
                     return
                 }
-                
-                /** Parse the Data -> Dict **/
-                dict = parseEvents(data)              // Get Dictionary
-                wait = 1                            // Set Wait
-                
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: getEventsBlock() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: getEventsBlock() Response = \(response!)")
+                if let _ = data {
+                    DispatchQueue.main.async {
+                        dict = parseEvents(data!)              // Get Dictionary
+                        completionHandler(dict)
+                    }
+                } else {
+                    completionHandler(nil)
                 }
-                let responseString = String(data: data, encoding: .utf8)
-                //                print("NSEvent: getEventsBlock() Response Message = \(responseString!)")
             }
-            
             // Start Task
             task.resume()
         }
-        // Busy Waiting
-        while wait == 0{
-            // Do nothing
-        }
-        
-        // Return
-        return dict
     }
-    
     
     // Delete Event Information
     static func deleteEvent(ID: String) {
@@ -881,80 +806,71 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: deleteEvent() Connection Error = \(error!)")
+                    //print("NSEvent: deleteEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: deleteEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: deleteEvent() Response = \(response!)")
+                    //print("NSEvent: deleteEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: deleteEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: deleteEvent() Response Message = \(responseString!)")
+                //print("NSEvent: deleteEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
             task.resume()
         }
     }
-    
     // getAUniqueID requests a unique ID for an event.
-    static func getUniqueID() -> String? {
-        var id: String?
-        var control = 0
+    static func getUniqueID(completionHandler: @escaping stringCompletion) {
+        
         let stringURL = "http://gymbuddyapp.net/getUniqueID.php?num=\(69)"
         let Url = URL(string: stringURL)
         
         if let url = Url {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
-                if error == nil {
-                    id = parseID(data!)
-                    control = 1
-                }
-                else {
-                    id = nil
-                    control = 1
+                if let _ = data, error == nil {
+                    DispatchQueue.main.async {
+                        let id = parseID(data!)
+                        completionHandler(id)
+                    }
+                } else {
+                    completionHandler(nil)
                 }
             })
             task.resume()
         }
-        while control == 0 {
-            // Do nothing
-            
-        }
-        return id
     }
-    
-    
 
-    
     /** Disk Functions **/
+    // MARK: - Data Persistance
     // Save
     static func saveDisk() {
         // Save Attending Events
         let savedaData = NSKeyedArchiver.archiveRootObject(aEvents as Any, toFile: arcaURL.path)
         if (savedaData) {
-            print("Success")
+            print("Success saving aEvents")
         } else {
-            print("Failure")
+            print("Failure saving aEvents")
         }
         
         // Save Local Events
         let savedlData = NSKeyedArchiver.archiveRootObject(lEvents as Any, toFile: arclURL.path)
         if (savedlData) {
-            print("Success")
+            print("Success saving lEvents")
         } else {
-            print("Failure")
+            print("Failure saving lEvents")
         }
         
         // Save Posted Events
         let savedpData = NSKeyedArchiver.archiveRootObject(pEvents as Any, toFile: arcpURL.path)
         if (savedpData) {
-            print("Success")
+            print("Success saving pEvents")
         } else {
-            print("Failure")
+            print("Failure saving pEvents")
         }
     }
     
@@ -962,42 +878,40 @@ class NSEvent: NSObject, NSCoding {
     static func loadDisk() {
         if let events = NSKeyedUnarchiver.unarchiveObject(withFile: arcaURL.path) as? [NSEvent] {
             aEvents = events
-            print("Success")
+            print("Success loading aEvents")
             //return true
         }
         else {
-            print("Failure")
+            print("Failure loading aEvents")
             //return false
         }
         
         if let events1 = NSKeyedUnarchiver.unarchiveObject(withFile: arclURL.path) as? [NSEvent] {
             lEvents = events1
-            print("Success")
+            print("Success loading lEvents")
             //return true
         }
         else {
-            print("Failure")
+            print("Failure loading lEvents")
             //return false
         }
         
         if let events2 = NSKeyedUnarchiver.unarchiveObject(withFile: arcpURL.path) as? [NSEvent] {
             pEvents = events2
-            print("Success")
+            print("Success loading pEvents")
             //return true
         }
         else {
-            print("Failure")
+            print("Failure loading pEvents")
             //return false
         }
     }
     
-    /// Counters incrementers/decrementers
+    // Counters incrementers/decrementers
+    // MARK: - Database Incrementing & Decrementing
     
     /// Change the event's flag count by value (value must have sign and number, for example: "+3")
     static func flagCountEvent(ID: String, value: String) {
-        // Int Wait
-        var wait = 0
-        
         // Set URL
         if let url = URL(string: "http://gymbuddyapp.net/flagCountEvent.php?") {
             
@@ -1020,26 +934,21 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: flagCountEvent() Connection Error = \(error!)")
+                    //print("NSEvent: flagCountEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: flagCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: flagCountEvent() Response = \(response!)")
+                    //print("NSEvent: flagCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: flagCountEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: flagCountEvent() Response Message = \(responseString!)")
-                
-                wait = 1
+                //print("NSEvent: flagCountEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
             task.resume()
-        }
-        while wait == 0 {
-            
         }
     }
     
@@ -1068,17 +977,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: ratCountEvent() Connection Error = \(error!)")
+                    //print("NSEvent: ratCountEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: ratCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: ratCountEvent() Response = \(response!)")
+                   // print("NSEvent: ratCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                   // print("NSEvent: ratCountEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: ratCountEvent() Response Message = \(responseString!)")
+                //print("NSEvent: ratCountEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -1109,17 +1018,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: flagCountUser() Connection Error = \(error!)")
+                    //print("NSEvent: flagCountUser() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: flagCountUser() Response = \(response!)")
+                    //print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: flagCountUser() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: flagCountUser() Response Message = \(responseString!)")
+                //print("NSEvent: flagCountUser() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -1142,7 +1051,7 @@ class NSEvent: NSObject, NSCoding {
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
             postString = postString.replacingOccurrences(of: "+", with: "--") // if curious, ask Amjad
-            
+            //print(postString)
             // Send Request
             request.httpBody = postString.data(using: .utf8)
             
@@ -1151,17 +1060,17 @@ class NSEvent: NSObject, NSCoding {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 // Error Handler
                 guard let data = data, error == nil else {
-                    print("NSEvent: headCountEvent() Connection Error = \(error!)")
+                    //print("NSEvent: headCountEvent() Connection Error = \(error!)")
                     return
                 }
                 
                 // Respond Back
                 if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSEvent: headCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSEvent: headCountEvent() Response = \(response!)")
+                    //print("NSEvent: headCountEvent() Response statusCode should be 200, but is \(httpStatus.statusCode)")
+                    //print("NSEvent: headCountEvent() Response = \(response!)")
                 }
                 let responseString = String(data: data, encoding: .utf8)
-                print("NSEvent: headCountEvent() Response Message = \(responseString!)")
+                //print("NSEvent: headCountEvent() Response Message = \(responseString!)")
             }
             
             // Start Task
@@ -1169,28 +1078,6 @@ class NSEvent: NSObject, NSCoding {
         }
     }
     
-    
-    
-    
-    /** Parser & Encoder **/
-    // parseID is a helper function to getAUniqueID
-    // It parses the data in the script into a dictionary.
-    // The ID is returned as an Int. Typically 16 digits long.
-    static func parseID(_ data:Data) -> String? {
-        var id2: String?
-        do {
-            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
-            
-            for element in jsonArray {
-                let dict = element as! [String:String]
-                id2 = dict["uniqueID"] as? String
-            }
-        }
-        catch {
-            print("Error in parseID")
-        }
-        return id2
-    }
     
     // Parse Data into a Dictionary
     static func parseEvent(_ data:Data) -> [String:String]? {
@@ -1246,7 +1133,7 @@ class NSEvent: NSObject, NSCoding {
         // Return Dict
         return dict
     }
-    
+    // MARK: - Encoding
     // Disk Encoder (Required by NSCoding)
     func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: Keys.id)
@@ -1264,89 +1151,4 @@ class NSEvent: NSObject, NSCoding {
         aCoder.encode(desc, forKey: Keys.desc)
         aCoder.encode(interests, forKey: Keys.interests)
     }
-    
-    // String -> Array
-    static func arrayer(string: String?) -> [Any]? {
-        // Nil
-        if string == nil {
-            return nil
-        }
-        
-        // Parse to Array
-        let array: [Any]? = string?.components(separatedBy: ",")
-        
-        // Return
-        return array
-    }
-    
-    // Array -> String
-    static func stringer(array: [Any]?) -> String? {
-        // Nil
-        if array == nil {
-            return nil
-        }
-        
-        // Parse to String
-        var string: String = ""
-        for element in array! {
-            string.append(String(describing: element))
-            string.append(",")
-        }
-        
-        // Remove last +
-        //string.removeLast()
-        string.remove(at: string.index(before: string.endIndex))
-        
-        // Return
-        return string
-    }
-    
-    
-    // Converts a dictionary to a JSON String
-    static func dictToString(dict: [String: String]?) -> String? {
-        // Nil
-        if dict == nil {
-            return ""
-        }
-        
-        // Parse to String
-        var string: String = "[{"
-        for element in dict! {
-            string.append("\"")
-            string.append(String(describing: element.key))
-            string.append("\"")
-            string.append(":")
-            string.append("\"")
-            string.append(String(describing: element.value))
-            string.append("\"")
-            string.append(",")
-        }
-        
-        // Remove last +
-        //string.removeLast()
-        string.remove(at: string.index(before: string.endIndex))
-        string.append("}")
-        string.append("]")
-        
-        // Return
-        return string
-    }
-    
-    
-    // Converts a JSON String to a dictionary
-    static func dicter(string: String?) -> [String: String]? {
-        // Nil
-        if string == nil {
-            return nil
-        }
-        // Parse to Array
-        var temp = string!.data(using: .utf8)
-        var dict = NSEvent.parseEvent(temp!)
-        
-        // Return
-        return dict
-    }
-    
-    
-    
 }
