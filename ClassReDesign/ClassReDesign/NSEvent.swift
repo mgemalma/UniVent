@@ -417,30 +417,27 @@ class NSEvent: NSObject, NSCoding {
         // If ID Nil
         if(id == nil) {     // Post a new event
             // Get ID
-            getUniqueID() { success in
-                if success != nil {
-                    let newID = success
-                    // Create Event
-                    event = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
-                    if event == nil { completionHandler(nil) }
-                    
-                    // Add the new event everywhere
-                    pEvents!.append(event!)
-                    var arr: [String]? = NSUser.getPostedEvents()
-                    if arr != nil {
-                        arr!.append(newID!)
-                    } else {
-                        arr = [newID!]
-                    }
-                    NSUser.setPostedEvents(pEvents: arr)
-                    sendEventDB(event: event!)
-                    completionHandler(newID)
-                } else {
-                    completionHandler(nil)
-                }
+            let newID = UUID().uuidString
+            
+            // Create Event
+            event = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
+            if event == nil { completionHandler(nil) }
+            
+            // Add the new event everywhere
+            pEvents!.append(event!)
+            var arr: [String]? = NSUser.getPostedEvents()
+            if arr != nil {
+                arr!.append(newID)
+            } else {
+                arr = [newID]
             }
+            NSUser.setPostedEvents(pEvents: arr)
+            sendEventDB(event: event!)
+            completionHandler(newID)
+            
+            
         }
-        // Else
+            // Else
         else {
             if let pE = pEvents {
                 // Find Event
@@ -824,26 +821,26 @@ class NSEvent: NSObject, NSCoding {
         }
     }
     // getAUniqueID requests a unique ID for an event.
-    static func getUniqueID(completionHandler: @escaping stringCompletion) {
-        
-        let stringURL = "http://gymbuddyapp.net/getUniqueID.php?num=\(69)"
-        let Url = URL(string: stringURL)
-        
-        if let url = Url {
-            let session = URLSession(configuration: .default)
-            let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
-                if let _ = data, error == nil {
-                    DispatchQueue.main.async {
-                        let id = parseID(data!)
-                        completionHandler(id)
-                    }
-                } else {
-                    completionHandler(nil)
-                }
-            })
-            task.resume()
-        }
-    }
+//    static func getUniqueID(completionHandler: @escaping stringCompletion) {
+//        
+//        let stringURL = "http://gymbuddyapp.net/getUniqueID.php?num=\(69)"
+//        let Url = URL(string: stringURL)
+//        
+//        if let url = Url {
+//            let session = URLSession(configuration: .default)
+//            let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
+//                if let _ = data, error == nil {
+//                    DispatchQueue.main.async {
+//                        let id = parseID(data!)
+//                        completionHandler(id)
+//                    }
+//                } else {
+//                    completionHandler(nil)
+//                }
+//            })
+//            task.resume()
+//        }
+//    }
 
     /** Disk Functions **/
     // MARK: - Data Persistance
