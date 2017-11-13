@@ -14,13 +14,29 @@
  Andrew Peterson (Singelton Pattern)
  
  Design:
- **/
+ */
 
 /** Libraries **/
 import UIKit            // Used for NSObject & NS Coding.
 import CoreLocation
 
-/** Class Definition **/
+/**
+ Name:              NSUser (The new and improved user).
+ 
+ Revision Date:     26 Oct @ 1:00 PM
+ 
+ Description:       The class provides all user associated
+ methods and instance variables and also
+ incorporates data management of these
+ variables.
+ 
+ Authors:           Anirudh Pal (Class Design)
+ Altug Gemalmamz (Persist Data)
+ Amjad Zahara (DB Operations)
+ Andrew Peterson (Singelton Pattern)
+ 
+ Design:
+ */
 class NSUserTest: NSObject, NSCoding {
     /** Static Variables **/
     // Altug Needs to Figure Out.
@@ -305,9 +321,12 @@ class NSUserTest: NSObject, NSCoding {
     }
     
     // Send User Information
+    
+    
+    /// <#Description#>
     static func saveDB() {
         // Set URL
-        if let url = URL(string: "http://gymbuddyapp.net/updateUser.php?")
+        if let url = URL(string: "http://gymbuddyapp.net/setUser.php?")
         {
             // Setup Request
             var request = URLRequest(url: url)
@@ -352,6 +371,10 @@ class NSUserTest: NSObject, NSCoding {
     
     
     // Get User Flags
+    
+    /// <#Description#>
+    ///
+    /// - Returns: <#return value description#>
     static func getFlagsDB() -> Int? {
         // Int Wait
         var wait = 0

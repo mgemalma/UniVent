@@ -14,20 +14,38 @@
                     Andrew Peterson (Singelton Pattern)
  
  Design:
- **/
+ */
 
 /** Libraries **/
 import UIKit            // Used for NSObject & NS Coding.
 import CoreLocation
 
-/** Class Definition **/
+/**
+ Name:              NSUser (The new and improved user).
+ 
+ Revision Date:     26 Oct @ 1:00 PM
+ 
+ Description:       The class provides all user associated
+ methods and instance variables and also
+ incorporates data management of these
+ variables.
+ 
+ Authors:           Anirudh Pal (Class Design)
+ Altug Gemalmamz (Persist Data)
+ Amjad Zahara (DB Operations)
+ Andrew Peterson (Singelton Pattern)
+ 
+ Design:
+ */
 class NSUser: NSObject, NSCoding {
+    // MARK: - Static Variables
     /** Static Variables **/
     // Altug Needs to Figure Out.
     static let docDir = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let arcURL = docDir.appendingPathComponent("userDisk")
     
-    /** Singleton Patter **/
+    // MARK: - Singleton
+    /** Singleton Pattern **/
     /** Description: This section of code insures that there is only one instance of this class.
                      This 'user' will be the user who has logged into the app.
      **/
@@ -39,6 +57,7 @@ class NSUser: NSObject, NSCoding {
     }()
     
     /** Instance Variables **/
+    // MARK: - Instance Variables
     /** Description: Privatization of the instance variables allows the class to be independent
                      and roboust although this also results in a large set of functions that
                      allow interation with instance variables. The level of privatization might
@@ -56,6 +75,8 @@ class NSUser: NSObject, NSCoding {
     private var loc: CLLocation?
     
     /*//////Unit Test Version
+    // MARK: - Instance Variables Unit Tests
+     
     public var id: String?             // Stores id assigned by FB.
     public var name: String?           // Stores name associated with id.
     public var flags: Int?             // Stores flag count of the user.
@@ -68,6 +89,7 @@ class NSUser: NSObject, NSCoding {
     public var loc: CLLocation?*/
     
     /** Convienience Structs **/
+    // MARK: - Convenience Structs
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
                      from <<Key>:<Value>> pairs. These pairs are used both in DB & Disk.
      **/
@@ -84,6 +106,7 @@ class NSUser: NSObject, NSCoding {
     }
     
     /** Constructor **/
+    // MARK: - Constructors
     /** Description: The decoder is classified as a constructor because it initializes the class
      based on data from the Disk. This init() is called internally by NSCoding.
      **/
@@ -133,6 +156,7 @@ class NSUser: NSObject, NSCoding {
     }
     
     /** Getter **/
+    // MARK: - Getters
     static func getID() -> String? { return user.id }
     static func getName() -> String? { return user.name }
     static func getFlags() -> Int? {
@@ -152,6 +176,7 @@ class NSUser: NSObject, NSCoding {
     static func getLocation() -> CLLocation? { return user.loc }
     
     /** Setter **/
+    // MARK: - Setters
     static func setID(id: String?) {
         if ( id == nil)
         {
@@ -215,7 +240,14 @@ class NSUser: NSObject, NSCoding {
     }
     static func setLocation(loc: CLLocation?) { user.loc = loc }
     
+    // MARK: - Functions
     /** Functions **/
+    
+    /// Boot
+    ///
+    /// - Parameters:
+    ///   - id: User ID as String
+    ///   - name: User Name as String
     static func boot(id: String, name: String) {
         // Check internet status: 'isConnected' is true if we can reach the network
         let connection = Reachability.shared.isConnectedToNetwork()
@@ -341,6 +373,12 @@ class NSUser: NSObject, NSCoding {
 //        }
     }
     // Function for DeviceAPN
+    
+    /// Sends device ID to DB
+    ///
+    /// - Parameters:
+    ///   - id: User ID as String
+    ///   - devID: Device ID as String
     static func sendDeviceID(id: String, devID: String) {
         // Check internet status: 'isConnected' is true if we can reach the network
         let connection = Reachability.shared.isConnectedToNetwork()
@@ -391,11 +429,19 @@ class NSUser: NSObject, NSCoding {
     }
     
     /** DB Functions **/
+    // MARK: - DB Functions
     
     // UPDATED loadDB. USES CORRECT MAIN THREAD PARALLEL EXECUTION. USE THE PRINT STATEMENTS TO WATCH THE EXECUTION PROCESS
     
     // Load from Database (Abdtraction of Database Operations)
     typealias loadDBHandler = (_ success: String) -> Void
+    
+    
+    /// Gets user from DB and loads it in disk
+    ///
+    /// - Parameters:
+    ///   - id: User ID as String
+    ///   - completionHandler: Multithreading handler
     static func loadDB(id: String, completionHandler: @escaping loadDBHandler) {
         DispatchQueue.main.async {
             //print("Let me go first")
@@ -460,6 +506,12 @@ class NSUser: NSObject, NSCoding {
     // UPDATED getUserDB. USES CORRECT PARALLEL EXECUTION RATHER THAN A MAIN THREAD WHILE LOOP
     // Get User Information
     typealias CompletionHandler = (_ success: [String : String]?) -> Void
+    
+    /// Gets user from DB
+    ///
+    /// - Parameters:
+    ///   - ID: User ID as String
+    ///   - completionHandler: Multithreading handler
     static func getUserDB(ID: String, completionHandler: @escaping CompletionHandler) {
         // Dict
         //var dict: [String:String]?
@@ -572,7 +624,8 @@ class NSUser: NSObject, NSCoding {
 //        return dict
 //    }
     
-    // Send User Information
+    
+    /// Sends user info to DB
     static func saveDB() {
         // print("Updating users DB")
         // Check internet status: 'isConnected' is true if we can reach the network
@@ -705,7 +758,8 @@ class NSUser: NSObject, NSCoding {
     
     
     /** Disk Functions **/
-    // This function saves the user data to the disk
+    // MARK: - Disk Functions
+    /// This function saves the user data to the disk
     static func saveDisk() {
         //Saves the user data to the disk in here "user" to "arcURL.path" this is the file path where the data is going to be stored
         let savedData = NSKeyedArchiver.archiveRootObject(user, toFile: arcURL.path)
@@ -716,7 +770,7 @@ class NSUser: NSObject, NSCoding {
         }
     }
     
-    // This function loads user data from the disk and returns true if the user is loaded properly
+    /// This function loads user data from the disk and returns true if the user is loaded properly
     static func loadDisk() -> Bool
     {
         //From the file path get the user data from the disk
@@ -733,7 +787,8 @@ class NSUser: NSObject, NSCoding {
     }
     
     /** Parsers & Encoders **/
-    // Parse Data into a Dictionary
+    // MARK: - Parsers & Encoders
+    /// Parse Data into a Dictionary
     static func parseUser(_ data:Data) -> [String:String]? {
         // Dict
         var dict: [String:String]?
@@ -761,7 +816,7 @@ class NSUser: NSObject, NSCoding {
     }
     
     
-    // Disk Encoder (Required by NSCoding) this function encodes the variables so that they are secure when saved to the disk.
+    /// Disk Encoder (Required by NSCoding) this function encodes the variables so that they are secure when saved to the disk.
     func encode(with aCoder: NSCoder) {
         //Do error checking to make sure they variables are not nil, if it is print the error
         if (flags == nil || id == nil || name == nil || rad == nil )
@@ -791,6 +846,11 @@ class NSUser: NSObject, NSCoding {
         aCoder.encode(fEvents, forKey: Keys.fEvents)
     }
     
+    
+    /// Converts string to array
+    ///
+    /// - Parameter string: String of elements separated by ^
+    /// - Returns: Array of type any
     static func arrayer(string: String?) -> [Any]? {
         // Nil
         if string == nil {
@@ -803,7 +863,7 @@ class NSUser: NSObject, NSCoding {
         // Return
         return array
     }
-    //Function to complete erase the disk contents no file will be left at the disk after calling this function returning true when succeed, returning false otherwise
+    ///Function to complete erase the disk contents no file will be left at the disk after calling this function returning true when succeed, returning false otherwise
     static func eraseDisk() -> Bool{
         do {
             //If the file exists in the file path remove the file
@@ -817,6 +877,11 @@ class NSUser: NSObject, NSCoding {
         return false
     }
     
+    
+    /// Converts array of type any to string
+    ///
+    /// - Parameter array: Array of type any
+    /// - Returns: String of elements separated by ^
     static func stringer(array: [Any]?) -> String? {
         // Nil
         if array == nil {
