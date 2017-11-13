@@ -1,0 +1,8 @@
+#!/bin/bash
+
+while [ true ]
+do
+	mysqldump -u gymbudd1_UVAdmin gymbudd1_UniVentDB > DB.sql
+	echo "Updated DB Dump"
+	sleep 5
+done
