@@ -26,6 +26,14 @@ class NSEvent: NSObject, NSCoding {
     typealias dictArrayCompletion = (_ success: [[String : String]]?) -> Void
     typealias boolCompletion = (_ success: Bool) -> Void
     typealias dictCompletion = (_ success: [String : String]?) -> Void
+    
+    static var datePicker: UIDatePicker = {
+        let instance = UIDatePicker()
+        instance.datePickerMode = UIDatePickerMode.dateAndTime
+        instance.minimumDate = Date()
+        instance.maximumDate = Date(timeInterval: 60*60*24*7, since: instance.minimumDate!)
+        return instance
+    }()
 
 
     /** Static Variables **/
