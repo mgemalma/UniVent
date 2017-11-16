@@ -13,6 +13,8 @@ import UIKit
     //MARK: Properties
     private var ratingButtons = [UIButton]()
     
+    var eID: String?
+    
     var rating = 0 {
         didSet {
             updateButtonSelectionStates()
@@ -40,6 +42,22 @@ import UIKit
         super.init(coder: coder)
         setupButtons()
     }
+    
+    func disableRating() {
+        for i in ratingButtons {
+            i.isEnabled = false
+        }
+    }
+    func enableRating() {
+        for i in ratingButtons {
+            i.isEnabled = true
+        }
+    }
+    
+    func updateForEvent(id: String) {
+        eID = id
+    }
+    
     
     // MARK: Private Methods
     
@@ -105,6 +123,11 @@ import UIKit
             // Otherwise set the rating to the selected star
             rating = selectedRating
         }
+        
+        if NSEvent.rateEvent(id: eID, rat: Float(rating)) {
+            //self.disableRating()
+        }
+        
     }
     
     private func updateButtonSelectionStates() {
@@ -134,6 +157,7 @@ import UIKit
             // Assign the hint string and value string
             button.accessibilityHint = hintString
             button.accessibilityValue = valueString
+            //self.disableRating()
         }
     }
 

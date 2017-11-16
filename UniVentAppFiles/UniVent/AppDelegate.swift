@@ -10,16 +10,29 @@ import UserNotifications
 import CoreData
 import FBSDKCoreKit
 import GoogleMaps
+import OneSignal
+import SwiftLocation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var locationManager: CLLocationManager = CLLocationManager()
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        
+        // Subscribe to significant location updates
+        if let _ = launchOptions?[UIApplicationLaunchOptionsKey.location] {
+            print("Correct launch options")
+            Locator.subscribeSignificantLocations(onUpdate: { newLocation in
+                print("New Location: \(newLocation)")
+                NSUser.setLocation(loc: newLocation)
+            }, onFail: { (err, lastLocation) in
+                print("Failed with error: \(err)")
+            })
+        }
         
         // iOS 10 support
         if #available(iOS 10, *) {
@@ -44,11 +57,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         GMSServices.provideAPIKey("AIzaSyCHWdKuV7jBcB6upYjHs97Oglhk7rGPUD4")
         
-        self.locationManager.delegate = self
-        self.locationManager.allowsBackgroundLocationUpdates = true
-        self.locationManager.activityType = .fitness
         
+        // OneSignal
+        let onesignalInitSettings = [kOSSettingsKeyAutoPrompt: false]
         
+        // Replace 'YOUR_APP_ID' with your OneSignal App ID.
+        OneSignal.initWithLaunchOptions(launchOptions,
+                                        appId: "4907fffc-143b-4aeb-a1dc-c1da390f3476",
+                                        handleNotificationAction: nil,
+                                        settings: onesignalInitSettings)
+        
+        OneSignal.inFocusDisplayType = OSNotificationDisplayType.notification;
+        
+        // Recommend moving the below line to prompt for push after informing the user about
+        //   how your app will use them.
+        OneSignal.promptForPushNotifications(userResponse: { accepted in
+            print("User accepted notifications: \(accepted)")
+        })
+        
+        // Sync hashed email if you have a login system or collect it.
+        //   Will be used to reach the user at the most optimal time of day.
+        // OneSignal.syncHashedEmail(userEmail)
         
         return true
     }
@@ -88,14 +117,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         // Convert token to string
         let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        print(deviceTokenString)
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(deviceTokenString, forKey: "UniVentNewDevID")
+       // userDefaults.removeObject(forKey: "UniVentOldDevID")
         
-        // Print it to console
-        print("APNs device token: \(deviceTokenString)")
-        
-        // Persist it in your backend in case it's new
-        
-        // TODO: TODO Implement saving the APN in the backend
-        
+        if let oldIDValue = userDefaults.object(forKey: "UniVentOldDevID") as? String {
+            if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
+                if oldIDValue != newIDValue {
+                    // set old value equal to new val
+                    userDefaults.set(newIDValue, forKey: "UniVentOldDevID")
+                    // set new value equal to "" to trigger DB connection
+                    userDefaults.set("", forKey: "UniVentNewDevID")
+                } else {
+                    // set both old and new value to be the same
+                    userDefaults.set(newIDValue, forKey: "UniVentOldDevID")
+                    userDefaults.set(newIDValue, forKey: "UniVentNewDevID")
+                }
+            }
+        } else {
+            userDefaults.set(deviceTokenString, forKey: "UniVentOldDevID")
+            userDefaults.set("", forKey: "UniVentNewDevID")
+            // Send new device ID to database
+        }
     }
     
     // Called when APNs failed to register the device for push notifications
@@ -104,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         print("APNs registration failed: \(error)")
     }
     
-    // Push notification received from user
+    // Push notification received from user while the application is in background/foreground
     func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable : Any]) {
         
         /*Note that this callback will only be invoked whenever the user has either clicked or swiped to interact with your push notification from the lock screen / Notification Center, or if your app was open when the push notification was received by the device.*/
@@ -113,7 +157,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
       // "data" contains anything we send from the backend, need to figure out what data we are recieving. Maybe EventID?
         
         // Print notification payload data
+        var eventToSendTo: String = "no event id"
         print("Push notification received: \(data)")
+        for i in data {
+            if i.key as? String == "eventID" {
+                eventToSendTo = i.value as! String
+            }
+        }
+        
+        print(eventToSendTo)
+        let vc = self.window?.rootViewController
+        print(vc?.title)
+        let pvc = vc?.storyboard?.instantiateViewController(withIdentifier: "EventDetail") as? EventDetailViewController
+        NSEvent.getEventDB(ID: eventToSendTo) { eventData in
+            if eventData != nil {
+                let addressComponents = dicter(string: eventData?["addr"])!
+                
+                let eventToLoad = NSEvent(id: eventData?["id"], start: Date(timeIntervalSince1970: Double((eventData?["startT"]!)!)!), end: Date(timeIntervalSince1970: Double((eventData?["endT"]!)!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double((eventData?["latitude"]!)!)!, longitude: Double((eventData?["longitude"]!)!)!), rat: Float((eventData?["rat"]!)!)!, ratC: Int((eventData?["ratC"]!)!)!, flags: Int((eventData?["flags"]!)!)!, heads: Int((eventData?["heads"]!)!)!, host: eventData?["host"], title: eventData?["title"], type: eventData?["type"], desc: eventData?["descr"], intrests: arrayer(string: eventData?["interests"]) as? [String], addr: addressComponents)
+                
+                pvc?.setupViewFor(event: eventToLoad)
+                
+                // TODO: Maybe check if we need to run boot on the user before loading
+                
+                
+                vc?.present(pvc!, animated: true)
+            }
+        }
     }
     
     

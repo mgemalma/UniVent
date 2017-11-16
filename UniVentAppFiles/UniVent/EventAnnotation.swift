@@ -11,8 +11,6 @@ import MapKit
 
 class EventAnnotation: NSObject, MKAnnotation {
     
-
-    
     let title: String?
     let event: NSEvent
     let eventID: String
@@ -25,12 +23,12 @@ class EventAnnotation: NSObject, MKAnnotation {
     
     init(event: NSEvent) {
         self.event = event
-        self.eventID = event.getID()!//event.getEventID()
-        self.title = event.getTitle()//getGen().getTitle()
-        self.coordinate = (event.getLocation()?.coordinate)!//CLLocationCoordinate2D(latitude: event.getLoc().getLatitude(), longitude: event.getLoc().getLongitude())
-        self.startTime = event.getStartTime()!//event.getTime().getStartTime()
-        self.endTime = event.getEndTime()!//event.getTime().getEndTime()
-        self.address = event.getAddress()//event.getLoc().getAddress()
+        self.eventID = event.getID()!
+        self.title = event.getTitle()
+        self.coordinate = CLLocationCoordinate2D(latitude: event.getLatitude()!, longitude: event.getLongitude()!)
+        self.startTime = event.getStartTime()!
+        self.endTime = event.getEndTime()!
+        self.address = event.getAddress()
         secondsLeft = self.startTime.timeIntervalSince(Date())
         remainingTimeLabel = UILabel()
         super.init()

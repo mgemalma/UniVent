@@ -1,8 +1,32 @@
 import UIKit
 
-extension EventFormViewController {
+extension EventAddressViewController {
+    func confirmAddressAlert(addr: [String : String], completionHandler: (@escaping (_ isConfirmed: Bool)-> Void)) {
+        var message = addr["building"]
+        if message != "" { message?.append("\n") }
+        message?.append("\(addr["address"]!)\n")
+        message?.append("\(addr["city"] ?? ""), \(addr["state"] ?? "")\n")
+        message?.append("\(addr["zip"] ?? "")")
+        let alertController = UIAlertController(title: "Did you mean", message: message, preferredStyle: .alert)
+        let yes = UIAlertAction(title: "Yes", style: .default, handler: {(alertController: UIAlertAction) in completionHandler(true)})
+        let no = UIAlertAction(title: "No", style: .default, handler: {(alertController: UIAlertAction) in completionHandler(false)})
+        alertController.addAction(no)
+        alertController.addAction(yes)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func invalidAddress() {
+        let alertController = UIAlertController(title: "Invalid Address", message: "Please ensure the address\nis correct.", preferredStyle: .alert)
+        let okay = UIAlertAction(title: "Ok", style: .default, handler: nil)
+        alertController.addAction(okay)
+        self.present(alertController, animated: true, completion: nil)
+        //return alertController
+    }
+}
+
+extension EventCreateOrEditViewController {
     func invalidSaveRequest(incomplete: String) {
-        let alertController = UIAlertController(title: NSLocalizedString("Unable to Save!", comment: ""), message: "Missing information:\(incomplete)", preferredStyle: .alert)
+        let alertController = UIAlertController(title: NSLocalizedString("Unable to Save!", comment: ""), message: "\(incomplete)", preferredStyle: .alert)
         let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(okayAction)
         self.present(alertController, animated: true, completion: nil)
@@ -10,6 +34,13 @@ extension EventFormViewController {
     
     func invalidDate() {
         let alertController = UIAlertController(title: NSLocalizedString("Invalid Date or Time", comment: ""), message: "Please double check your start and end times", preferredStyle: .alert)
+        let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okayAction)
+        self.present(alertController, animated: true, completion:  nil)
+    }
+    
+    func badWords() {
+        let alertController = UIAlertController(title: NSLocalizedString("Bad Words!", comment: ""), message: "Please don't use foul language", preferredStyle: .alert)
         let okayAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(okayAction)
         self.present(alertController, animated: true, completion:  nil)
@@ -71,11 +102,14 @@ extension EventTableViewController {
                 self.filterType = choice
                 completion("type")}
         })
+        let rating = UIAlertAction(title: "Rating", style: .default, handler: {(sortController: UIAlertAction) in
+            completion("rating")} )
         let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: {(sortController: UIAlertAction) in
             completion("cancel")} )
         sortController.addAction(startTime)
         sortController.addAction(distance)
         sortController.addAction(type)
+        sortController.addAction(rating)
         sortController.addAction(cancel)
         
         self.present(sortController, animated: true, completion: nil)
@@ -119,8 +153,6 @@ extension EventTableViewController {
         self.present(filterController, animated: true, completion: nil)
         
     }
-    
-    
 }
 
 extension UIViewController {

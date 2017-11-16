@@ -96,6 +96,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/FBSDKShareKit/FBSDKShareKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/IODProfanityFilter/IODProfanityFilter.framework"
   install_framework "$BUILT_PRODUCTS_DIR/PostalAddressRow/PostalAddressRow.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SwiftLocation/SwiftLocation.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SwiftyJSON/SwiftyJSON.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Bolts/Bolts.framework"
@@ -105,6 +107,8 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/FBSDKShareKit/FBSDKShareKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/IODProfanityFilter/IODProfanityFilter.framework"
   install_framework "$BUILT_PRODUCTS_DIR/PostalAddressRow/PostalAddressRow.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SwiftLocation/SwiftLocation.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/SwiftyJSON/SwiftyJSON.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

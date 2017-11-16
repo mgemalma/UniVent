@@ -7,11 +7,11 @@
 //
 
 import UIKit
+import CoreLocation
 
 class EventDetailViewController: UIViewController {
     
     // MARK: - Properties
-    var event = NSEvent()
     var eventFlagged: Bool = false
     var rsvped: Bool = false
     var secondsLeft: Double = 0.0
@@ -29,7 +29,27 @@ class EventDetailViewController: UIViewController {
     @IBOutlet weak var eventCityLabel: UILabel!
     
     
-//    @IBOutlet weak var eventStateLabel: UILabel!
+    private var event: NSEvent?
+    private var etitle: String?
+    private var eID: String?
+    private var address = [String : String]()
+    private var add = ["building" : "", "address" : "", "city" : "", "state" : "", "zip" : ""]
+    
+    private var addressStr = ""
+    private var dates: [Date?]?  // index 0: start, index 1: end, index 2: create time
+    private var sDate: Date?
+    private var eDate: Date?
+    private var location: CLLocation?
+    private var hostID: String?
+    private var eDesc: String?
+    private var type: String?
+    private var interests: [String]?
+    private var rating: Float?
+    private var ratingCount: Int?
+    private var flags: Int?
+    private var headCount: Int?
+    
+    //    @IBOutlet weak var eventStateLabel: UILabel!
     
     
     // MARK: - View Loading
@@ -44,14 +64,66 @@ class EventDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: true)
+        if let _ = eID {
+            setupLabels()
+            
+        }
+    
+        // Setup flag icon
+        if let _ = NSUser.getFlaggedEvents() {
+            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
+            self.eventFlagged = false
+            for i in NSUser.getFlaggedEvents()! {
+                if eID == i {
+                    self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+                    self.eventFlagged = true
+                }
+            }
+        } else {
+            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
+            self.eventFlagged = false
+        }
         
-        // Anirudh Patch
-//        if(event.getStat().getFlagCount() > 0) {
-//            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-//        }
-//        else {
-//            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
-//        }
+        
+        // Setup rsvp'ed
+        if let _ = NSUser.getAttendingEvents() {
+            self.rsvped = false
+            for i in NSUser.getAttendingEvents()! {
+                if eID == i {
+                    self.rsvped = true
+                }
+            }
+        } else {
+            self.rsvped = false
+        }
+        ratingControl.updateForEvent(id: self.eID!)
+        
+        // If the user owns this event, disable rating, rsvp, and flagging
+        if let temp = NSUser.getPostedEvents() {
+            if temp.contains(self.eID!) {
+                rsvpButton.isEnabled = false
+                flagEventButton.isEnabled = false
+                ratingControl.rating = 3
+                ratingControl.disableRating()
+            }
+        }
+        
+        // TODO: Replace this with getEventRating()
+        if let temp = NSUser.getRatedEvents() {
+            if temp.contains(self.eID!) {
+                if NSEvent.sEvents != nil {
+                    for i in NSEvent.sEvents! {
+                        if i.getID() == eID {
+                            ratingControl.rating = Int(i.getRating()!)
+                        }
+                    }
+                }
+            }
+        }
+        
+        if self.headCount == -1 {
+            rsvpButton.isHidden = true
+        }
     }
     
     
@@ -63,121 +135,142 @@ class EventDetailViewController: UIViewController {
     @IBAction func flagEventPressed(_ sender: UIButton) {
         
         eventFlaggedAlert() { result in     // result from closure in eventFlaggedAlert()
-        switch result {
-        case "Cancel":              // Cancel
-            self.eventFlagged = false
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
+            switch result {
+            case "Cancel":              // Cancel
+                break
+            case "False":               // False
+                self.eventFlagged = true
+                self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+                break
+            case "Inappropriate":       // Inappropriate
+                self.eventFlagged = true
+                self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+                break
+            case "Duplicate":           // Duplicate
+                self.eventFlagged = true
+                self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+                break
+            case "Other":               // Other
+                self.eventFlagged = true
+                self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
+                break
+            case "Undo":                // Undo
+                self.eventFlagged = false
+                self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
+                break
+            default:
+                print("Error")
+                
+            }
             
-            break
-        case "False":               // False
-            self.eventFlagged = true
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-            
-            break
-        case "Inappropriate":       // Inappropriate
-            self.eventFlagged = true
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-            
-            break
-        case "Duplicate":           // Duplicate
-            self.eventFlagged = true
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-            
-            break
-        case "Other":               // Other
-            self.eventFlagged = true
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton_Flagged"), for: .normal)
-           
-            break
-        case "Undo":                // Undo
-            self.eventFlagged = false
-            self.flagEventButton.setImage(#imageLiteral(resourceName: "FlagEventButton"), for: .normal)
-            
-            break
-        default:
-            print("Error")
-            
+            // Set user's flagged events
+            if self.eventFlagged {
+                if var temp = NSUser.getFlaggedEvents() {
+                    if !temp.contains(self.eID!) {
+                        temp.append(self.eID!)
+                        NSUser.setFlaggedEvents(fEvents: temp)
+                    }
+                } else {
+                    NSUser.setFlaggedEvents(fEvents: [self.eID!])
+                }
+                NSEvent.flagEvent(id: self.eID, inc: true)
+            } else if var temp = NSUser.getFlaggedEvents() {
+                if temp.contains(self.eID!) {
+                    temp.remove(at: temp.index(of: self.eID!)!)
+                    NSUser.setFlaggedEvents(fEvents: temp)
+                    NSEvent.flagEvent(id: self.eID!, inc: false)
+                }
             }
         }
-        
     }
     
     @IBAction func rsvpPressed(_ sender: UIButton) {
-        if !rsvped {
-            var temp = NSUser.getAttendingEvents()
-            temp?.append(event.getID()!)
-            NSUser.setAttendingEvents(aEvents: temp!)
-            rsvped = true
-            
-            
-            
-            // Increase Attendence Count
-            //event.getStat().setSmartHeadCount()
-            //updateEvent(event1: self.event)
-            
-            // Save to Disk
-            //saveEventsDisk()
-            
-            // Save to DB
-        } else {
-            var temp = NSUser.getAttendingEvents()
-            if (temp != nil) {
-                
-                //temp?.remove(at: (temp?.index(of: event.getEventID()))!)
-                temp?.remove(at: (temp?.index(of: event.getID()!))!)
-                NSUser.setAttendingEvents(aEvents: temp!)
+        //print("rsvp pressed: \(rsvped)")
+        
+        
+        if let t = NSUser.getAttendingEvents() {
+            if t.contains(self.eID!) {
+                rsvped = true
+            } else {
+                rsvped = false
             }
-            //user.getUserPersonal().removeEvent(eventID: event.getEventID())
-            
-            rsvped = false
-            
-            // Decrease Attendence Count
-//            event.getStat().unsetSmartHeadCount()
-//            updateEvent(event1: self.event)
-            
-            // Save to Disk
-            //saveEventsDisk()
-            
-            // Save to DB
+        }
+        
+        if rsvped == false {
+            if var temp = NSUser.getAttendingEvents() {
+                if !temp.contains(eID!) {
+                    temp.append(eID!)
+                    NSUser.setAttendingEvents(aEvents: temp)
+                    rsvped = true
+                }
+            } else {
+                NSUser.setAttendingEvents(aEvents: [eID!])
+                rsvped = true
+            }
+            NSEvent.incrementHeadCount(id: self.eID, inc: true)
+        } else if rsvped == true {
+            if var temp = NSUser.getAttendingEvents() {
+                if temp.contains(eID!) {
+                    temp.remove(at: temp.index(of: eID!)!)
+                    NSUser.setAttendingEvents(aEvents: temp)
+                    rsvped = false
+                    NSEvent.incrementHeadCount(id: eID, inc: false)
+                }
+            }
         }
     }
     
     // MARK: - Private Methods
-
+    func setupLabels() {
+        eventTitleLabel.text = etitle
+        eventTypeLabel.text = type
+        eventAddressLabel.text = add["address"]
+        eventCityLabel.text = add["city"]
+        eventCityLabel.text?.append(", ")
+        eventCityLabel.text?.append(add["state"]!)
+        endTimeLabel.text = self.formatDate(date: eDate!)
+        startTimeLabel.text = self.formatDate(date: sDate!)
+        
+        secondsLeft = (sDate?.timeIntervalSince(Date()))!
+        
+        if ((NSUser.getPostedEvents() != nil) && (NSUser.getPostedEvents()?.contains(eID!))!) {
+            rsvped = true
+        } else {
+            rsvped = false
+        }
+        
+        if let _ = self.eDesc {
+            eventDescriptionText.text = self.eDesc!
+        } else {
+            eventDescriptionText.text = "No description"
+        }
+    }
     
-//    private func setupViewFor(event: Event) {
-//        // WE SHOULD HAVE ADDRESS AS A DICTIONARY
-//        
-//        
-//        eventTitleLabel.text = event.getGen().getTitle()
-//        eventTypeLabel.text = event.getGen().getTypeString()
-//        eventDescriptionText.text = event.getGen().getDescription()
-//        startTimeLabel.text = formatDate(date: event.getTime().getStartTime())
-//        endTimeLabel.text = formatDate(date: event.getTime().getEndTime())
-//        
-//        print(event.getTime().getStartTime())
-//        secondsLeft = event.getTime().getStartTime().timeIntervalSince(Date())
-//        if user.getUserPersonal().findEvent(eventID: event.getEventID()) {
-//            rsvped = true
-//        } else {
-//            rsvped = false
-//        }
-//        
-//        let address = event.getLoc().getAddress().components(separatedBy: ", ")
-//        
-//        eventAddressLabel.text = address[0]
-//        eventCityLabel.text = address[1]
-//        eventCityLabel.text?.append(", \(address[2])")
-//        
-//        
-//    }
-    
+    func setupViewFor(event: NSEvent) {
+        self.event = event
+        self.eID = event.getID()
+        self.etitle = event.getTitle()
+        self.add = event.getCompleteAddress()!
+        self.addressStr = event.getAddress()!
+        if dates == nil { dates = [Date?]() }
+        self.sDate = event.getStartTime()!
+        self.eDate = event.getEndTime()!
+        self.location = event.getLocation()
+        self.hostID = event.getHostID()
+        self.eDesc = event.getDescription()
+        self.type = event.getType()
+        self.interests = event.getInterest()
+        self.headCount = event.getHeadCount()
+        self.rating = event.getRating()
+        self.ratingCount = event.getRatingCount()
+        self.flags = event.getFlags()
+    }
     
     /// Formats a given date object to be displayed as a string
     ///
     /// - Parameter date: The date to format
     /// - Returns: The formatted string representation of the date
-    private func formatDate(date: Date) -> String {
+    func formatDate(date: Date) -> String {
         let days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         let months = ["Jan.","Feb.","Mar.","Apr.","May.","Jun.","Jul.","Aug.","Sep.","Oct.","Nov.","Dec."]
         
@@ -202,7 +295,7 @@ class EventDetailViewController: UIViewController {
         
         // Return a string representation of "date"
         return ("\(hour):\(minute) \(amPm)  \(weekday), \(month) \(dateNum)")
- 
+        
     }
     
     func updateCountdown() {
@@ -210,7 +303,7 @@ class EventDetailViewController: UIViewController {
         var minutes: Int
         var seconds: Int
         
-        secondsLeft = (event.getStartTime()?.timeIntervalSince(Date()))! - 1//event.getTime().getStartTime().timeIntervalSince(Date()) - 1.0
+        secondsLeft = (sDate?.timeIntervalSince(Date()))! - 1
         hours = Int(secondsLeft / 3600.0)
         minutes = Int((secondsLeft.truncatingRemainder(dividingBy: 3600)) / 60.0)
         seconds = Int((secondsLeft.truncatingRemainder(dividingBy: 3600)).truncatingRemainder(dividingBy: 60.0))
@@ -238,17 +331,17 @@ class EventDetailViewController: UIViewController {
         
         remainingTimeLabel.text = ("\(hour):\(minute):\(second)")
     }
-
     
-
+    
+    
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

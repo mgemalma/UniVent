@@ -27,5 +27,13 @@ pod ‘Eureka’
 pod ’PostalAddressRow’, ’~> 1.0’
 pod ’GoogleMaps’
 pod ’GooglePlaces’
+pod 'SwiftLocation', '3.0.1-beta'
+pod 'OneSignal', '>= 2.5.2', '< 3.0'
 
+end
+
+
+target 'OneSignalNotificationServiceExtension' do
+  use_frameworks!
+  pod 'OneSignal', '>= 2.5.2', '< 3.0'
 end

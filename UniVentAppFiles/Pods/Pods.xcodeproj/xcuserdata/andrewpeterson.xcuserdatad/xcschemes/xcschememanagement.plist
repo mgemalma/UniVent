@@ -34,6 +34,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-OneSignalNotificationServiceExtension.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-UniVent.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -59,9 +64,24 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwiftLocation.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwiftyJSON.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>01D3831A78C563E2B958E7FFDC5D63DF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>44CAD6CE523055ED339E87154473A254</key>
 		<dict>
 			<key>primary</key>
@@ -77,12 +97,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>95626672683745BB8E2CA0A9B0D30F8D</key>
+		<key>745A2536ABC9981AD547B885DBBC3C73</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B4CDA3FFBC47F85955423917ACA870B5</key>
+		<key>76CAE1421B70A286C0AFC2B027111ECD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7B67DE6A48F7FE5F516237CAE5D25C51</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -97,12 +122,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D25611BABD3DB3038824AA52F9C94AE3</key>
+		<key>C721C247FA499E2A39D77CB33A474691</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DA783128274995F599BEEB9D54D0A07C</key>
+		<key>D25611BABD3DB3038824AA52F9C94AE3</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -113,6 +138,11 @@
 			<true/>
 		</dict>
 		<key>E4E660DA248D92BDA825A6ECABB46363</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F3969491CA219F6675475899C0B280D4</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -41,54 +41,16 @@ class UserNew: NSObject, NSCoding {
     }()
     
     // vvvvvvv Add functions here vvvvvvv
-    
-    // MARK: - Default User
-    
-    func initUser() {
-        self.userID = "-1"
-        self.userName = "nil"
-        self.userFlagCount = 0
-        self.userRadius = 0.25
-        self.userInterests = nil
-        self.pEvents = nil
-        self.aEvents = nil
-    }
-    
-    // MARK: - Getters
-    
-    func getID() -> String? {return self.userID}
-    
-    func getName() -> String? {return self.userName}
-    
-    func getFlagCount() -> Int? {return self.userFlagCount}
-    
-    func getRadius() -> Float? {return self.userRadius}
 
-    func getInterests() -> [String]? {return self.userInterests}
     
-    func getPostedEvents() -> [Int]? {return self.pEvents}
     
-    func getAttendingEvents() -> [Int]? {return self.aEvents}
     
-    // MARK: - Setters
     
-    func setID(id: String?) {self.userID = id}
     
-    func setName(name: String?) {self.userName = name}
     
-    func setFlagCount(count: Int?) {self.userFlagCount = count}
-    
-    func setRadius(radius: Float?) {self.userRadius = radius}
-    
-    func setInterests(interests: [String]?) {self.userInterests = interests}
-    
-    func setPostedEvents(events: [Int]?) {self.pEvents = events}
-    
-    func setAttendingEvents(events: [Int]?) {self.aEvents = events}
     
     
     // MARK: - Saving and Loading
-    
     func saveUser() {
         // Save to phone
         let savedData = NSKeyedArchiver.archiveRootObject(UserNew.sharedUser, toFile: UserNew.ArchiveURL.path)

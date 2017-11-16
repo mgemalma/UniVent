@@ -8,159 +8,129 @@
 
 import UIKit
 
-class EventTableViewController: UITableViewController {
-
-    //var eventTitles: [String] = [""]
-    var events: [NSEvent] = []
+class EventTableViewController: UITableViewController, UISearchBarDelegate {
+    
     var filterType: String?
-    let activityViewController = ActivityViewController(message: "Loading events...")
+    var tempSEvents: [NSEvent]?
+    var headerAdaptor: String?
+    var selectedEvent: NSEvent?
+    var mySearchBar: UISearchBar!
+
     override func viewDidLoad() {
-        self.present(activityViewController, animated: false, completion: nil)
         super.viewDidLoad()
-        //loadDefaults()
+        mySearchBar = UISearchBar()
+        mySearchBar.delegate = self
+        mySearchBar.frame = CGRect(x: 0, y: 0, width: 300, height: 50)
+        mySearchBar.showsCancelButton = true
+        mySearchBar.searchBarStyle = .default
+        mySearchBar.placeholder = "Search nearby events"
+        
+        
+        self.tableView.sectionHeaderHeight = 47
+        NSEvent.loadDB() { success in
+            if success {
+                print("Table Loaded")
+            } else {
+                print("Table Notloaded")
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(self.sortTable))
         
-        // Load events near user from database ** TEMPORARILY ALL EVENTS **
-//        DispatchQueue.main.async(execute: { () -> Void in
-//            if let eventDictionaries = getAllEvents() {
-//                for i in eventDictionaries {
-//                    if !i.isEmpty {
-//                        let event = NSEvent()
-//                        event.updateJSON(dict: i)
-//                        addEventToEventList(event: event)
-//                        
-//                        self.events = eventList
-//                    }
-//                }
-//            }
-//            self.reload()
-//        })
+        self.navigationItem.leftBarButtonItem = nil
+        self.navigationController?.navigationBar.addSubview(mySearchBar)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(self.sortTable))
+        self.reload()
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        // TODO: Remove the navigation bar subview
     }
     
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        let noEventsLabel: UILabel = UILabel(frame: CGRect(x: 0.0, y: 0.0, width: self.tableView.bounds.size.width, height: self.tableView.bounds.size.height))
+        noEventsLabel.backgroundColor = UIColor.groupTableViewBackground
+        noEventsLabel.textColor = UIColor.gray
+        noEventsLabel.textAlignment = .center
+        if NSEvent.sEvents != nil && NSEvent.sEvents! != [NSEvent]() {
+            return 1
+        } else {
+            noEventsLabel.text = "No Nearby Events!"
+            self.tableView.backgroundView = noEventsLabel
+            self.tableView.separatorStyle = .none
+            return 0
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return events.count
+        if let _ = NSEvent.sEvents {
+          return NSEvent.sEvents!.count
+        } else {
+            return 0
+        }
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Nearby Events\(headerAdaptor ?? "")"
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! EventTableViewCell
-        cell.eventTitle.text = events[indexPath.row].getTitle()//.getGen().getTitle()
-        let event = events[indexPath.row]
-        //print(event.getEventID())
-        if NSUser.getAttendingEvents() != nil && (NSUser.getAttendingEvents()?.contains(event.getID()!))! {
-            cell.attendingEventIcon.isHidden = false
-        } else {
-            cell.attendingEventIcon.isHidden = true
+        cell.eventTitle.text = NSEvent.sEvents?[indexPath.row].getTitle()
+        if let attending = NSUser.getAttendingEvents() {
+            if attending.contains((NSEvent.sEvents?[indexPath.row].getID())!) {
+                cell.attendingEventIcon.isHidden = false
+            } else {
+                cell.attendingEventIcon.isHidden = true
+            }
         }
-//        // Anirudh Patch
-//        if event.getStat().getHeadCount() > 0 {
-//            cell.attendingEventIcon.isHidden = false
-//        } else {
-//            cell.attendingEventIcon.isHidden = true
-//        }
-//        
-        // Configure the cell...
+
 
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedEvent = events[indexPath.row]
-        performSegue(withIdentifier: "TableToEventDetailSegue", sender: selectedEvent)
+        selectedEvent = NSEvent.sEvents?[indexPath.row]
+        performSegue(withIdentifier: "TableToEventDetailSegue", sender: nil)
     }
-    
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-
-    
-    
     
     // MARK: Private Methods
     
-    private func loadDefaults() {
-// 
-//        var i = 0
-//        
-//        while i < 25 {
-//            let event = Event(eventID: i)
-//            event.initLoc(add: "427 South Chauncey Avenue, West Lafayette, Indiana 47906", lat: 40.42284 + drand48()/100.0, long: -86.9214 + drand48()/100.0)
-//            events.append(event)
-//            i = i + 1
-//        }
-    }
-    
     @objc private func sortTable() {
+        NSEvent.sEvents = NSEvent.lEvents
         sortTableAlert() { filter in
-            
+
             
             switch filter {
             case "startTime":
                 print("Sort by startTime")
-                EventSorter.sortByTime()
-                self.events = NSEvent.sortedEvents!
+                self.headerAdaptor = " -- By start time"
+                NSEvent.sorter(comp: BY_DATE_A)
                 break
             case "distance":
                 print("Sort by distance")
-                EventSorter.sortByDistance()
-                self.events = NSEvent.sortedEvents!
+                self.headerAdaptor = " -- By distance"
+                NSEvent.sorter(comp: BY_LOC_A)
                 break
             case "type":
                 print("Sort by type")
-                //let eType = EventType(rawValue: self.filterType!)
-                print(self.filterType!)
-                EventSorter.filter(type: self.filterType!)
-                self.e vents = NSEvent.sortedEvents!
-                //print(self.events)
+                self.headerAdaptor = " -- By event type"
+                NSEvent.filterType(type: self.filterType!)
+                break
+                
+            case "rating":
+                self.headerAdaptor = " -- By rating"
+                NSEvent.sorter(comp: BY_RAT_A)
                 break
             case "cancel":
                 print("Cancel")
@@ -170,31 +140,54 @@ class EventTableViewController: UITableViewController {
                 
                 
             }
-            
-            DispatchQueue.main.async(execute: { () -> Void in
-                self.reload()
-            })
-
-          
-        
+            self.reload()
         }
         
     }
     func reload() {
-        self.activityViewController.dismiss(animated: true, completion: nil)
-        self.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let text = searchBar.text, (text != "") {
+            if NSEvent.sEvents != nil && NSEvent.sEvents! != [NSEvent]() {
+                tempSEvents = NSEvent.lEvents
+                let temp = tempSEvents?.filter { ($0.getTitle()?.lowercased().contains(searchText.lowercased()))! }
+                NSEvent.sEvents = temp
+                self.reload()
+            }
+        } else if let text = searchBar.text, (text == "") {
+            NSEvent.sEvents = NSEvent.lEvents
+            self.reload()
+        }
     }
     
-    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = nil
+        NSEvent.sEvents = NSEvent.lEvents
+        self.reload()
+        searchBar.resignFirstResponder()
+    }
+//    
+//    func createToolbar() {
+//        
+//        let myView = UIView(frame: searchBar.frame)
+//        myView.addSubview(searchBar)
+//        let barSearch = UIBarButtonItem(customView: myView)
+//        let barFilter = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(self.sortTable))
+//        let barSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+//        let barItems = [barSearch, barSpace, barFilter]
+//        self.toolBar.items = barItems
+//    }
+//    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
         let destVC = segue.destination as? EventDetailViewController
-        destVC?.event = sender as! NSEvent
-        
+        destVC?.setupViewFor(event: selectedEvent!)   
     }
 
 }

@@ -37,6 +37,11 @@
                BlueprintName = "UniVentTests"
                ReferencedContainer = "container:UniVent.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "UniVentTests/testExample()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">

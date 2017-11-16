@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>OneSignalNotificationServiceExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>13</integer>
+		</dict>
 		<key>UniVent.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>8E97EC6C1F698C28000BAE13</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8EE86C5A1FB76AC60014F85D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
