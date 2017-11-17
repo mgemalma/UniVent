@@ -582,6 +582,19 @@ class NSUserTest: NSObject, NSCoding {
         return array
     }
     
+    static func eraseDisk() -> Bool{
+        do {
+            //If the file exists in the file path remove the file
+            try FileManager().removeItem(at: NSUserTest.arcURL)
+            return true
+        }
+        catch let error as NSError {
+            //Catch the error
+            print("eraseDisk() -> NSUserTest.swift: error trying to erase the disk \(error)")
+        }
+        return false
+    }
+    
     // Array -> String
     static func stringer(array: [Any]?) -> String? {
         // Nil

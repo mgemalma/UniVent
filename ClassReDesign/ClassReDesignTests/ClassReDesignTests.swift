@@ -194,6 +194,7 @@ class ClassReDesignTests: XCTestCase {
         NSUserTest.user.rEvents = nil
         NSUserTest.user.loc = nil
         NSUserTest.saveDisk()
+        NSUserTest.eraseDisk()
     }
     
     func testID() {
@@ -424,8 +425,47 @@ class ClassReDesignTests: XCTestCase {
         NSUserTest.loadDB(id: "123")
         XCTAssert(NSUserTest.getName() == "Sultan")
     }
-  
     
+//    var test1 = NSEvent.init(id: "test1", start: Date(), end: Date() + 10000, building: "Lawson", address: "123 Lawson st", city: "West Lala", state: "IN", zip: "47906", loc: CLLocation(), rat: -1.0, ratC: 0, flags: 0, heads: 0, host: "6969", title: "Unit Test 1", type: "Dance", desc: "Desc", intrests: ["Dance", "Party"], addr: ["building":"Lawson", "address":"123 Lawson st", "city":"West Lala", "state":"IN", "zip":"47906"])
+//
+//    var testNil = NSEvent.init()
+//
+//    func testCreateEvent() {
+//
+//        XCTAssert(test1.getID() == "test1")
+//        XCTAssert(test1.getBuilding() == "Lawson")
+//        XCTAssert(test1.getAddress() == "123 Lawson st")
+//        XCTAssert(test1.getCity() == "West Lala")
+//        XCTAssert(test1.getState() == "IN")
+//        XCTAssert(test1.getZip() == "47906")
+//        XCTAssert(test1.getRating() == -1.0)
+//        XCTAssert(test1.getRatingCount() == 0)
+//        XCTAssert(test1.getHeadCount() == 0)
+//        XCTAssert(test1.getHostID() == "6969")
+//        XCTAssert(test1.getTitle() == "Unit Test 1")
+//        XCTAssert(test1.getType() == "Dance")
+//        XCTAssert(test1.getDescription() == "Desc")
+//        XCTAssert(test1.getInterest()![0] == "Dance")
+//        XCTAssert(test1.getCompleteAddress()!["zip"] == "47906")
+//    }
+//
+//    func testNilEvent() {
+//        XCTAssert(testNil.getID() == nil)
+////        XCTAssert(testNil.getBuilding() == nil)
+////        XCTAssert(testNil.getAddress() == nil)
+////        XCTAssert(testNil.getCity() == nil)
+////        XCTAssert(testNil.getState() == nil)
+////        XCTAssert(testNil.getZip() == nil)
+//        XCTAssert(testNil.getRating() == nil)
+//        XCTAssert(testNil.getRatingCount() == nil)
+//        XCTAssert(testNil.getHeadCount() == nil)
+//        XCTAssert(testNil.getHostID() == nil)
+//        XCTAssert(testNil.getTitle() == nil)
+//        XCTAssert(testNil.getType() == nil)
+//        XCTAssert(testNil.getDescription() == nil)
+//        XCTAssert(testNil.getInterest()![0] == nil)
+//        XCTAssert(testNil.getCompleteAddress()!["zip"] == nil)
+//    }
     
     
     
