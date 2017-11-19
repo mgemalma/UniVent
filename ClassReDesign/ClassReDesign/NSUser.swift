@@ -19,6 +19,7 @@
 /** Libraries **/
 import UIKit            // Used for NSObject & NS Coding.
 import CoreLocation
+import EventKit
 
 /**
  Name:              NSUser (The new and improved user).
@@ -73,6 +74,8 @@ class NSUser: NSObject, NSCoding {
     private var rEvents: [String]?      // Stores all posted Events as IDs.
     private var fEvents: [String]?      // Stores all posted Events as IDs.
     private var loc: CLLocation?
+    
+    static let eventStore = EKEventStore()
     
     /*//////Unit Test Version
     // MARK: - Instance Variables Unit Tests
@@ -902,4 +905,159 @@ class NSUser: NSObject, NSCoding {
         // Return
         return string
     }
+    
+    
+    
+    // MARK: Calendar and Reminders
+    
+    
+    static func checkCalendarAuthorizationStatus() {
+        let status = EKEventStore.authorizationStatus(for: EKEntityType.event)
+        print(status.rawValue)
+        switch (status) {
+        case EKAuthorizationStatus.notDetermined:
+            print("not determined")
+            // This happens on first-run
+            requestAccessToCalendar()
+        case EKAuthorizationStatus.authorized:
+            // Things are in line with being able to show the calendars in the table view
+            print("authorized")
+            if UserDefaults.standard.string(forKey: "UniVentUserCalendar") == nil {
+                addUniVentCalendar()
+            } else {
+            }
+            //loadCalendars()
+        case EKAuthorizationStatus.restricted, EKAuthorizationStatus.denied:
+            print("restricted or denied")
+            // We need to help them give us permission
+            //needPermissionView.fadeIn()
+            break
+        }
+    }
+    
+    static func requestAccessToCalendar() {
+        eventStore.requestAccess(to: EKEntityType.event, completion: {
+            (accessGranted: Bool, error: Error?) in
+            
+            if accessGranted == true {
+                DispatchQueue.main.async(execute: {
+                    if UserDefaults.standard.string(forKey: "UniVentUserCalendar") == nil {
+                        addUniVentCalendar()
+                    }
+                })
+            } else {
+                DispatchQueue.main.async(execute: {
+                    //self.needPermissionView.fadeIn()
+                })
+            }
+        })
+    }
+    
+    // TODO: Add completionHandler in case event overlaps with another we can inform the user
+    // TODO: Add case for user not granted permission, ask for permission
+    static func addEventToCalendar(title: String, description: String?, startTime: Date, endTime: Date) {
+        eventStore.requestAccess(to: EKEntityType.event, completion: { (granted, error) in
+            if granted && error == nil {
+                var calendar: EKCalendar?
+                if let calendarID = UserDefaults.standard.string(forKey: "UniVentUserCalendar") {
+                    calendar = eventStore.calendar(withIdentifier: calendarID)
+                    if calendar != nil {
+                        let predicate = eventStore.predicateForEvents(withStart: startTime, end: endTime, calendars: [calendar!])
+                        let events = eventStore.events(matching: predicate)
+                        print(events.count)
+                        if events.count == 0 {
+                            let event: EKEvent = EKEvent(eventStore: eventStore)
+                            event.title = title
+                            event.notes = description
+                            event.startDate = startTime
+                            event.endDate = endTime
+                            // TODO: Add alert for this event
+                            event.calendar = calendar!
+                            do {
+                                try eventStore.save(event, span: EKSpan.thisEvent)
+                                print("Event saved to calendar")
+                            } catch let e as NSError {
+                                print("Error saving event: \(e)")
+                            }
+                        } else {
+                            print("Event overlaps with another")
+                        }
+                    }
+                }
+            }
+        })
+    }
+    
+    static func removeEventFromCalendar(title: String, description: String?, startTime: Date, endTime: Date) {
+        eventStore.requestAccess(to: EKEntityType.event, completion: { (granted, error) in
+            if granted && error == nil {
+                var calendar: EKCalendar?
+                if let calendarID = UserDefaults.standard.string(forKey: "UniVentUserCalendar") {
+                    calendar = eventStore.calendar(withIdentifier: calendarID)
+                    if calendar != nil {
+                        let predicate = eventStore.predicateForEvents(withStart: startTime, end: endTime, calendars: [calendar!])
+                        let events = eventStore.events(matching: predicate)
+                        print(events.count)
+                        if events.count != 0 {
+                            do {
+                                try eventStore.remove(events[0], span: EKSpan.thisEvent)
+                                print("Event removed from calendar")
+                            } catch let e as NSError {
+                                print("Error removing event: \(e)")
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        })
+
+    }
+    
+    static func addUniVentCalendar() {
+        // TODO: Check if Calendar exists by looking for title "UniVent", update the ID if needed
+        
+        // Use Event Store to create a new calendar instance
+        // Configure its title
+        let newCalendar = EKCalendar.init(for: .event, eventStore: eventStore)
+        // Probably want to prevent someone from saving a calendar
+        // if they don't type in a name...
+        newCalendar.title = "UniVent"
+
+        // Filter the available sources and select the "Local" source to assign to the new calendar's
+        // source property
+        var localSource:EKSource?
+        for source in eventStore.sources {
+            if (source.sourceType == EKSourceType.calDAV && source.title == "iCloud") {
+                localSource = source;
+                break;
+            }
+        }
+        if (localSource == nil) {
+            for source in eventStore.sources {
+                if (source.sourceType == EKSourceType.local) {
+                    localSource = source;
+                    break;
+                }
+            }
+        }
+        if localSource != nil {
+            newCalendar.source = localSource!
+        }
+        
+        // Save the calendar using the Event Store instance
+        do {
+            try eventStore.saveCalendar(newCalendar, commit: true)
+            UserDefaults.standard.set(newCalendar.calendarIdentifier, forKey: "UniVentUserCalendar")
+        } catch {
+            let alert = UIAlertController(title: "Calendar could not save", message: (error as NSError).localizedDescription, preferredStyle: .alert)
+            let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(OKAction)
+            
+            //self.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
+
+
+    
 }
