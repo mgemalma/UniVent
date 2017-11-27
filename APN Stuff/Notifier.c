@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
+//commit work
 /** Struct Def **/
 // Events Class
 struct Event {
@@ -138,10 +138,10 @@ int extractEvents(int fd) {
 		if(deliminator != NULL)
 			eventStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -158,7 +158,7 @@ void freeEvents() {
 		// Free
 		free(eventList[EP].name);
 
-		// Increment	
+		// Increment
 		EP++;
 	}
 
@@ -284,10 +284,10 @@ int extractUsers(int fd) {
 		if(deliminator != NULL)
 			userStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -312,7 +312,7 @@ void freeUsers() {
 		free(userList[UP].eventIDs);
 		free(userList[UP].devID);
 
-		// Increment	
+		// Increment
 		UP++;
 	}
 
@@ -326,7 +326,7 @@ void notify() {
 
 	// Open
 	int fd = open("./bMount/DB.sql", O_RDONLY);
-	if (fd < 0) 
+	if (fd < 0)
 		return;
 
 	/** Extract **/
@@ -370,7 +370,7 @@ void notify() {
 	close(fd);
 
 	// Sleep
-	sleep(5);	
+	sleep(5);
 }
 
 int main() {
