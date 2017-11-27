@@ -73,6 +73,11 @@ class EventStartCreateViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        if segue.identifier == "StartEventCreation" {
+            let destVC = segue.destination as? EventTitleViewController
+            destVC?.newEvent = NSEvent()
+            destVC?.oldEvent = nil
+        }
     }
     
 

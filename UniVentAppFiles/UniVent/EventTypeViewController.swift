@@ -13,6 +13,7 @@ class EventTypeViewController: UIViewController, UITableViewDelegate, UITableVie
     
     // MARK: Properties
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var nextButton: UIButton!
     var type: String?
     let types = ["Callout", "Charity/Philanthropy", "Community Service", "Concert", "Conference", "Dance", "Demonstration, Rally or Vigil", "Education", "Festival/Celebration", "Information", "Meeting", "Party", "Recreation/Athletic", "Social", "Travel"]
     var tableType = 0
@@ -67,9 +68,13 @@ class EventTypeViewController: UIViewController, UITableViewDelegate, UITableVie
         DispatchQueue.main.async {
             self.cancelEventAlert(completionHandler: { cancelEvent in
                 if cancelEvent {
-                    self.oldEvent = nil
-                    self.newEvent = nil
-                    self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                    if self.oldEvent != nil {
+                        self.oldEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventEditing", sender: self)
+                    } else if self.newEvent != nil {
+                        self.newEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                    }
                 }
             })
         }
@@ -110,6 +115,7 @@ class EventTypeViewController: UIViewController, UITableViewDelegate, UITableVie
             cell?.accessoryType = .none
             selectedType = nil
         }
+        checkForm()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -125,12 +131,22 @@ class EventTypeViewController: UIViewController, UITableViewDelegate, UITableVie
 
     func loadInformation(event: NSEvent) {
         selectedType = event.getType()
+        checkForm()
         reload()
+        
     }
     
     func reload() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+        }
+    }
+    
+    func checkForm() {
+        if selectedType == nil {
+            nextButton.isEnabled = false
+        } else {
+            nextButton.isEnabled = true
         }
     }
     

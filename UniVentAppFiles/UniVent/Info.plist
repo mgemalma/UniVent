@@ -6,6 +6,10 @@
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>UniVent</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Access your reminders to notify you when an event is about to happen.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Access your calendar to schedule events you RSVP.</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>

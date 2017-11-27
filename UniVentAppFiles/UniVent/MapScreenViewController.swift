@@ -38,24 +38,32 @@ class MapScreenViewController: UIViewController, CLLocationManagerDelegate {
         self.navigationItem.leftBarButtonItem = barLocation
         self.navigationItem.rightBarButtonItem = barSegmented
 
-        print("Is monitoring significant changes: \(Locator.isMonitoringSignificantLocationChanges)")
-        Locator.currentPosition(accuracy: .house,  onSuccess: { location in
-            print("Location found: \(location)")
-            NSUser.setLocation(loc: location)
-            self.centerMapOn(location: NSUser.getLocation()!)
-            self.pollDB()
-            Locator.backgroundLocationUpdates = true
-            if !Locator.isMonitoringSignificantLocationChanges {
-                Locator.subscribeSignificantLocations(onUpdate: { newLocation in
-                    print("New Location: \(newLocation)")
-                    NSUser.setLocation(loc: newLocation)
-                }, onFail: { (err, lastLocation) in
-                    print("Failed with error: \(err)")
-                })
-            }
-        }, onFail: { err, last in
-            print("Failed to get location: \(err)")
-        })
+        //print("Is monitoring significant changes: \(Locator.isMonitoringSignificantLocationChanges)")
+        let connection = Reachability.shared.isConnectedToNetwork()
+        let isConnected = connection.connected || connection.cellular
+        
+        if isConnected {
+            Locator.currentPosition(accuracy: .house,  onSuccess: { location in
+                //print("Location found: \(location)")
+                NSUser.setLocation(loc: location)
+                self.centerMapOn(location: NSUser.getLocation()!)
+                self.pollDB()
+                Locator.backgroundLocationUpdates = true
+                if !Locator.isMonitoringSignificantLocationChanges {
+                    Locator.subscribeSignificantLocations(onUpdate: { newLocation in
+                        //print("New Location: \(newLocation)")
+                        NSUser.setLocation(loc: newLocation)
+                    }, onFail: { (err, lastLocation) in
+                        //print("Failed with error: \(err)")
+                    })
+                }
+            }, onFail: { err, last in
+                //print("Failed to get location: \(err)")
+            })
+        } else {
+            // Need to notify user their internet is not connected
+            
+        }
     }
     
     

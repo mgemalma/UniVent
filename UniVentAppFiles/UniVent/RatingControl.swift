@@ -61,7 +61,7 @@ import UIKit
     
     // MARK: Private Methods
     
-    private func setupButtons() {
+    func setupButtons() {
         
         // clear any existing buttons
         for button in ratingButtons {

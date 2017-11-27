@@ -8,11 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		16C6E19B4B50E4CFB63D8A90 /* Pods_UniVentTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833D87D859120A44CBA5C59A /* Pods_UniVentTests.framework */; };
-		19ADFC8FA2193D5DF551F36E /* Pods_OneSignalNotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5A85A384F854B8EC6310128 /* Pods_OneSignalNotificationServiceExtension.framework */; };
 		8E0829CC1F755CFF00626F19 /* MapScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829CB1F755CFF00626F19 /* MapScreenViewController.swift */; };
 		8E0829CE1F75706500626F19 /* EventAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829CD1F75706500626F19 /* EventAnnotation.swift */; };
 		8E0829D01F75738800626F19 /* VCMapViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829CF1F75738800626F19 /* VCMapViewExtension.swift */; };
 		8E0829ED1F7AE8F300626F19 /* Handy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0829EC1F7AE8F300626F19 /* Handy.swift */; };
+		8E0E61641FC4E90F006C8E11 /* EventAddressExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E61631FC4E90F006C8E11 /* EventAddressExt.swift */; };
+		8E0E61661FC4E943006C8E11 /* EventPreviewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E61651FC4E943006C8E11 /* EventPreviewExt.swift */; };
+		8E0E61681FC4E96E006C8E11 /* EventTableExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E61671FC4E96E006C8E11 /* EventTableExt.swift */; };
+		8E0E616A1FC4E9BB006C8E11 /* EventDetailExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E61691FC4E9BB006C8E11 /* EventDetailExt.swift */; };
+		8E0E616D1FC4F2E1006C8E11 /* EventInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E616C1FC4F2E1006C8E11 /* EventInfoViewController.swift */; };
+		8E0E616F1FC4FFA6006C8E11 /* EventRSVPInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E616E1FC4FFA6006C8E11 /* EventRSVPInfoViewController.swift */; };
 		8E1742171F719F0000C556B7 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1742161F719F0000C556B7 /* UserNotifications.framework */; };
 		8E394F301FAB900E002DF31E /* EventCreateOrEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E394F2F1FAB900E002DF31E /* EventCreateOrEditViewController.swift */; };
 		8E394F321FAB906F002DF31E /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E394F311FAB906F002DF31E /* SettingsTableViewCell.swift */; };
@@ -27,7 +32,11 @@
 		8E6B506B1F9A6F2F0089B967 /* FacebookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B506A1F9A6F2F0089B967 /* FacebookManager.swift */; };
 		8E771BF61FBD368000C3C475 /* EventPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E771BF51FBD368000C3C475 /* EventPreviewViewController.swift */; };
 		8E771BF81FBE0F9B00C3C475 /* EventStartCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E771BF71FBE0F9B00C3C475 /* EventStartCreateViewController.swift */; };
+		8E771BFB1FBE496D00C3C475 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E771BFA1FBE496D00C3C475 /* ScheduleViewController.swift */; };
+		8E771BFD1FBE4F5F00C3C475 /* ScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E771BFC1FBE4F5F00C3C475 /* ScheduleTableViewCell.swift */; };
 		8E8C6CCE1F7D814D001F2520 /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C6CCD1F7D814D001F2520 /* EventDetailViewController.swift */; };
+		8E96A0B81FC8C01200D304DA /* EventInfoPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E96A0B71FC8C01200D304DA /* EventInfoPreviewViewController.swift */; };
+		8E96A0BA1FC8D4CC00D304DA /* PreviewPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E96A0B91FC8D4CC00D304DA /* PreviewPin.swift */; };
 		8E97EC4F1F698C28000BAE13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */; };
 		8E97EC511F698C28000BAE13 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */; };
 		8E97EC541F698C28000BAE13 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E97EC521F698C28000BAE13 /* Main.storyboard */; };
@@ -39,11 +48,9 @@
 		8E97EC811F698C7C000BAE13 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E97EC801F698C7C000BAE13 /* MapKit.framework */; };
 		8E97EC861F69AB54000BAE13 /* EventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC851F69AB54000BAE13 /* EventTableViewController.swift */; };
 		8E97EC881F69AB65000BAE13 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E97EC871F69AB65000BAE13 /* EventTableViewCell.swift */; };
-		8EAB59811FB4D5600022EFAA /* TableSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EAB59801FB4D5600022EFAA /* TableSectionHeader.swift */; };
 		8EAB59851FB4D9C20022EFAA /* HeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EAB59841FB4D9C20022EFAA /* HeaderTableViewCell.swift */; };
 		8EAEC7A71FBB8BFD00D0EFE0 /* EventDescViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EAEC7A61FBB8BFD00D0EFE0 /* EventDescViewController.swift */; };
 		8EC61E9E1FACAC8A003C291B /* Curse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC61E9D1FACAC8A003C291B /* Curse.swift */; };
-		8EE86C5E1FB76AC70014F85D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE86C5D1FB76AC70014F85D /* NotificationService.swift */; };
 		8EE86C621FB76AC70014F85D /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8EE86C5B1FB76AC60014F85D /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8EE86C6B1FB8C1EC0014F85D /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE86C6A1FB8C1EC0014F85D /* TabBarViewController.swift */; };
 		8EE86C6E1FBA20A40014F85D /* EventTitleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE86C6D1FBA20A40014F85D /* EventTitleViewController.swift */; };
@@ -100,13 +107,18 @@
 		157A02DB82EE9592C739EEAF /* Pods_UniVent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UniVent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		46395DE0BF48F61A06EDD3DE /* Pods-UniVent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVent/Pods-UniVent.debug.xcconfig"; sourceTree = "<group>"; };
 		497A5AA84B7AF1673A70B6FE /* Pods-UniVentTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests.release.xcconfig"; sourceTree = "<group>"; };
-		6EA91772A8FFAAEDBF7165BD /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		7432D61773B512E8FE6FE582 /* Pods-UniVentUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentUITests/Pods-UniVentUITests.release.xcconfig"; sourceTree = "<group>"; };
 		833D87D859120A44CBA5C59A /* Pods_UniVentTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UniVentTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0829CB1F755CFF00626F19 /* MapScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapScreenViewController.swift; sourceTree = "<group>"; };
 		8E0829CD1F75706500626F19 /* EventAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventAnnotation.swift; sourceTree = "<group>"; };
 		8E0829CF1F75738800626F19 /* VCMapViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCMapViewExtension.swift; sourceTree = "<group>"; };
 		8E0829EC1F7AE8F300626F19 /* Handy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handy.swift; sourceTree = "<group>"; };
+		8E0E61631FC4E90F006C8E11 /* EventAddressExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventAddressExt.swift; sourceTree = "<group>"; };
+		8E0E61651FC4E943006C8E11 /* EventPreviewExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventPreviewExt.swift; sourceTree = "<group>"; };
+		8E0E61671FC4E96E006C8E11 /* EventTableExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableExt.swift; sourceTree = "<group>"; };
+		8E0E61691FC4E9BB006C8E11 /* EventDetailExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailExt.swift; sourceTree = "<group>"; };
+		8E0E616C1FC4F2E1006C8E11 /* EventInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventInfoViewController.swift; sourceTree = "<group>"; };
+		8E0E616E1FC4FFA6006C8E11 /* EventRSVPInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventRSVPInfoViewController.swift; sourceTree = "<group>"; };
 		8E1742161F719F0000C556B7 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		8E394F2F1FAB900E002DF31E /* EventCreateOrEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventCreateOrEditViewController.swift; sourceTree = "<group>"; };
 		8E394F311FAB906F002DF31E /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
@@ -121,7 +133,11 @@
 		8E6B506A1F9A6F2F0089B967 /* FacebookManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacebookManager.swift; sourceTree = "<group>"; };
 		8E771BF51FBD368000C3C475 /* EventPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventPreviewViewController.swift; sourceTree = "<group>"; };
 		8E771BF71FBE0F9B00C3C475 /* EventStartCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStartCreateViewController.swift; sourceTree = "<group>"; };
+		8E771BFA1FBE496D00C3C475 /* ScheduleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		8E771BFC1FBE4F5F00C3C475 /* ScheduleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleTableViewCell.swift; sourceTree = "<group>"; };
 		8E8C6CCD1F7D814D001F2520 /* EventDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
+		8E96A0B71FC8C01200D304DA /* EventInfoPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventInfoPreviewViewController.swift; sourceTree = "<group>"; };
+		8E96A0B91FC8D4CC00D304DA /* PreviewPin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewPin.swift; sourceTree = "<group>"; };
 		8E97EC4B1F698C28000BAE13 /* UniVent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniVent.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E97EC4E1F698C28000BAE13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E97EC501F698C28000BAE13 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
@@ -140,13 +156,10 @@
 		8E97EC821F698CB4000BAE13 /* UniVent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UniVent.entitlements; sourceTree = "<group>"; };
 		8E97EC851F69AB54000BAE13 /* EventTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewController.swift; sourceTree = "<group>"; };
 		8E97EC871F69AB65000BAE13 /* EventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
-		8EAB59801FB4D5600022EFAA /* TableSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableSectionHeader.swift; sourceTree = "<group>"; };
 		8EAB59841FB4D9C20022EFAA /* HeaderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderTableViewCell.swift; sourceTree = "<group>"; };
 		8EAEC7A61FBB8BFD00D0EFE0 /* EventDescViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDescViewController.swift; sourceTree = "<group>"; };
 		8EC61E9D1FACAC8A003C291B /* Curse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Curse.swift; sourceTree = "<group>"; };
 		8EE86C5B1FB76AC60014F85D /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		8EE86C5D1FB76AC70014F85D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		8EE86C5F1FB76AC70014F85D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8EE86C6A1FB8C1EC0014F85D /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		8EE86C6D1FBA20A40014F85D /* EventTitleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTitleViewController.swift; sourceTree = "<group>"; };
 		8EE86C6F1FBA30F30014F85D /* EventAddressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventAddressViewController.swift; sourceTree = "<group>"; };
@@ -155,7 +168,6 @@
 		8EE86C771FBA660E0014F85D /* EventTypeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTypeViewController.swift; sourceTree = "<group>"; };
 		8EE86C791FBAAB140014F85D /* EventAnalyticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventAnalyticsViewController.swift; sourceTree = "<group>"; };
 		8EE86C7B1FBADCF50014F85D /* EventInterestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventInterestViewController.swift; sourceTree = "<group>"; };
-		9FD143579F1D80A029A8B801 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		A5A85A384F854B8EC6310128 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6772C5AF98E8C8FD8BFC7E7 /* Pods-UniVentUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentUITests/Pods-UniVentUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		D9C3737EBFFAF857B4474F34 /* Pods-UniVentTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UniVentTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -193,7 +205,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19ADFC8FA2193D5DF551F36E /* Pods_OneSignalNotificationServiceExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,8 +220,6 @@
 				497A5AA84B7AF1673A70B6FE /* Pods-UniVentTests.release.xcconfig */,
 				C6772C5AF98E8C8FD8BFC7E7 /* Pods-UniVentUITests.debug.xcconfig */,
 				7432D61773B512E8FE6FE582 /* Pods-UniVentUITests.release.xcconfig */,
-				6EA91772A8FFAAEDBF7165BD /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
-				9FD143579F1D80A029A8B801 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -263,15 +272,36 @@
 			name = Classes;
 			sourceTree = "<group>";
 		};
+		8E0E616B1FC4F2B3006C8E11 /* New Event Detaill */ = {
+			isa = PBXGroup;
+			children = (
+				8E0E616C1FC4F2E1006C8E11 /* EventInfoViewController.swift */,
+				8E0E616E1FC4FFA6006C8E11 /* EventRSVPInfoViewController.swift */,
+			);
+			name = "New Event Detaill";
+			sourceTree = "<group>";
+		};
 		8E6B500F1F841A3C0089B967 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				8E6B500D1F83E40A0089B967 /* ActivityViewController.swift */,
 				8E0829EC1F7AE8F300626F19 /* Handy.swift */,
 				8E6B50661F992A4E0089B967 /* Alerts.swift */,
-				8EAB59801FB4D5600022EFAA /* TableSectionHeader.swift */,
+				8E0E61631FC4E90F006C8E11 /* EventAddressExt.swift */,
+				8E0E61651FC4E943006C8E11 /* EventPreviewExt.swift */,
+				8E0E61671FC4E96E006C8E11 /* EventTableExt.swift */,
+				8E0E61691FC4E9BB006C8E11 /* EventDetailExt.swift */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		8E771BF91FBE494D00C3C475 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				8E771BFA1FBE496D00C3C475 /* ScheduleViewController.swift */,
+				8E771BFC1FBE4F5F00C3C475 /* ScheduleTableViewCell.swift */,
+			);
+			name = Schedule;
 			sourceTree = "<group>";
 		};
 		8E97EC421F698C28000BAE13 = {
@@ -280,7 +310,6 @@
 				8E97EC4D1F698C28000BAE13 /* UniVent */,
 				8E97EC651F698C28000BAE13 /* UniVentTests */,
 				8E97EC701F698C28000BAE13 /* UniVentUITests */,
-				8EE86C5C1FB76AC70014F85D /* OneSignalNotificationServiceExtension */,
 				8E97EC4C1F698C28000BAE13 /* Products */,
 				8E97EC7F1F698C7C000BAE13 /* Frameworks */,
 				70E94F3FC1065C33B977AD6B /* Pods */,
@@ -301,8 +330,10 @@
 		8E97EC4D1F698C28000BAE13 /* UniVent */ = {
 			isa = PBXGroup;
 			children = (
-				8EE86C6C1FBA207B0014F85D /* Create Event */,
+				8E0E616B1FC4F2B3006C8E11 /* New Event Detaill */,
 				8EE86C691FB8C1BA0014F85D /* TabBar */,
+				8E771BF91FBE494D00C3C475 /* Schedule */,
+				8EE86C6C1FBA207B0014F85D /* Create Event */,
 				8E6B500F1F841A3C0089B967 /* Helpers */,
 				8E0829D61F7AAD8400626F19 /* Classes */,
 				8E0829D21F75789400626F19 /* EventCreationScreen */,
@@ -372,15 +403,6 @@
 			name = EventsTable;
 			sourceTree = "<group>";
 		};
-		8EE86C5C1FB76AC70014F85D /* OneSignalNotificationServiceExtension */ = {
-			isa = PBXGroup;
-			children = (
-				8EE86C5D1FB76AC70014F85D /* NotificationService.swift */,
-				8EE86C5F1FB76AC70014F85D /* Info.plist */,
-			);
-			path = OneSignalNotificationServiceExtension;
-			sourceTree = "<group>";
-		};
 		8EE86C691FB8C1BA0014F85D /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -402,6 +424,8 @@
 				8EAEC7A61FBB8BFD00D0EFE0 /* EventDescViewController.swift */,
 				8E771BF51FBD368000C3C475 /* EventPreviewViewController.swift */,
 				8EE86C751FBA5D3B0014F85D /* CreateEventTableViewCell.swift */,
+				8E96A0B71FC8C01200D304DA /* EventInfoPreviewViewController.swift */,
+				8E96A0B91FC8D4CC00D304DA /* PreviewPin.swift */,
 			);
 			name = "Create Event";
 			sourceTree = "<group>";
@@ -477,11 +501,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8EE86C631FB76AC70014F85D /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
 			buildPhases = (
-				ABCC995A4319852693A945D5 /* [CP] Check Pods Manifest.lock */,
 				8EE86C571FB76AC60014F85D /* Sources */,
 				8EE86C581FB76AC60014F85D /* Frameworks */,
 				8EE86C591FB76AC60014F85D /* Resources */,
-				EC0BD442AB7E16494BDE803D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -644,21 +666,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVent/Pods-UniVent-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		ABCC995A4319852693A945D5 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		AF3DC90431391CC88E5C1EC2 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -749,21 +756,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-UniVentTests/Pods-UniVentTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EC0BD442AB7E16494BDE803D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -774,18 +766,23 @@
 				8E97EC511F698C28000BAE13 /* HomeScreenViewController.swift in Sources */,
 				8E394F371FAB9081002DF31E /* SettingsScreenViewController.swift in Sources */,
 				8EE86C781FBA660E0014F85D /* EventTypeViewController.swift in Sources */,
+				8E771BFB1FBE496D00C3C475 /* ScheduleViewController.swift in Sources */,
 				8EE86C7C1FBADCF50014F85D /* EventInterestViewController.swift in Sources */,
 				8EE86C761FBA5D3B0014F85D /* CreateEventTableViewCell.swift in Sources */,
 				8E6B506B1F9A6F2F0089B967 /* FacebookManager.swift in Sources */,
 				8E394F321FAB906F002DF31E /* SettingsTableViewCell.swift in Sources */,
-				8EAB59811FB4D5600022EFAA /* TableSectionHeader.swift in Sources */,
 				8E6B500E1F83E40A0089B967 /* ActivityViewController.swift in Sources */,
+				8E771BFD1FBE4F5F00C3C475 /* ScheduleTableViewCell.swift in Sources */,
 				8EE86C6E1FBA20A40014F85D /* EventTitleViewController.swift in Sources */,
 				8E97EC571F698C28000BAE13 /* UniVent.xcdatamodeld in Sources */,
+				8E96A0BA1FC8D4CC00D304DA /* PreviewPin.swift in Sources */,
 				8E0829D01F75738800626F19 /* VCMapViewExtension.swift in Sources */,
+				8E96A0B81FC8C01200D304DA /* EventInfoPreviewViewController.swift in Sources */,
 				8E8C6CCE1F7D814D001F2520 /* EventDetailViewController.swift in Sources */,
 				8E6B50651F9900560089B967 /* RatingControl.swift in Sources */,
 				8EE86C6B1FB8C1EC0014F85D /* TabBarViewController.swift in Sources */,
+				8E0E616F1FC4FFA6006C8E11 /* EventRSVPInfoViewController.swift in Sources */,
+				8E0E61681FC4E96E006C8E11 /* EventTableExt.swift in Sources */,
 				8E394F3D1FAB9369002DF31E /* NSEvent.swift in Sources */,
 				8E394F301FAB900E002DF31E /* EventCreateOrEditViewController.swift in Sources */,
 				8E97EC861F69AB54000BAE13 /* EventTableViewController.swift in Sources */,
@@ -798,8 +795,12 @@
 				8E394F361FAB9081002DF31E /* SettingOptionTableViewCell.swift in Sources */,
 				8E0829CE1F75706500626F19 /* EventAnnotation.swift in Sources */,
 				8EAEC7A71FBB8BFD00D0EFE0 /* EventDescViewController.swift in Sources */,
+				8E0E616A1FC4E9BB006C8E11 /* EventDetailExt.swift in Sources */,
 				8E97EC881F69AB65000BAE13 /* EventTableViewCell.swift in Sources */,
 				8EE86C721FBA4E0B0014F85D /* EventDateViewController.swift in Sources */,
+				8E0E616D1FC4F2E1006C8E11 /* EventInfoViewController.swift in Sources */,
+				8E0E61641FC4E90F006C8E11 /* EventAddressExt.swift in Sources */,
+				8E0E61661FC4E943006C8E11 /* EventPreviewExt.swift in Sources */,
 				8E771BF61FBD368000C3C475 /* EventPreviewViewController.swift in Sources */,
 				8E97EC4F1F698C28000BAE13 /* AppDelegate.swift in Sources */,
 				8E6B50671F992A4E0089B967 /* Alerts.swift in Sources */,
@@ -829,7 +830,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EE86C5E1FB76AC70014F85D /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -972,7 +972,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 46395DE0BF48F61A06EDD3DE /* Pods-UniVent.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = UniVent/UniVent.entitlements;
 				DEVELOPMENT_TEAM = 743LU673R8;
@@ -989,7 +988,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FF76CC40A7E83BB814E45C6F /* Pods-UniVent.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = UniVent/UniVent.entitlements;
 				DEVELOPMENT_TEAM = 743LU673R8;
@@ -1066,7 +1064,6 @@
 		};
 		8EE86C641FB76AC70014F85D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6EA91772A8FFAAEDBF7165BD /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 743LU673R8;
 				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
@@ -1080,7 +1077,6 @@
 		};
 		8EE86C651FB76AC70014F85D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9FD143579F1D80A029A8B801 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 743LU673R8;
 				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;

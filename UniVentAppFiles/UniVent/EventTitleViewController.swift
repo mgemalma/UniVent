@@ -115,9 +115,13 @@ class EventTitleViewController: UIViewController, UITextViewDelegate {
         DispatchQueue.main.async {
             self.cancelEventAlert(completionHandler: { cancelEvent in
                 if cancelEvent {
-                    self.oldEvent = nil
-                    self.newEvent = nil
-                    self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                    if self.oldEvent != nil {
+                        self.oldEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventEditing", sender: self)
+                    } else if self.newEvent != nil {
+                        self.newEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                    }
                 }
             })
         }

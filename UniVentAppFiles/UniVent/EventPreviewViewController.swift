@@ -7,14 +7,36 @@
 //
 
 import UIKit
+import CoreLocation
 
 class EventPreviewViewController: UIViewController {
 
     // MARK: Properties
-    var eventToSend: NSEvent?
+    var oldEvent: NSEvent?
+    var newEvent: NSEvent?
     let myformatter = DateFormatter()
     var strings: [String] = []
     @IBOutlet weak var tempLabel: UILabel!
+    @IBOutlet weak var sumbitButton: UIButton!
+    @IBOutlet weak var cancelButton: UIButton!
+    @IBOutlet weak var previousButton: UIButton!
+    
+    // MARK: Event Info Properties
+    private var etitle: String?
+    private var eID: String?
+    private var add = ["building" : "", "address" : "", "city" : "", "state" : "", "zip" : ""]
+    private var sDate: Date?
+    private var eDate: Date?
+    private var location: CLLocation?
+    private var hostID: String?
+    private var eDesc: String?
+    private var type: String?
+    private var interests: [String]?
+    private var rating: Float?
+    private var ratingCount: Int?
+    private var flags: Int?
+    private var headCount: Int?
+
 
     
     override func viewDidLoad() {
@@ -52,35 +74,22 @@ class EventPreviewViewController: UIViewController {
     func setupViewFor(event: NSEvent) {
         myformatter.locale = Locale(identifier: "en_US_POSIX")
         myformatter.dateFormat = "E  MMM dd,'  @  'h:mm a"
-        let eID = event.getID()
-        let etitle = event.getTitle()
-        let add = event.getCompleteAddress()!
-        let sDate = event.getStartTime()!
-        let eDate = event.getEndTime()!
-        let location = event.getLocation()
-        let hostID = event.getHostID()
-        let eDesc = event.getDescription()
-        let type = event.getType()
-        let interests = event.getInterest()
-        let headCount = event.getHeadCount()
-        let rating = event.getRating()
+        eID = event.getID()
+        etitle = event.getTitle()
+        add = event.getCompleteAddress()!
+        sDate = event.getStartTime()!
+        eDate = event.getEndTime()!
+        location = event.getLocation()
+        hostID = event.getHostID()
+        eDesc = event.getDescription()
+        type = event.getType()
+        interests = event.getInterest()
+        headCount = event.getHeadCount()
+        rating = event.getRating()
+        ratingCount = (event.getRatingCount() ?? 0)
+        flags = (event.getFlags() ?? 0)
         
-//        
-//        print(eID ?? "No ID")
-//        print(etitle ?? "No Title")
-//        print(add)
-//        print(myformatter.string(from: sDate))
-//        print(myformatter.string(from: eDate))
-//        print(location?.coordinate.latitude ?? "No Latitude")
-//        print(location?.coordinate.longitude ?? "No Longitude")
-//        print(hostID ?? "No HostID")
-//        print(eDesc ?? "No Description")
-//        print(type ?? "No Type")
-//        print(interests ?? "No Interests")
-//        print(headCount ?? "No Headcount")
-//        print(rating ?? "No rating")
-        
-        strings = [(eID ?? "No Event ID yet"), etitle!, "\(add["building"]) \(add["address"]), \(add["city"]), \(add["state"]), \(add["zip"])", myformatter.string(from: sDate), myformatter.string(from: eDate), "\(location?.coordinate.latitude)", "\(location?.coordinate.longitude)", type!, "\(interests)", "\(headCount)", "\(rating)", eDesc!, hostID!]
+        strings = [(eID ?? "No Event ID yet"), etitle!, "\(add["building"] ?? "") \(add["address"] ?? ""), \(add["city"] ?? ""), \(add["state"] ?? ""), \(add["zip"] ?? "")", myformatter.string(from: sDate!), myformatter.string(from: eDate!), "\(location?.coordinate.latitude ?? 0.0)", "\(location?.coordinate.longitude ?? 0.0)", type!, "\(interests ?? ["No interests"])", "\(headCount ?? 0)", "\(rating ?? 0.0)", (eDesc ?? ""), hostID!]
         }
     
     func createParagraphAttribute() ->NSParagraphStyle
@@ -94,18 +103,74 @@ class EventPreviewViewController: UIViewController {
         
         return paragraphStyle
     }
+    
+    @IBAction func submitPressed(_ sender: UIButton) {
+        NSEvent.postEvent(id: self.eID, start: sDate, end: eDate, building: add["building"], address: add["address"], city: add["city"], state: add["state"], zip: add["zip"], loc: location, rat: rating, ratC: ratingCount, flags: flags, heads: headCount, host: hostID, title: etitle, type: type, desc: eDesc, intrests: interests, addr: add) { success in
+            
+            if success != nil {
+                // Successfully added event
+                print(success ?? "Somehow no ID")
+                if self.oldEvent != nil {
+                    self.oldEvent = nil
+                    self.performSegue(withIdentifier: "CancelEventEditing", sender: self)
+                } else if self.newEvent != nil {
+                    self.newEvent = nil
+                    self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                }
+            } else {
+                // There was an error
+                self.couldNotPost()
+            }
+            
+            
+        }
+
+    }
+    
+    @IBAction func previousPressed(_ sender: UIButton) {
+        self.performSegue(withIdentifier: "ReturnToEditing", sender: nil)
+    }
+    
+    @IBAction func cancelPressed(_ sender: UIButton) {
+        DispatchQueue.main.async {
+            self.cancelEventAlert(completionHandler: { cancelEvent in
+                if cancelEvent {
+                    if self.oldEvent != nil {
+                        self.oldEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventEditing", sender: self)
+                    } else if self.newEvent != nil {
+                        self.newEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                    }
+                }
+            })
+        }
+    }
+    
+    func cancelEventAlert(completionHandler: (@escaping (_ isConfirmed: Bool)-> Void)) {
+        let alertController = UIAlertController(title: "Warning!", message: "This will delete all progress", preferredStyle: .actionSheet)
+        let continueAction = UIAlertAction(title: "Continue", style: .destructive, handler: {(alertController: UIAlertAction) in completionHandler(true)} )
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: {(alertController: UIAlertAction) in completionHandler(false)} )
+        alertController.addAction(continueAction)
+        alertController.addAction(cancel)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
 
     
-    
-
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "ReturnToEditing" {
+            let destVC = segue.destination as? EventDescViewController
+            if newEvent == nil && oldEvent != nil {
+                destVC?.oldEvent = oldEvent
+            } else {
+                destVC?.newEvent = newEvent
+            }
+        }
     }
-    */
+    
 
 }

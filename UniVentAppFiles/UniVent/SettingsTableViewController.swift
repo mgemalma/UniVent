@@ -186,11 +186,12 @@ class SettingsTableViewController: UITableViewController {
     func doneSelectingInterests(_ item: UIBarButtonItem) {
         _ = navigationController?.popViewController(animated: true)
         NSUser.setInterests(interests: myInterests)
-//        NSUser.saveDisk()
-//        NSUser.saveDB()
     }
     func cancelSelectingInterests(_ item: UIBarButtonItem) {
         _ = navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func unwindToPostedEvents(segue: UIStoryboardSegue) {
     }
 
     
@@ -202,8 +203,9 @@ class SettingsTableViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if segue.identifier == "EditEventSegue" {
-            let destVC = segue.destination as? EventCreateOrEditViewController
-            destVC?.setupViewFor(event: sender as! NSEvent)
+            let destVC = segue.destination as? EventTitleViewController
+            destVC?.oldEvent = sender as! NSEvent
+            destVC?.newEvent = nil
         } else if segue.identifier == "SettingsToDetailSegue" {
             let destVC = segue.destination as? EventDetailViewController
             destVC?.setupViewFor(event: sender as! NSEvent)

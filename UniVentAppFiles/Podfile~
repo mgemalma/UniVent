@@ -30,3 +30,7 @@ pod 'SwiftLocation', '3.0.1-beta'
 end
 
 
+target 'OneSignalNotificationServiceExtension' do
+  use_frameworks!
+  pod 'OneSignal', '>= 2.5.2', '< 3.0'
+end

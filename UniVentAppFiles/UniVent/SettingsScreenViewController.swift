@@ -25,6 +25,7 @@ class SettingsScreenViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
        // self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
+        radiusSlider.setValue(NSUser.getRadius()!, animated: true)
     }
     
 //    override func viewWillDisappear(_ animated: Bool) {
@@ -32,7 +33,14 @@ class SettingsScreenViewController: UIViewController {
 //    }
 //    
     
-
+    override func viewWillDisappear(_ animated: Bool) {
+        if let prevRad = NSUser.getRadius() {
+            if prevRad != radiusSlider.value {
+                NSUser.setRadius(rad: radiusSlider.value)
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -49,8 +57,8 @@ class SettingsScreenViewController: UIViewController {
 
     }
     @IBAction func postedEventsPressed(_ sender: UIButton) {
-        print("Posted Events")
-        print(NSUser.getPostedEvents() ?? "No Posted Events\n")
+        //print("Posted Events")
+        //print(NSUser.getPostedEvents() ?? "No Posted Events\n")
         performSegue(withIdentifier: "SettingsToTableSegue", sender: 0)
     }
     
@@ -58,7 +66,6 @@ class SettingsScreenViewController: UIViewController {
         print("RSVP'd Events")
         print(NSUser.getAttendingEvents() ?? "No RSVP'd Events\n")
         performSegue(withIdentifier: "SettingsToTableSegue", sender: 1)
-
     }
     @IBAction func radiusSliderChanged(_ sender: UISlider) {
         var newVal = 0.0

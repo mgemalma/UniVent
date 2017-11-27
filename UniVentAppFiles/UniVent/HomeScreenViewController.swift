@@ -24,11 +24,18 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
         /* Add FacebookSDK login button to view */
         self.setupLoginButton()
         
-        self.checkLoginStatus() { response in
-            if response == "FB retrieved" {
-                self.userLoggedIntoFacebook = true
-                self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
+        let connection = Reachability.shared.isConnectedToNetwork()
+        let isConnected = connection.connected || connection.cellular
+        if isConnected {
+            self.checkLoginStatus() { response in
+                print(response)
+                if response == "FB retrieved" {
+                    self.userLoggedIntoFacebook = true
+                    self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
+                }
             }
+        } else {
+            
         }
     }
     
@@ -83,7 +90,7 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
                         NSUser.boot(id: (data["id"] as? String)!, name: (data["name"] as? String)!)
                         completion("FB retrieved")
                     } else {
-                        completion("error")
+                        completion("getFacebookUserInfo Error: \(String(describing: error))")
                     }
                     
                 } )
@@ -95,9 +102,9 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
     private func checkLoginStatus(completion: @escaping (_ success: String) -> Void) {
         /* If the user's access token is nil, they are not logged in already */
         if (FBSDKAccessToken.current() == nil) {
-            NSLog("User not logged in to Facebook")
+            print("User not logged in to Facebook")
         } else {
-            NSLog("User logged in to Facebook")
+            print("User logged in to Facebook")
             self.getFacebookUserInfo() { response in
                 completion(response)
             }
@@ -116,8 +123,10 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
         handleBadAuthorization()
         
         if userLoggedIntoFacebook{
+            print("Moving to map")
             return true
         } else {
+            print("Unable to continue")
             return false
         }
     }

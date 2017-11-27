@@ -91,9 +91,13 @@ class EventDescViewController: UIViewController, UITextViewDelegate {
         DispatchQueue.main.async {
             self.cancelEventAlert(completionHandler: { cancelEvent in
                 if cancelEvent {
-                    self.oldEvent = nil
-                    self.newEvent = nil
-                    self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                    if self.oldEvent != nil {
+                        self.oldEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventEditing", sender: self)
+                    } else if self.newEvent != nil {
+                        self.newEvent = nil
+                        self.performSegue(withIdentifier: "CancelEventCreation", sender: self)
+                    }
                 }
             })
         }
@@ -121,18 +125,35 @@ class EventDescViewController: UIViewController, UITextViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Go Forward
         if segue.identifier == "DescriptionToPreview" {
-            let destVC = segue.destination as? EventPreviewViewController
+            let destVC = segue.destination as? EventInfoPreviewViewController
             if newEvent == nil && oldEvent != nil {
                 if phShouldBeVisable == false {
                     oldEvent?.setDescription(desc: descTextField.text)
                 }
-                destVC?.setupViewFor(event: oldEvent!)
+                destVC?.oldEvent = oldEvent
+                destVC?.setupViewController(event: oldEvent!)
             } else {
                 if phShouldBeVisable == false {
                     newEvent?.setDescription(desc: descTextField.text)
                 }
-                destVC?.setupViewFor(event: newEvent!)
+                destVC?.newEvent = newEvent
+                destVC?.setupViewController(event: newEvent!)
             }
+
+//            let destVC = segue.destination as? EventPreviewViewController
+//            if newEvent == nil && oldEvent != nil {
+//                if phShouldBeVisable == false {
+//                    oldEvent?.setDescription(desc: descTextField.text)
+//                }
+//                destVC?.oldEvent = oldEvent
+//                destVC?.setupViewFor(event: oldEvent!)
+//            } else {
+//                if phShouldBeVisable == false {
+//                    newEvent?.setDescription(desc: descTextField.text)
+//                }
+//                destVC?.newEvent = newEvent
+//                destVC?.setupViewFor(event: newEvent!)
+//            }
         }
         
         // Go Backward
