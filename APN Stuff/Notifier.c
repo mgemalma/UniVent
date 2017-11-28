@@ -137,10 +137,10 @@ int extractEvents(int fd) {
 		if(deliminator != NULL)
 			eventStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -157,7 +157,7 @@ void freeEvents() {
 		// Free
 		free(eventList[EP].name);
 
-		// Increment	
+		// Increment
 		EP++;
 	}
 
@@ -283,10 +283,10 @@ int extractUsers(int fd) {
 		if(deliminator != NULL)
 			userStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -311,7 +311,7 @@ void freeUsers() {
 		free(userList[UP].eventIDs);
 		free(userList[UP].devID);
 
-		// Increment	
+		// Increment
 		UP++;
 	}
 
@@ -389,9 +389,9 @@ void notify() {
 
 	// Open
 	int fd = open("./cMount/DB.sql", O_RDONLY);
-	if (fd < 0) 
+	if (fd < 0)
 		return;
-	
+
 	/** Extract **/
 	// Exctract Event List
 	if (extractEvents(fd) == -1 || extractUsers(fd) == -1)
@@ -428,7 +428,59 @@ void notify() {
 	printf("Time: %lu\n+++++++++++++++++================---------------->>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<\n\n", TIME);
 
 	// Close
-	close(fd);	
+	close(fd);
+}
+
+// Converts interests string(separated by ^) to interests array.
+char** extractInterests(char* str)
+{
+  char* dup = strdup(str);
+	char* temp = strtok(dup, "^");
+	char** interests = (char**)malloc(256*sizeof(char*));    // Remember to free this after using it!
+	int i = 0;
+	// If passed string is empty, return NULL
+	if(!temp)
+		return NULL;
+
+	// Loop to fill up array from string(interests separated by ^)
+	while(temp != NULL)
+	{
+		interests[i++] = strdup(temp);		// Remember to free this after using it!
+		temp = strtok(NULL, "^");
+	}
+  free(dup);
+
+	return interests;
+}
+
+// Compares an event's interests with a user's interests.
+// Returns 1 if a match was found, 0 Otherwise.
+int matchInterest(struct Event event, struct User user)
+{
+	int e = 0;
+	int u = 0;
+	// Extract interests.
+	char** eI = extractInterests(event.interests);
+	char** uI = extractInterests(user.interests);
+	// If either one is empty, return 0(no match).
+	if(eI == NULL || uI == NULL)
+		return 0;
+
+	// Loop until a match is found.
+	while(eI[e] != NULL)
+	{
+		u = 0;
+		while(uI[u] != NULL)
+		{
+			if(strcmp(eI[e], uI[u]) == 0)
+			{
+				return 1;
+			}
+			u++;
+		}
+		e++;
+	}
+	return 0;
 }
 
 int main() {
