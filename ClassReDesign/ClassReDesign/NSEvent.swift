@@ -26,6 +26,14 @@ class NSEvent: NSObject, NSCoding {
     typealias dictArrayCompletion = (_ success: [[String : String]]?) -> Void
     typealias boolCompletion = (_ success: Bool) -> Void
     typealias dictCompletion = (_ success: [String : String]?) -> Void
+    
+    static var datePicker: UIDatePicker = {
+        let instance = UIDatePicker()
+        instance.datePickerMode = UIDatePickerMode.dateAndTime
+        instance.minimumDate = Date()
+        instance.maximumDate = Date(timeInterval: 60*60*24*7, since: instance.minimumDate!)
+        return instance
+    }()
 
 
     /** Static Variables **/
@@ -119,7 +127,7 @@ class NSEvent: NSObject, NSCoding {
         self.add = addr
     }
     
-    // Decoder (Required by NSCoding)
+    // Decoder (Required by NSCoding) Initialize each event from the disk and create a object
     required convenience init?(coder aDecoder: NSCoder) {
         // Get from Storage
         let ID = aDecoder.decodeObject(forKey: Keys.id) as? String
@@ -136,10 +144,18 @@ class NSEvent: NSObject, NSCoding {
         let TYPE = aDecoder.decodeObject(forKey: Keys.type) as? String
         let DESC = aDecoder.decodeObject(forKey: Keys.desc) as? String
         let INTERESTS = aDecoder.decodeObject(forKey: Keys.interests) as? [String]
-
+        
         
         // Initialize an Instance (Required since this is a Convenience init())
         self.init()
+        //Print errors
+        if (id == nil){
+            print("required convenience init() -> NSEvent.swift : \"id value was nil\"")
+        }
+        if (title == nil){
+            print("required convenience init() -> NSEvent.swift : \"title value was nil\"")
+        }
+        
         
         // Assign to Current Instance (Which should be Singelton)
         id = ID
@@ -417,30 +433,27 @@ class NSEvent: NSObject, NSCoding {
         // If ID Nil
         if(id == nil) {     // Post a new event
             // Get ID
-            getUniqueID() { success in
-                if success != nil {
-                    let newID = success
-                    // Create Event
-                    event = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
-                    if event == nil { completionHandler(nil) }
-                    
-                    // Add the new event everywhere
-                    pEvents!.append(event!)
-                    var arr: [String]? = NSUser.getPostedEvents()
-                    if arr != nil {
-                        arr!.append(newID!)
-                    } else {
-                        arr = [newID!]
-                    }
-                    NSUser.setPostedEvents(pEvents: arr)
-                    sendEventDB(event: event!)
-                    completionHandler(newID)
-                } else {
-                    completionHandler(nil)
-                }
+            let newID = UUID().uuidString
+            
+            // Create Event
+            event = NSEvent(id: newID, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
+            if event == nil { completionHandler(nil) }
+            
+            // Add the new event everywhere
+            pEvents!.append(event!)
+            var arr: [String]? = NSUser.getPostedEvents()
+            if arr != nil {
+                arr!.append(newID)
+            } else {
+                arr = [newID]
             }
+            NSUser.setPostedEvents(pEvents: arr)
+            sendEventDB(event: event!)
+            completionHandler(newID)
+            
+            
         }
-        // Else
+            // Else
         else {
             if let pE = pEvents {
                 // Find Event
@@ -824,88 +837,84 @@ class NSEvent: NSObject, NSCoding {
         }
     }
     // getAUniqueID requests a unique ID for an event.
-    static func getUniqueID(completionHandler: @escaping stringCompletion) {
-        
-        let stringURL = "http://gymbuddyapp.net/getUniqueID.php?num=\(69)"
-        let Url = URL(string: stringURL)
-        
-        if let url = Url {
-            let session = URLSession(configuration: .default)
-            let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
-                if let _ = data, error == nil {
-                    DispatchQueue.main.async {
-                        let id = parseID(data!)
-                        completionHandler(id)
-                    }
-                } else {
-                    completionHandler(nil)
-                }
-            })
-            task.resume()
-        }
-    }
+//    static func getUniqueID(completionHandler: @escaping stringCompletion) {
+//        
+//        let stringURL = "http://gymbuddyapp.net/getUniqueID.php?num=\(69)"
+//        let Url = URL(string: stringURL)
+//        
+//        if let url = Url {
+//            let session = URLSession(configuration: .default)
+//            let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
+//                if let _ = data, error == nil {
+//                    DispatchQueue.main.async {
+//                        let id = parseID(data!)
+//                        completionHandler(id)
+//                    }
+//                } else {
+//                    completionHandler(nil)
+//                }
+//            })
+//            task.resume()
+//        }
+//    }
 
     /** Disk Functions **/
     // MARK: - Data Persistance
-    // Save
+    // This function saves the event data to the disk
     static func saveDisk() {
-        // Save Attending Events
+        // Save Attending Events Array to the disk
         let savedaData = NSKeyedArchiver.archiveRootObject(aEvents as Any, toFile: arcaURL.path)
         if (savedaData) {
-            print("Success saving aEvents")
+            print("saveDisk() -> NSEvent.swift \"Success saving Attending Events Array to the disk\"")
         } else {
-            print("Failure saving aEvents")
+            print("saveDisk() -> NSEvent.swift \"Failure saving Attending Events Array to the disk\"")
         }
         
-        // Save Local Events
+        // Save Local Events to the disk
         let savedlData = NSKeyedArchiver.archiveRootObject(lEvents as Any, toFile: arclURL.path)
         if (savedlData) {
-            print("Success saving lEvents")
+            print("saveDisk() -> NSEvent.swift \"Success saving Local Events Array to the disk\"")
         } else {
-            print("Failure saving lEvents")
+            print("saveDisk() -> NSEvent.swift \"Failure saving Local Events Array to the disk\"")
         }
         
-        // Save Posted Events
+        // Save Posted Events to the disk
         let savedpData = NSKeyedArchiver.archiveRootObject(pEvents as Any, toFile: arcpURL.path)
         if (savedpData) {
-            print("Success saving pEvents")
+            print("saveDisk() -> NSEvent.swift \"Success saving Posted Events Array to the disk\"")
         } else {
-            print("Failure saving pEvents")
+            print("saveDisk() -> NSEvent.swift \"Failure saving Local Events Array to the disk\"")
         }
     }
     
-    // Load
+    // This function loads the event data from the disk
     static func loadDisk() {
+        // Load Attending Events Array from the disk
         if let events = NSKeyedUnarchiver.unarchiveObject(withFile: arcaURL.path) as? [NSEvent] {
             aEvents = events
-            print("Success loading aEvents")
-            //return true
+            print("loadDisk() -> NSEvent.swift \"Success loading Attending Events Array from the disk\"")
         }
         else {
-            print("Failure loading aEvents")
-            //return false
+            print("loadDisk() -> NSEvent.swift \"Failure loading Attending Events Array from the disk\"")
         }
-        
+        // Load Local Events Array from the disk
         if let events1 = NSKeyedUnarchiver.unarchiveObject(withFile: arclURL.path) as? [NSEvent] {
             lEvents = events1
-            print("Success loading lEvents")
-            //return true
+            print("loadDisk() -> NSEvent.swift \"Success loading Local Events Array from the disk\"")
         }
         else {
-            print("Failure loading lEvents")
-            //return false
+            print("loadDisk() -> NSEvent.swift \"Failure loading Local Events Array from the disk\"")
         }
-        
+        // Load Posted Events Array from the disk
         if let events2 = NSKeyedUnarchiver.unarchiveObject(withFile: arcpURL.path) as? [NSEvent] {
             pEvents = events2
-            print("Success loading pEvents")
-            //return true
+            print("loadDisk() -> NSEvent.swift \"Success loading Posted Events Array from the disk\"")
         }
         else {
-            print("Failure loading pEvents")
-            //return false
+            print("loadDisk() -> NSEvent.swift \"Failure loading Posted Events Array from the disk\"")
         }
     }
+
     
     // Counters incrementers/decrementers
     // MARK: - Database Incrementing & Decrementing
@@ -1136,6 +1145,16 @@ class NSEvent: NSObject, NSCoding {
     // MARK: - Encoding
     // Disk Encoder (Required by NSCoding)
     func encode(with aCoder: NSCoder) {
+        
+        //Do error checking to make sure they variables are not nil, if it is print the error
+        if (id == nil){
+            print("encode() -> NSEvent.swift : \"id value was nil\"")
+        }
+        if (title == nil){
+            print("encode() -> NSEvent.swift : \"title value was nil\"")
+        }
+        
+        //Encode every each variable in order to save the variables to the disk later on.
         aCoder.encode(id, forKey: Keys.id)
         aCoder.encode(start, forKey: Keys.start)
         aCoder.encode(end, forKey: Keys.end)
@@ -1151,4 +1170,19 @@ class NSEvent: NSObject, NSCoding {
         aCoder.encode(desc, forKey: Keys.desc)
         aCoder.encode(interests, forKey: Keys.interests)
     }
+    
+    //Function to complete erase the disk contents no file will be left at the disk after calling this function returning true when succeed, returning false otherwise
+    static func eraseDisk(path : URL) -> Bool{
+        do {
+            //If the file exists in the file path remove the file
+            try FileManager().removeItem(at: path)
+            return true
+        }
+        catch let error as NSError {
+            //Catch the error
+            print("eraseDisk() -> NSEvent.swift: error trying to erase the disk \(error)")
+        }
+        return false
+    }
+
 }

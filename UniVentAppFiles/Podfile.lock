@@ -19,9 +19,9 @@ PODS:
     - GoogleMaps/Base
   - GooglePlaces (2.3.1):
     - GoogleMaps/Base (= 2.3.1)
-  - IODProfanityFilter (1.0.0)
-  - PostalAddressRow (1.1.0):
-    - Eureka (= 3.0)
+  - SwiftLocation (3.0.1-beta):
+    - SwiftyJSON (~> 4.0.0-alpha.1)
+  - SwiftyJSON (4.0.0)
 
 DEPENDENCIES:
   - Eureka
@@ -30,8 +30,7 @@ DEPENDENCIES:
   - FBSDKShareKit
   - GoogleMaps
   - GooglePlaces
-  - IODProfanityFilter
-  - PostalAddressRow (~> 1.0)
+  - SwiftLocation (= 3.0.1-beta)
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -41,9 +40,9 @@ SPEC CHECKSUMS:
   FBSDKShareKit: a2ed9d7781a4eda9ac20d7404305e795b10251ac
   GoogleMaps: c66a71058b9b1294bcdd5463a68e357fa50c079f
   GooglePlaces: 4a7b22debfa1af65017b82943431822607e45201
-  IODProfanityFilter: 10566999bf48ec8375c7d351d6bf9b6a1219f0cb
-  PostalAddressRow: 8e56ae5154c00540981f47aa11ba8004e486d834
+  SwiftLocation: 1dce79e78113fe14c0f95589e32c9da8a983d9c3
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 200b996c59c53e9b45eef6f4a2d110099ffcbe5e
+PODFILE CHECKSUM: dbe9a8a1924f7ae761cadf0afa8dba243e8e1321
 
 COCOAPODS: 1.2.1

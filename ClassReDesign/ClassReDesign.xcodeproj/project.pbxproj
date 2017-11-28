@@ -21,6 +21,7 @@
 		B1217E1B1FB8E88B00C26F88 /* Handy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1217E1A1FB8E88B00C26F88 /* Handy.swift */; };
 		B19EBB8B1FA67FDC00A50201 /* NSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */; };
 		B1AAFEC91FAC13A3005A8FC6 /* NSUserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1AAFEC81FAC13A3005A8FC6 /* NSUserTest.swift */; };
+		B1B4F69B1FBE4AA8009BE59C /* ClassReDesignTestsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B4F69A1FBE4AA8009BE59C /* ClassReDesignTestsEvent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		B1217E1A1FB8E88B00C26F88 /* Handy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Handy.swift; path = ../../Handy.swift; sourceTree = "<group>"; };
 		B19EBB8A1FA67FDC00A50201 /* NSEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSEvent.swift; sourceTree = "<group>"; };
 		B1AAFEC81FAC13A3005A8FC6 /* NSUserTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSUserTest.swift; sourceTree = "<group>"; };
+		B1B4F69A1FBE4AA8009BE59C /* ClassReDesignTestsEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassReDesignTestsEvent.swift; sourceTree = "<group>"; };
 		B9578396ED65F6C12CCE2BD3 /* Pods-ClassReDesignTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClassReDesignTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ClassReDesignTests/Pods-ClassReDesignTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E23A37889131A9C1D4A32302 /* Pods_ClassReDesign.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ClassReDesign.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -147,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				7BD8FA801F9FF7550060A6FB /* ClassReDesignTests.swift */,
+				B1B4F69A1FBE4AA8009BE59C /* ClassReDesignTestsEvent.swift */,
 				7BD8FA821F9FF7550060A6FB /* Info.plist */,
 			);
 			path = ClassReDesignTests;
@@ -435,6 +438,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1B4F69B1FBE4AA8009BE59C /* ClassReDesignTestsEvent.swift in Sources */,
 				7BD8FA811F9FF7550060A6FB /* ClassReDesignTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

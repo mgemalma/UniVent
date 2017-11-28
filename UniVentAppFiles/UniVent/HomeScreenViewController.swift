@@ -11,7 +11,7 @@ import FBSDKLoginKit
 import CoreLocation
 
 class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
-
+    
     // MARK: - Properties
     var userMayContinue: Bool = false
     var userLoggedIntoFacebook: Bool = false
@@ -24,11 +24,18 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
         /* Add FacebookSDK login button to view */
         self.setupLoginButton()
         
-        self.checkLoginStatus() { response in
-            if response == "FB retrieved" {
-                self.userLoggedIntoFacebook = true
-                self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
+        let connection = Reachability.shared.isConnectedToNetwork()
+        let isConnected = connection.connected || connection.cellular
+        if isConnected {
+            self.checkLoginStatus() { response in
+                print(response)
+                if response == "FB retrieved" {
+                    self.userLoggedIntoFacebook = true
+                    self.performSegue(withIdentifier: "HomeToMap", sender: "userAlreadyLoggedIn")
+                }
             }
+        } else {
+            
         }
     }
     
@@ -36,7 +43,7 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
         super.viewWillAppear(animated)
         // Hide the navigation bar on the this view controller
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
-
+        
     }
     
     // MARK: - FBSDKLoginButton Methods
@@ -81,11 +88,9 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
                     if (error == nil) {
                         let data = result as! [String: AnyObject]
                         NSUser.boot(id: (data["id"] as? String)!, name: (data["name"] as? String)!)
-                        // UserNew.sharedUser.userID = data["id"] as? String   //self.userID
-                        // UserNew.sharedUser.userName = data["name"] as? String   //self.userName
                         completion("FB retrieved")
                     } else {
-                        completion("error")
+                        completion("getFacebookUserInfo Error: \(String(describing: error))")
                     }
                     
                 } )
@@ -97,15 +102,15 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
     private func checkLoginStatus(completion: @escaping (_ success: String) -> Void) {
         /* If the user's access token is nil, they are not logged in already */
         if (FBSDKAccessToken.current() == nil) {
-            NSLog("User not logged in to Facebook")
+            print("User not logged in to Facebook")
         } else {
-            NSLog("User logged in to Facebook")
+            print("User logged in to Facebook")
             self.getFacebookUserInfo() { response in
                 completion(response)
             }
         }
     }
-
+    
     // MARK: - Navigation
     
     private func handleBadAuthorization() {
@@ -116,10 +121,12 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         handleBadAuthorization()
-
+        
         if userLoggedIntoFacebook{
+            print("Moving to map")
             return true
         } else {
+            print("Unable to continue")
             return false
         }
     }
@@ -127,7 +134,10 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         if segue.identifier == "HomeToMap" {
-            let destVC = segue.destination as? MapScreenViewController
+//            let destVC = segue.destination as? MapScreenViewController
+//            NSUser.setAttendingEvents(aEvents: nil)
+//            let t = ["59fb995a039cb"]
+//            NSUser.setAttendingEvents(aEvents: t)
         }
     }
     
@@ -136,9 +146,9 @@ class HomeScreenViewController: UIViewController, FBSDKLoginButtonDelegate {
         loginButton.frame = CGRect(x: 64, y: 500, width: Int(view.frame.width - 128), height: 40)
         loginButton.readPermissions = ["public_profile"]
         loginButton.delegate = self
-
+        
     }
-
-
+    
+    
 }
 

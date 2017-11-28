@@ -29,11 +29,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>IODProfanityFilter.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods-UniVent.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -49,12 +44,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>PostalAddressRow-PostalAddressRow.xcscheme</key>
+		<key>SwiftLocation.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>PostalAddressRow.xcscheme</key>
+		<key>SwiftyJSON.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -62,6 +57,16 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>0CD8E25FD242FA1E8956666AA8A71A8F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1DFA94EEB79D46E43DA050942E46ACC0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>44CAD6CE523055ED339E87154473A254</key>
 		<dict>
 			<key>primary</key>
@@ -77,16 +82,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>95626672683745BB8E2CA0A9B0D30F8D</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>B4CDA3FFBC47F85955423917ACA870B5</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>BC5000D645EEAF961C85907CDC796FE1</key>
 		<dict>
 			<key>primary</key>
@@ -97,22 +92,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>C4D0450DDE94EB809071A3BE0754D2DF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>D25611BABD3DB3038824AA52F9C94AE3</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DA783128274995F599BEEB9D54D0A07C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>E396A93E4C79B22B7816E9F02F62ECED</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E4E660DA248D92BDA825A6ECABB46363</key>
 		<dict>
 			<key>primary</key>
 			<true/>

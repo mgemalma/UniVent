@@ -11,6 +11,7 @@ import UIKit
 class SettingsTableViewCell: UITableViewCell {
 
     @IBOutlet weak var displayLabel: UILabel!
+    var event: NSEvent?
     
     override func awakeFromNib() {
         super.awakeFromNib()

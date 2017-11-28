@@ -29,6 +29,7 @@ else{
 
   //update querry string including all the values to change in the user.
   $sql = "UPDATE User_Prod set name = '$name',flags = $flags,rad = $rad, interests = '$interests',pEvents = '$pEvents',aEvents = '$aEvents',fEvents = '$fEvents',rEvents = '$rEvents' where id = '$id'" ;
+  //mysqli Handels the injection errors and the escape characters are handeled using swift code that 
   if (mysqli_query($conn, $sql)) {
     echo "User $id has been updated successfully";
   } else {

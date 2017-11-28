@@ -6,6 +6,10 @@
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>UniVent</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Access your reminders to notify you when an event is about to happen.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Access your calendar to schedule events you RSVP.</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -63,6 +67,17 @@
 	<string>Allow this app to access your location while in the background?</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow this app to access your location while in use?</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Using location to find nearby events</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Allow this app to access your location while in the background?</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string></string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

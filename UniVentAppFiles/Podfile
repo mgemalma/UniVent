@@ -22,10 +22,11 @@ target 'UniVent' do
 pod ‘FBSDKCoreKit’
 pod ‘FBSDKShareKit’
 pod ‘FBSDKLoginKit’
-pod ’IODProfanityFilter’
 pod ‘Eureka’
-pod ’PostalAddressRow’, ’~> 1.0’
 pod ’GoogleMaps’
 pod ’GooglePlaces’
+pod 'SwiftLocation', '3.0.1-beta'
 
 end
+
+

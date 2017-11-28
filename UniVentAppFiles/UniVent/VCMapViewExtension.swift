@@ -35,8 +35,9 @@ extension MapScreenViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         // Code to navigate to detailed event view here
         let eventAnnotation = view.annotation as! EventAnnotation
-        performSegue(withIdentifier: "MapPinToEventDetail", sender: eventAnnotation.event)
-    
+        self.selectedEvent = eventAnnotation.event
+        performSegue(withIdentifier: "MapPinToEventDetail", sender: nil)
+        
         
         
     }

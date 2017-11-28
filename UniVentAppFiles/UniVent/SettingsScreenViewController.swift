@@ -23,11 +23,24 @@ class SettingsScreenViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
+       // self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        radiusSlider.setValue(NSUser.getRadius()!, animated: true)
     }
     
+//    override func viewWillDisappear(_ animated: Bool) {
+//        self.navigationController?.setToolbarHidden(false, animated: true)
+//    }
+//    
     
-
+    override func viewWillDisappear(_ animated: Bool) {
+        if let prevRad = NSUser.getRadius() {
+            if prevRad != radiusSlider.value {
+                NSUser.setRadius(rad: radiusSlider.value)
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -44,8 +57,8 @@ class SettingsScreenViewController: UIViewController {
 
     }
     @IBAction func postedEventsPressed(_ sender: UIButton) {
-        print("Posted Events")
-        print(NSUser.getPostedEvents() ?? "No Posted Events\n")
+        //print("Posted Events")
+        //print(NSUser.getPostedEvents() ?? "No Posted Events\n")
         performSegue(withIdentifier: "SettingsToTableSegue", sender: 0)
     }
     
@@ -53,13 +66,41 @@ class SettingsScreenViewController: UIViewController {
         print("RSVP'd Events")
         print(NSUser.getAttendingEvents() ?? "No RSVP'd Events\n")
         performSegue(withIdentifier: "SettingsToTableSegue", sender: 1)
-
+    }
+    @IBAction func radiusSliderChanged(_ sender: UISlider) {
+        var newVal = 0.0
+        
+        if sender.value < 0.375 {
+            newVal = 0.25
+        }
+        else if sender.value < 0.625 {
+            newVal = 0.5
+        } else if sender.value < 0.875 {
+            newVal = 0.75
+        } else if sender.value < 1.125 {
+            newVal = 1.0
+        } else if sender.value < 1.375 {
+            newVal = 1.25
+        } else if sender.value < 1.625 {
+            newVal = 1.5
+        } else if sender.value < 1.875 {
+            newVal = 1.75
+        } else {
+            newVal = 2.0
+        }
+        sender.setValue(Float(newVal), animated: false)
     }
     
     @IBAction func logoutPressed(_ sender: UIButton) {
         logoutUser()
         performSegue(withIdentifier: "logoutSegue", sender: "logout")
     }
+    
+    func viewEventCancelled(_ item: UIBarButtonItem) {
+        _ = navigationController?.popViewController(animated: true)
+        print("Cancel")
+    }
+
     
     
     
