@@ -655,7 +655,7 @@ class NSUser: NSObject, NSCoding {
                 }
                 
                 // Build Post Request
-                var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests) ?? "interests nil")&pEvents=\(stringer(array: user.pEvents) ?? "pEvents nil")&aEvents=\(stringer(array: user.aEvents) ?? "aEvents nil")&fEvents=\(stringer(array: user.fEvents) ?? "fEvents nil")&rEvents=\(stringer(array: user.rEvents) ?? "rEvents nil")"
+                var postString = "id=\(user.id!)&latitude=\(user.loc?.coordinate.latitude ?? 0.0)&longitude=\(user.loc?.coordinate.longitude ?? 0.0)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests) ?? "interests nil")&pEvents=\(stringer(array: user.pEvents) ?? "pEvents nil")&aEvents=\(stringer(array: user.aEvents) ?? "aEvents nil")&fEvents=\(stringer(array: user.fEvents) ?? "fEvents nil")&rEvents=\(stringer(array: user.rEvents) ?? "rEvents nil")"
                 postString = postString.replacingOccurrences(of: " ", with: "%20")
                 postString = postString.replacingOccurrences(of: "'", with: "''")
                 //print(postString)
@@ -887,7 +887,7 @@ class NSUser: NSObject, NSCoding {
     /// - Returns: String of elements separated by ^
     static func stringer(array: [Any]?) -> String? {
         // Nil
-        if array == nil {
+        if array == nil || (array?.isEmpty)! {
             return nil
         }
         
@@ -900,6 +900,7 @@ class NSUser: NSObject, NSCoding {
         
         // Remove last +
         //string.removeLast()
+//        if string == ""
         string.remove(at: string.index(before: string.endIndex))
         
         // Return
