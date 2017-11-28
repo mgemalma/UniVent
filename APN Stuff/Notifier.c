@@ -15,6 +15,9 @@ struct Event {
 	long id;
 	char* name;
 	long time;
+	long latitude;
+	long longitude;
+	char* interests;
 };
 
 // User Class
@@ -23,21 +26,17 @@ struct User {
 	char* name;
 	long* eventIDs;
 	char* devID;
+	long latitude;
+	long longitude;
+	char* interests;
 };
-
-// Log Files
-struct Ent {
-	long uID;
-	long eID;
-	long time;
-}
 
 /** Global Vars **/
 struct Event* eventList;
 struct User* userList;
-struct Ent* log;
 const int BUF_SIZE = 1024;
 const int EL_SIZE = 256;
+int UPDATE = 0;
 
 // Used to Build Event List
 int extractEvents(int fd) {
@@ -320,15 +319,79 @@ void freeUsers() {
 	free(userList);
 }
 
+// DB Spin Lock
+int dbSpinLock() {
+	// Busy Wait
+	while(1) {
+		// File
+		int fd = open("./bMount/DB.sql", O_RDONLY);
+
+		// Check FD
+		if (fd < 0)
+			return -1;
+
+		// Create Buffer
+		int fdPointer = 0;
+		char* buf = (char*)malloc(BUF_SIZE*sizeof(char));
+		memset(buf, 0, BUF_SIZE*sizeof(char));
+
+		// Fill Buffer
+		int readSize = BUF_SIZE;
+		char* startP = NULL;
+		while(readSize == BUF_SIZE && startP == NULL) {
+			readSize = read(fd, buf, BUF_SIZE);
+			fdPointer += readSize;
+			startP = strstr(buf, "`notification` VALUES (");
+		}
+
+		// Handle Not Found
+		if (startP == NULL)
+			return -1;
+		else {
+			// Trace Back
+			int backTrace = 0;
+			while (&buf[backTrace] != startP)
+				backTrace++;
+
+			// Compute File Offset
+			fdPointer -= (BUF_SIZE - backTrace);
+			fdPointer += strlen("`notification` VALUES (");
+			lseek(fd, fdPointer, SEEK_SET);
+		}
+
+		// Free Buffer
+		free(buf);
+
+		// Read
+		int val;
+		int n = read(fd, &val, 1);
+
+		// Read Again if Error
+		if(n != 1)
+			return -1;
+
+		// Close
+		close(fd);
+
+		// Check
+		if(val != UPDATE) {
+			UPDATE = val;
+			break;
+		}
+	}
+}
+
 // Used to Run Notifications
 void notify() {
-	// Load DB
+	// Loop till Update
+	//if (dbSpinLock() == -1)
+	//	return;
 
 	// Open
-	int fd = open("./bMount/DB.sql", O_RDONLY);
+	int fd = open("./cMount/DB.sql", O_RDONLY);
 	if (fd < 0) 
 		return;
-
+	
 	/** Extract **/
 	// Exctract Event List
 	if (extractEvents(fd) == -1 || extractUsers(fd) == -1)
@@ -344,8 +407,6 @@ void notify() {
 			for(EP = 0; eventList[EP].name != NULL; EP++) {
 				if(eventList[EP].id == userList[UP].eventIDs[IP]) {
 					if(eventList[EP].time - TIME > 10 && eventList[EP].time - TIME < 60) {
-						if() {}
-						else {}
 						/** Execute APN **/
 						chmod("./bashScript", S_IRWXU);
 						int ret = fork();
@@ -367,10 +428,7 @@ void notify() {
 	printf("Time: %lu\n+++++++++++++++++================---------------->>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<\n\n", TIME);
 
 	// Close
-	close(fd);
-
-	// Sleep
-	sleep(5);	
+	close(fd);	
 }
 
 int main() {
