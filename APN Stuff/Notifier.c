@@ -15,6 +15,9 @@ struct Event {
 	long id;
 	char* name;
 	long time;
+	long latitude;
+	long longitude;
+	char* interests;
 };
 
 // User Class
@@ -23,21 +26,17 @@ struct User {
 	char* name;
 	long* eventIDs;
 	char* devID;
+	long latitude;
+	long longitude;
+	char* interests;
 };
-
-// Log Files
-struct Ent {
-	long uID;
-	long eID;
-	long time;
-}
 
 /** Global Vars **/
 struct Event* eventList;
 struct User* userList;
-struct Ent* log;
 const int BUF_SIZE = 1024;
 const int EL_SIZE = 256;
+int UPDATE = 0;
 
 // Used to Build Event List
 int extractEvents(int fd) {
@@ -138,10 +137,10 @@ int extractEvents(int fd) {
 		if(deliminator != NULL)
 			eventStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -158,7 +157,7 @@ void freeEvents() {
 		// Free
 		free(eventList[EP].name);
 
-		// Increment	
+		// Increment
 		EP++;
 	}
 
@@ -284,10 +283,10 @@ int extractUsers(int fd) {
 		if(deliminator != NULL)
 			userStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -312,7 +311,7 @@ void freeUsers() {
 		free(userList[UP].eventIDs);
 		free(userList[UP].devID);
 
-		// Increment	
+		// Increment
 		UP++;
 	}
 
@@ -320,13 +319,77 @@ void freeUsers() {
 	free(userList);
 }
 
+// DB Spin Lock
+int dbSpinLock() {
+	// Busy Wait
+	while(1) {
+		// File
+		int fd = open("./bMount/DB.sql", O_RDONLY);
+
+		// Check FD
+		if (fd < 0)
+			return -1;
+
+		// Create Buffer
+		int fdPointer = 0;
+		char* buf = (char*)malloc(BUF_SIZE*sizeof(char));
+		memset(buf, 0, BUF_SIZE*sizeof(char));
+
+		// Fill Buffer
+		int readSize = BUF_SIZE;
+		char* startP = NULL;
+		while(readSize == BUF_SIZE && startP == NULL) {
+			readSize = read(fd, buf, BUF_SIZE);
+			fdPointer += readSize;
+			startP = strstr(buf, "`notification` VALUES (");
+		}
+
+		// Handle Not Found
+		if (startP == NULL)
+			return -1;
+		else {
+			// Trace Back
+			int backTrace = 0;
+			while (&buf[backTrace] != startP)
+				backTrace++;
+
+			// Compute File Offset
+			fdPointer -= (BUF_SIZE - backTrace);
+			fdPointer += strlen("`notification` VALUES (");
+			lseek(fd, fdPointer, SEEK_SET);
+		}
+
+		// Free Buffer
+		free(buf);
+
+		// Read
+		int val;
+		int n = read(fd, &val, 1);
+
+		// Read Again if Error
+		if(n != 1)
+			return -1;
+
+		// Close
+		close(fd);
+
+		// Check
+		if(val != UPDATE) {
+			UPDATE = val;
+			break;
+		}
+	}
+}
+
 // Used to Run Notifications
 void notify() {
-	// Load DB
+	// Loop till Update
+	//if (dbSpinLock() == -1)
+	//	return;
 
 	// Open
-	int fd = open("./bMount/DB.sql", O_RDONLY);
-	if (fd < 0) 
+	int fd = open("./cMount/DB.sql", O_RDONLY);
+	if (fd < 0)
 		return;
 
 	/** Extract **/
@@ -344,8 +407,6 @@ void notify() {
 			for(EP = 0; eventList[EP].name != NULL; EP++) {
 				if(eventList[EP].id == userList[UP].eventIDs[IP]) {
 					if(eventList[EP].time - TIME > 10 && eventList[EP].time - TIME < 60) {
-						if() {}
-						else {}
 						/** Execute APN **/
 						chmod("./bashScript", S_IRWXU);
 						int ret = fork();
@@ -368,9 +429,58 @@ void notify() {
 
 	// Close
 	close(fd);
+}
 
-	// Sleep
-	sleep(5);	
+// Converts interests string(separated by ^) to interests array.
+char** extractInterests(char* str)
+{
+  char* dup = strdup(str);
+	char* temp = strtok(dup, "^");
+	char** interests = (char**)malloc(256*sizeof(char*));    // Remember to free this after using it!
+	int i = 0;
+	// If passed string is empty, return NULL
+	if(!temp)
+		return NULL;
+
+	// Loop to fill up array from string(interests separated by ^)
+	while(temp != NULL)
+	{
+		interests[i++] = strdup(temp);		// Remember to free this after using it!
+		temp = strtok(NULL, "^");
+	}
+  free(dup);
+
+	return interests;
+}
+
+// Compares an event's interests with a user's interests.
+// Returns 1 if a match was found, 0 Otherwise.
+int matchInterest(struct Event event, struct User user)
+{
+	int e = 0;
+	int u = 0;
+	// Extract interests.
+	char** eI = extractInterests(event.interests);
+	char** uI = extractInterests(user.interests);
+	// If either one is empty, return 0(no match).
+	if(eI == NULL || uI == NULL)
+		return 0;
+
+	// Loop until a match is found.
+	while(eI[e] != NULL)
+	{
+		u = 0;
+		while(uI[u] != NULL)
+		{
+			if(strcmp(eI[e], uI[u]) == 0)
+			{
+				return 1;
+			}
+			u++;
+		}
+		e++;
+	}
+	return 0;
 }
 
 int main() {
