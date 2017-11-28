@@ -799,7 +799,7 @@ class NSEvent: NSObject, NSCoding {
     // Delete Event Information
     static func deleteEvent(ID: String) {
         // Set URL
-        if let url = URL(string: "http://gymbuddyapp.net/deleteEvent.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/removeEvent.php?") {
             
             /** Request **/
             // Setup Request
