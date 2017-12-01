@@ -628,8 +628,33 @@ class NSEvent: NSObject, NSCoding {
                         arr!.append(event);
                         
                         // Save to Mem
-                        if pa { NSEvent.pEvents = arr }
-                        else { NSEvent.aEvents = arr }
+                        if pa {
+                            NSEvent.pEvents = arr
+                            if let _ = arr {
+                                var eIDs = [String]()
+                                for e in arr! {
+                                    if let _ = e.getID() {
+                                        eIDs.append(e.getID()!)
+                                    }
+                                }
+                                NSUser.setPostedEvents(pEvents: eIDs)
+                            }
+                            
+                        }
+                        else {
+                            NSEvent.aEvents = arr
+                            if let _ = arr {
+                                var eIDs = [String]()
+                                for e in arr! {
+                                    if let _ = e.getID() {
+                                        eIDs.append(e.getID()!)
+                                    }
+                                }
+                                if (NSUser.getAttendingEvents() != nil) && NSUser.getAttendingEvents()! != eIDs {
+                                    NSUser.setAttendingEvents(aEvents: eIDs)
+                                }
+                            }
+                        }
                     }
                     if id == eventIDs?[(eventIDs?.endIndex)! - 1] {
                         // Save to Disk
@@ -688,7 +713,7 @@ class NSEvent: NSObject, NSCoding {
             //let addressString = dictToString(dict: event.getCompleteAddress())!
             
             // Build Post Request
-            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&add=\(dictToString(dict: event.getCompleteAddress())!)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=\(event.getRating()!)&ratC=\(event.getRatingCount()!)&flags=\(event.getFlags()!)&heads=\(event.getHeadCount()!)&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()!) ?? "")"
+            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&add=\(dictToString(dict: event.getCompleteAddress())!)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=\(event.getRating()!)&ratC=\(event.getRatingCount()!)&flags=\(event.getFlags()!)&heads=\(event.getHeadCount()!)&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()) ?? "")"
             
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
