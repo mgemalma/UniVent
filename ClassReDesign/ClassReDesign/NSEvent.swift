@@ -26,6 +26,8 @@ class NSEvent: NSObject, NSCoding {
     typealias dictArrayCompletion = (_ success: [[String : String]]?) -> Void
     typealias boolCompletion = (_ success: Bool) -> Void
     typealias dictCompletion = (_ success: [String : String]?) -> Void
+    let nc = NotificationCenter.default
+    
     
     static var datePicker: UIDatePicker = {
         let instance = UIDatePicker()
@@ -103,6 +105,7 @@ class NSEvent: NSObject, NSCoding {
     convenience init(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?) {
         // Initialize Empty
         self.init()
+//        nc.addObserver(forName: Notification.Name.init("MyNotification"), object: nil, queue: nil, using: EventTableViewController.catchNotification)
         
         // Assign Values
         self.id = id
