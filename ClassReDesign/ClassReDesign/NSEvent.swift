@@ -27,8 +27,10 @@ class NSEvent: NSObject, NSCoding {
     typealias dictArrayCompletion = (_ success: [[String : String]]?) -> Void
     typealias boolCompletion = (_ success: Bool) -> Void
     typealias dictCompletion = (_ success: [String : String]?) -> Void
-    let nc = NotificationCenter.default
+
+
     
+
     
     static var datePicker: UIDatePicker = {
         let instance = UIDatePicker()
@@ -59,7 +61,11 @@ class NSEvent: NSObject, NSCoding {
     static var pEvents : [NSEvent]? = [NSEvent]()
     static var lEvents : [NSEvent]? = [NSEvent]()
     static var aEvents : [NSEvent]? = [NSEvent]()
-    static var sEvents : [NSEvent]? = [NSEvent]()
+    static var sEvents : [NSEvent]? = [NSEvent]() {
+        didSet {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: nseventUpdateNotif), object: nil)
+        }
+    }
 
     /** Instance Variables **/
     // MARK: - Properties
@@ -99,7 +105,13 @@ class NSEvent: NSObject, NSCoding {
         static let desc = "desc"
         static let interests = "interests"
     }
-    
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(doThisWhenNotify), name: NSNotification.Name(rawValue: nseventUpdateNotif), object: nil)
+    }
+    func doThisWhenNotify() {
+        print("sEvents was set")
+    }
     /** Constructor **/
     // Creation Constructor
     // MARK: - Initializers
