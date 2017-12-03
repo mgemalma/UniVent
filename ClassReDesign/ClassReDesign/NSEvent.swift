@@ -5,6 +5,7 @@ import UIKit                // Used for NSObject & NS Coding.
 import CoreLocation         // Used for Location Data.
 import SwiftLocation
 
+let nseventUpdateNotif = "univent.nseventUpdateNotif"
 /**
  Name:              NSEvent (The new and improved event).
  
