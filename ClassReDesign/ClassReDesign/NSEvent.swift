@@ -1077,7 +1077,7 @@ class NSEvent: NSObject, NSCoding {
                     //print("NSEvent: flagCountUser() Response statusCode should be 200, but is \(httpStatus.statusCode)")
                     //print("NSEvent: flagCountUser() Response = \(response!)")
                 }
-                let responseString = String(data: data, encoding: .utf8)
+                //let responseString = String(data: data, encoding: .utf8)
                 //print("NSEvent: flagCountUser() Response Message = \(responseString!)")
             }
             
