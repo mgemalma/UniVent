@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <math.h>
+#define pi 3.14159265358979323846
 
 /** Struct Def **/
 // Events Class
@@ -15,8 +17,8 @@ struct Event {
 	long id;
 	char* name;
 	long time;
-	long latitude;
-	long longitude;
+	float latitude;
+	float longitude;
 	char* interests;
 };
 
@@ -26,14 +28,22 @@ struct User {
 	char* name;
 	long* eventIDs;
 	char* devID;
-	long latitude;
-	long longitude;
+	float latitude;
+	float longitude;
 	char* interests;
+};
+
+// Log Entry
+struct Ent {
+	long uID;
+	long eID;
 };
 
 /** Global Vars **/
 struct Event* eventList;
 struct User* userList;
+struct Ent logs[1024];
+int logCount = 0;
 const int BUF_SIZE = 1024;
 const int EL_SIZE = 256;
 int UPDATE = 0;
@@ -112,6 +122,9 @@ int extractEvents(int fd) {
 		char* id_str;
 		char* name_str;
 		char* time_str;
+		char* interest_str;
+		char* lat_str;
+		char* long_str;
 
 		// Get ID
 		id_str = strtok(eventStr, ",");
@@ -127,20 +140,36 @@ int extractEvents(int fd) {
 		name_str++;
 		name_str[strlen(name_str) - 1] = '\0';
 
+		// Get Interest
+		interest_str = strtok(NULL, ",");
+		interest_str++;
+		interest_str[strlen(interest_str) - 1] = '\0';
+
+		// Get Latitude
+		lat_str = strtok(NULL, ",");
+		lat_str[strlen(lat_str) - 1] = '\0';
+
+		// Get Longitude
+		long_str = strtok(NULL, ",");
+		long_str[strlen(long_str) - 1] = '\0';
+
 		// Add Event
 		eventList[EP].id = strtol(id_str, NULL, 16);
 		eventList[EP].name = strdup(name_str);
 		eventList[EP].time = strtol(time_str, NULL, 10);
+		eventList[EP].interests = strdup(interest_str);
+		eventList[EP].latitude = atof(lat_str);
+		eventList[EP].longitude = atof(long_str);
 		EP++;
 
 		// Jump
 		if(deliminator != NULL)
 			eventStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -152,12 +181,16 @@ void freeEvents() {
 		printf("===============================> Event %d\n", EP + 1);
 		printf("ID:\t%ld\n", eventList[EP].id);
 		printf("Name:\t%s\n", eventList[EP].name);
-		printf("Time:\t%ld\n\n", eventList[EP].time);
+		printf("Time:\t%ld\n", eventList[EP].time);
+		printf("Interests:\t%s\n", eventList[EP].interests);
+		printf("Latitude:\t%f\n", eventList[EP].latitude);
+		printf("Longitude:\t%f\n\n", eventList[EP].longitude);
 
 		// Free
 		free(eventList[EP].name);
+		free(eventList[EP].interests);
 
-		// Increment	
+		// Increment
 		EP++;
 	}
 
@@ -241,6 +274,9 @@ int extractUsers(int fd) {
 		char* name_str;
 		char* eventIDs_str;
 		char* devID_str;
+		char* interest_str;
+		char* lat_str;
+		char* long_str;
 
 		// Get ID
 		id_str = strtok(userStr, ",");
@@ -256,8 +292,19 @@ int extractUsers(int fd) {
 		devID_str = strtok(NULL, ",");
 		devID_str++;
 		devID_str[strlen(devID_str) - 1] = '\0';
-		strtok(NULL, ",");
-		strtok(NULL, ",");
+
+		// Get Interest
+		interest_str = strtok(NULL, ",");
+		interest_str++;
+		interest_str[strlen(interest_str) - 1] = '\0';
+
+		// Get Latitude
+		lat_str = strtok(NULL, ",");
+		lat_str[strlen(lat_str) - 1] = '\0';
+
+		// Get Longitude
+		long_str = strtok(NULL, ",");
+		long_str[strlen(long_str) - 1] = '\0';
 
 		// Get EventIDs
 		eventIDs_str = strtok(NULL, ",");
@@ -267,6 +314,9 @@ int extractUsers(int fd) {
 		// Add User
 		userList[UP].id = strtol(id_str, NULL, 16);
 		userList[UP].name = strdup(name_str);
+		userList[UP].interests = strdup(interest_str);
+		userList[UP].latitude = atof(lat_str);
+		userList[UP].longitude = atof(long_str);
 		userList[UP].eventIDs = (long*)malloc(((strlen(eventIDs_str)/13) + 1)*sizeof(long));
 		memset(userList[UP].eventIDs, 0, ((strlen(eventIDs_str)/13) + 1)*sizeof(long));
 		int IP = 0;
@@ -283,10 +333,10 @@ int extractUsers(int fd) {
 		if(deliminator != NULL)
 			userStr = deliminator + strlen("),(");
 
-	} while(deliminator != NULL); 
+	} while(deliminator != NULL);
 
 	// Free Buffer
-	free(buf);	
+	free(buf);
 }
 
 // Used to Print & Free Event List (ONLY use @ the End)
@@ -299,6 +349,9 @@ void freeUsers() {
 		printf("ID:\t%ld\n", userList[UP].id);
 		printf("Name:\t%s\n", userList[UP].name);
 		printf("DevID:\t%s\n", userList[UP].devID);
+		printf("Interests:\t%s\n\n", userList[UP].interests);
+		printf("Latitude:\t%f\n", userList[UP].latitude);
+		printf("Longitude:\t%f\n\n", userList[UP].longitude);
 		int IP = 0;
 		while(userList[UP].eventIDs[IP] != 0) {
 			printf("E%d:\t%ld\n", IP + 1, userList[UP].eventIDs[IP]);
@@ -310,8 +363,9 @@ void freeUsers() {
 		free(userList[UP].name);
 		free(userList[UP].eventIDs);
 		free(userList[UP].devID);
+		free(userList[UP].interests);
 
-		// Increment	
+		// Increment
 		UP++;
 	}
 
@@ -381,6 +435,149 @@ int dbSpinLock() {
 	}
 }
 
+// Returns 1 if combination is found in logs.
+// If not found, add entry to logs and return 0.
+int logInterests(struct Event event, struct User user)
+{
+    // New entry with user id and event id combination
+    struct Ent entry = {.uID = user.id, .eID = event.id};
+    int i;
+    int found = 0;
+    // loop through logs to check if combination is there.
+    for(i = 0; i < logCount; i++)
+    {
+        if((entry.uID == logs[i].uID) && (entry.eID == logs[i].eID))
+        {
+            found = 1;
+        }
+    }
+
+    if(found == 1)
+    {
+        return 1;
+    }
+    else
+    {
+        logs[logCount++] = entry;
+        return 0;
+    }
+}
+
+void freeInterests(char** array)
+{
+	int i = 0;
+	while(strcmp(array[i], ""))
+	{
+		free(array[i]);
+		// array[i] = NULL;
+		i++;
+	}
+	free(array);
+	array = NULL;
+}
+
+char** extractInterests(char* str)
+{
+  char* dup = strdup(str);
+	char* temp = strtok(dup, "^");
+	char** interests = (char**)malloc(1024*sizeof(char*));    // Remember to free this after using it!
+	int k;
+	for(k = 0; k < 1024; k++)
+	{
+		interests[k] = "";
+	}
+	int i = 0;
+	if(!temp)
+	{
+		free(interests);
+		free(dup);
+		interests = NULL;
+		dup = NULL;
+		return NULL;
+	}
+
+	while(temp != NULL)
+	{
+		interests[i++] = strdup(temp);		// Remember to free this after using it!
+		temp = strtok(NULL, "^");
+	}
+  free(dup);
+	dup = NULL;
+
+	return interests;
+}
+
+// New Interest
+int matchInterest(struct Event event, struct User user)
+{
+	int e = 0;
+	int u = 0;
+	char** eI = extractInterests(event.interests);
+	char** uI = extractInterests(user.interests);
+	if(eI == NULL && uI == NULL)
+	{
+		return 0;
+	}
+	if(eI == NULL && uI != NULL)
+	{
+		// freeInterests(eI);
+		freeInterests(uI);
+		return 0;
+	}
+	if(eI != NULL && uI == NULL)
+	{
+		freeInterests(eI);
+		// freeInterests(uI);
+		return 0;
+	}
+
+	while(strcmp(eI[e], ""))
+	{
+		u = 0;
+		while(strcmp(uI[u], ""))
+		{
+			if(strcmp(eI[e], uI[u]) == 0)
+			{
+				freeInterests(eI);
+				freeInterests(uI);
+				return 1;
+			}
+			u++;
+		}
+		e++;
+	}
+	freeInterests(eI);
+	freeInterests(uI);
+	return 0;
+}
+
+double deg2rad(double deg) {
+    return (deg * pi / 180);
+}
+double rad2deg(double rad) {
+    return (rad * 180 / pi);
+}
+//calculate distance between the user and event using their longitutde and latitude
+//return -1 if error occured
+//return 1 if the event is in range
+//return 0 if the event is not in range
+int inRange(struct User user , struct Event event ,double range){
+    if(user.longitude == 0 || event.longitude == 0 || user.latitude == 0 || event.latitude == 0){
+        return -1;
+    }
+    double theta, dist;
+    theta = user.longitude - event.longitude;
+    dist = sin(deg2rad(user.latitude)) * sin(deg2rad(event.latitude)) + cos(deg2rad(user.latitude)) * cos(deg2rad(event.latitude)) * cos(deg2rad(theta));
+    dist = acos(dist);
+    dist = rad2deg(dist);
+    dist = dist * 60.0 * 1.1515;
+    printf("Distance in miles is : %f\n",dist );
+    if (dist <= range) {
+        return 1;
+    }
+    return 0;
+}
+
 // Used to Run Notifications
 void notify() {
 	// Loop till Update
@@ -389,9 +586,9 @@ void notify() {
 
 	// Open
 	int fd = open("./cMount/DB.sql", O_RDONLY);
-	if (fd < 0) 
+	if (fd < 0)
 		return;
-	
+
 	/** Extract **/
 	// Exctract Event List
 	if (extractEvents(fd) == -1 || extractUsers(fd) == -1)
@@ -401,23 +598,18 @@ void notify() {
 	long TIME = (long)time(NULL);
 	int UP;
 	for(UP = 0; userList[UP].name != NULL; UP++) {
-		int IP;
-		for(IP = 0; userList[UP].eventIDs[IP] != 0; IP++) {
-			int EP;
-			for(EP = 0; eventList[EP].name != NULL; EP++) {
-				if(eventList[EP].id == userList[UP].eventIDs[IP]) {
-					if(eventList[EP].time - TIME > 10 && eventList[EP].time - TIME < 60) {
-						/** Execute APN **/
-						chmod("./bashScript", S_IRWXU);
-						int ret = fork();
-						if(ret == 0) {
-							char* args[4] = {"./bashScript", userList[UP].devID, eventList[EP].name, NULL};
-							execvp("./bashScript", args);
-							perror("execvp");
-						}
-						waitpid(ret, NULL, 0);
-					}
+		int EP;
+		for(EP = 0; eventList[EP].name != NULL; EP++) {
+			if((matchInterest(eventList[EP], userList[UP]) == 1 || inRange(userList[UP], eventList[EP], 0.25) == 1) && logInterests(eventList[EP], userList[UP]) == 0) {
+				/** Execute APN **/
+				chmod("./bashScript", S_IRWXU);
+				int ret = fork();
+				if(ret == 0) {
+					char* args[4] = {"./bashScript", userList[UP].devID, eventList[EP].name, NULL};
+					execvp("./bashScript", args);
+					perror("execvp");
 				}
+				waitpid(ret, NULL, 0);
 			}
 		}
 	}
@@ -428,9 +620,10 @@ void notify() {
 	printf("Time: %lu\n+++++++++++++++++================---------------->>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<\n\n", TIME);
 
 	// Close
-	close(fd);	
+	close(fd);
 }
 
+// Main
 int main() {
 	// Notify
 	while(1)

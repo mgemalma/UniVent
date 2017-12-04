@@ -280,6 +280,7 @@ class NSUser: NSObject, NSCoding {
                 print("is Connected")
                 // Load DB'
                 loadDB(id: user.id!) { success in
+                    print(success)
                     if success == "Success" {
                         
                         saveDisk()
@@ -447,9 +448,7 @@ class NSUser: NSObject, NSCoding {
     ///   - completionHandler: Multithreading handler
     static func loadDB(id: String, completionHandler: @escaping loadDBHandler) {
         DispatchQueue.main.async {
-            //print("Let me go first")
             getUserDB(ID: id) { success in
-                //print("My turn!")
                 if success != nil {
                     let dict = success
                     user.id = dict!["id"]
@@ -655,7 +654,7 @@ class NSUser: NSObject, NSCoding {
                 }
                 
                 // Build Post Request
-                var postString = "id=\(user.id!)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests) ?? "interests nil")&pEvents=\(stringer(array: user.pEvents) ?? "pEvents nil")&aEvents=\(stringer(array: user.aEvents) ?? "aEvents nil")&fEvents=\(stringer(array: user.fEvents) ?? "fEvents nil")&rEvents=\(stringer(array: user.rEvents) ?? "rEvents nil")"
+                var postString = "id=\(user.id!)&latitude=\(user.loc?.coordinate.latitude ?? 0.0)&longitude=\(user.loc?.coordinate.longitude ?? 0.0)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests) ?? "interests nil")&pEvents=\(stringer(array: user.pEvents) ?? "pEvents nil")&aEvents=\(stringer(array: user.aEvents) ?? "aEvents nil")&fEvents=\(stringer(array: user.fEvents) ?? "fEvents nil")&rEvents=\(stringer(array: user.rEvents) ?? "rEvents nil")"
                 postString = postString.replacingOccurrences(of: " ", with: "%20")
                 postString = postString.replacingOccurrences(of: "'", with: "''")
                 //print(postString)
@@ -887,7 +886,7 @@ class NSUser: NSObject, NSCoding {
     /// - Returns: String of elements separated by ^
     static func stringer(array: [Any]?) -> String? {
         // Nil
-        if array == nil {
+        if array == nil || (array?.isEmpty)! {
             return nil
         }
         
@@ -900,6 +899,7 @@ class NSUser: NSObject, NSCoding {
         
         // Remove last +
         //string.removeLast()
+//        if string == ""
         string.remove(at: string.index(before: string.endIndex))
         
         // Return
@@ -911,43 +911,80 @@ class NSUser: NSObject, NSCoding {
     // MARK: Calendar and Reminders
     
     
-    static func checkCalendarAuthorizationStatus() {
+    static func checkCalendarAuthorizationStatus(completion: @escaping (_ result: Bool) -> Void) {
         let status = EKEventStore.authorizationStatus(for: EKEntityType.event)
         print(status.rawValue)
         switch (status) {
         case EKAuthorizationStatus.notDetermined:
             print("not determined")
             // This happens on first-run
-            requestAccessToCalendar()
+            requestAccessToCalendar() { granted in
+                if granted {
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            }
         case EKAuthorizationStatus.authorized:
             // Things are in line with being able to show the calendars in the table view
             print("authorized")
-            if UserDefaults.standard.string(forKey: "UniVentUserCalendar") == nil {
-                addUniVentCalendar()
-            } else {
+            let calendars = eventStore.calendars(for: EKEntityType.event)
+            var titles = [String]()
+            for cal in calendars {
+                titles.append(cal.title)
             }
-            //loadCalendars()
+            if titles.contains("UniVent") == false {
+                addUniVentCalendar() { added in
+                    if added {
+                        completion(true)
+                    } else {
+                        completion(false)
+                    }
+                }
+            } else {
+                completion(true)
+            }
+//            if UserDefaults.standard.string(forKey: "UniVentUserCalendar") == nil {
+//                addUniVentCalendar() { added in
+//                    if added {
+//                        completion(true)
+//                    } else {
+//                        completion(false)
+//                    }
+//                }
+//
+//            } else {
+//                completion(true)
+//            }
         case EKAuthorizationStatus.restricted, EKAuthorizationStatus.denied:
             print("restricted or denied")
             // We need to help them give us permission
             //needPermissionView.fadeIn()
+            completion(false)
             break
         }
     }
     
-    static func requestAccessToCalendar() {
+    static func requestAccessToCalendar(completion: @escaping (_ granted: Bool) -> Void) {
         eventStore.requestAccess(to: EKEntityType.event, completion: {
             (accessGranted: Bool, error: Error?) in
             
             if accessGranted == true {
                 DispatchQueue.main.async(execute: {
                     if UserDefaults.standard.string(forKey: "UniVentUserCalendar") == nil {
-                        addUniVentCalendar()
+                        addUniVentCalendar() { added in
+                            if added {
+                                completion(true)
+                            } else {
+                                completion(false)
+                            }
+                        }
                     }
                 })
             } else {
                 DispatchQueue.main.async(execute: {
                     //self.needPermissionView.fadeIn()
+                    completion(false)
                 })
             }
         })
@@ -955,68 +992,87 @@ class NSUser: NSObject, NSCoding {
     
     // TODO: Add completionHandler in case event overlaps with another we can inform the user
     // TODO: Add case for user not granted permission, ask for permission
-    static func addEventToCalendar(title: String, description: String?, startTime: Date, endTime: Date) {
-        eventStore.requestAccess(to: EKEntityType.event, completion: { (granted, error) in
-            if granted && error == nil {
-                var calendar: EKCalendar?
-                if let calendarID = UserDefaults.standard.string(forKey: "UniVentUserCalendar") {
-                    calendar = eventStore.calendar(withIdentifier: calendarID)
-                    if calendar != nil {
-                        let predicate = eventStore.predicateForEvents(withStart: startTime, end: endTime, calendars: [calendar!])
-                        let events = eventStore.events(matching: predicate)
-                        print(events.count)
-                        if events.count == 0 {
-                            let event: EKEvent = EKEvent(eventStore: eventStore)
-                            event.title = title
-                            event.notes = description
-                            event.startDate = startTime
-                            event.endDate = endTime
-                            // TODO: Add alert for this event
-                            event.calendar = calendar!
-                            do {
-                                try eventStore.save(event, span: EKSpan.thisEvent)
-                                print("Event saved to calendar")
-                            } catch let e as NSError {
-                                print("Error saving event: \(e)")
+    static func addEventToCalendar(title: String, description: String?, startTime: Date, endTime: Date, completion: @escaping (_ added: Int) -> Void) {
+        checkCalendarAuthorizationStatus() { result in
+            if result {
+                eventStore.requestAccess(to: EKEntityType.event, completion: { (granted, error) in
+                    if granted && error == nil {
+                        var calendar: EKCalendar?
+                        if let calendarID = UserDefaults.standard.string(forKey: "UniVentUserCalendar") {
+                            calendar = eventStore.calendar(withIdentifier: calendarID)
+                            if calendar != nil {
+                                let predicate = eventStore.predicateForEvents(withStart: startTime, end: endTime, calendars: [calendar!])
+                                let events = eventStore.events(matching: predicate)
+                                print(events.count)
+                                if events.count == 0 {
+                                    let event: EKEvent = EKEvent(eventStore: eventStore)
+                                    event.title = title
+                                    event.notes = description
+                                    event.startDate = startTime
+                                    event.endDate = endTime
+                                    event.addAlarm(EKAlarm(relativeOffset: -1800))
+                                    event.calendar = calendar!
+                                    do {
+                                        try eventStore.save(event, span: EKSpan.thisEvent)
+                                        print("Event saved to calendar")
+                                        completion(1)   // Success
+                                    } catch let e as NSError {
+                                        print("Error saving event: \(e)")
+                                        completion(0)   // Error
+                                    }
+                                } else {
+                                    print("Event overlaps with another")
+                                    completion(-1)      // Overlap
+                                }
                             }
-                        } else {
-                            print("Event overlaps with another")
                         }
                     }
-                }
+                })
             }
-        })
+        }
     }
     
-    static func removeEventFromCalendar(title: String, description: String?, startTime: Date, endTime: Date) {
-        eventStore.requestAccess(to: EKEntityType.event, completion: { (granted, error) in
-            if granted && error == nil {
-                var calendar: EKCalendar?
-                if let calendarID = UserDefaults.standard.string(forKey: "UniVentUserCalendar") {
-                    calendar = eventStore.calendar(withIdentifier: calendarID)
-                    if calendar != nil {
-                        let predicate = eventStore.predicateForEvents(withStart: startTime, end: endTime, calendars: [calendar!])
-                        let events = eventStore.events(matching: predicate)
-                        print(events.count)
-                        if events.count != 0 {
-                            do {
-                                try eventStore.remove(events[0], span: EKSpan.thisEvent)
-                                print("Event removed from calendar")
-                            } catch let e as NSError {
-                                print("Error removing event: \(e)")
+    static func removeEventFromCalendar(startTime: Date, endTime: Date, completion: @escaping (_ added: Int) -> Void) {
+        checkCalendarAuthorizationStatus() { result in
+            if result {
+                eventStore.requestAccess(to: EKEntityType.event, completion: { (granted, error) in
+                    if granted && error == nil {
+                        var calendar: EKCalendar?
+                        if let calendarID = UserDefaults.standard.string(forKey: "UniVentUserCalendar") {
+                            calendar = eventStore.calendar(withIdentifier: calendarID)
+                            if calendar != nil {
+                                let predicate = eventStore.predicateForEvents(withStart: startTime, end: endTime, calendars: [calendar!])
+                                let events = eventStore.events(matching: predicate)
+                                print(events.count)
+                                if events.count != 0 {
+                                    do {
+                                        try eventStore.remove(events[0], span: EKSpan.thisEvent)
+                                        print("Event removed from calendar")
+                                        completion(1)
+                                    } catch let e as NSError {
+                                        print("Error removing event: \(e)")
+                                        completion(0)
+                                    }
+                                }
                             }
-                            
                         }
                     }
-                }
+                })
             }
-        })
+        }
 
     }
     
-    static func addUniVentCalendar() {
+    static func addUniVentCalendar(completion: @escaping (_ added: Bool) -> Void) {
         // TODO: Check if Calendar exists by looking for title "UniVent", update the ID if needed
-        
+//        let calendars = eventStore.calendars(for: EKEntityType.event)
+//        for cal in calendars {
+//            if cal.title == "UniVent" {
+//                print("Found UniVent")
+//                completion(true)
+//                break
+//            }
+//        }
         // Use Event Store to create a new calendar instance
         // Configure its title
         let newCalendar = EKCalendar.init(for: .event, eventStore: eventStore)
@@ -1047,12 +1103,15 @@ class NSUser: NSObject, NSCoding {
         
         // Save the calendar using the Event Store instance
         do {
+            print("Creating UniVent")
             try eventStore.saveCalendar(newCalendar, commit: true)
             UserDefaults.standard.set(newCalendar.calendarIdentifier, forKey: "UniVentUserCalendar")
+            completion(true)
         } catch {
             let alert = UIAlertController(title: "Calendar could not save", message: (error as NSError).localizedDescription, preferredStyle: .alert)
             let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(OKAction)
+            completion(false)
             
             //self.presentViewController(alert, animated: true, completion: nil)
         }

@@ -5,6 +5,7 @@ import UIKit                // Used for NSObject & NS Coding.
 import CoreLocation         // Used for Location Data.
 import SwiftLocation
 
+let nseventUpdateNotif = "univent.nseventUpdateNotif"
 /**
  Name:              NSEvent (The new and improved event).
  
@@ -26,6 +27,10 @@ class NSEvent: NSObject, NSCoding {
     typealias dictArrayCompletion = (_ success: [[String : String]]?) -> Void
     typealias boolCompletion = (_ success: Bool) -> Void
     typealias dictCompletion = (_ success: [String : String]?) -> Void
+
+
+    
+
     
     static var datePicker: UIDatePicker = {
         let instance = UIDatePicker()
@@ -56,7 +61,11 @@ class NSEvent: NSObject, NSCoding {
     static var pEvents : [NSEvent]? = [NSEvent]()
     static var lEvents : [NSEvent]? = [NSEvent]()
     static var aEvents : [NSEvent]? = [NSEvent]()
-    static var sEvents : [NSEvent]? = [NSEvent]()
+    static var sEvents : [NSEvent]? = [NSEvent]() {
+        didSet {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: nseventUpdateNotif), object: nil)
+        }
+    }
 
     /** Instance Variables **/
     // MARK: - Properties
@@ -96,13 +105,20 @@ class NSEvent: NSObject, NSCoding {
         static let desc = "desc"
         static let interests = "interests"
     }
-    
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(doThisWhenNotify), name: NSNotification.Name(rawValue: nseventUpdateNotif), object: nil)
+    }
+    func doThisWhenNotify() {
+        print("sEvents was set")
+    }
     /** Constructor **/
     // Creation Constructor
     // MARK: - Initializers
     convenience init(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?) {
         // Initialize Empty
         self.init()
+//        nc.addObserver(forName: Notification.Name.init("MyNotification"), object: nil, queue: nil, using: EventTableViewController.catchNotification)
         
         // Assign Values
         self.id = id
@@ -628,8 +644,33 @@ class NSEvent: NSObject, NSCoding {
                         arr!.append(event);
                         
                         // Save to Mem
-                        if pa { NSEvent.pEvents = arr }
-                        else { NSEvent.aEvents = arr }
+                        if pa {
+                            NSEvent.pEvents = arr
+                            if let _ = arr {
+                                var eIDs = [String]()
+                                for e in arr! {
+                                    if let _ = e.getID() {
+                                        eIDs.append(e.getID()!)
+                                    }
+                                }
+                                NSUser.setPostedEvents(pEvents: eIDs)
+                            }
+                            
+                        }
+                        else {
+                            NSEvent.aEvents = arr
+                            if let _ = arr {
+                                var eIDs = [String]()
+                                for e in arr! {
+                                    if let _ = e.getID() {
+                                        eIDs.append(e.getID()!)
+                                    }
+                                }
+                                if (NSUser.getAttendingEvents() != nil) && NSUser.getAttendingEvents()! != eIDs {
+                                    NSUser.setAttendingEvents(aEvents: eIDs)
+                                }
+                            }
+                        }
                     }
                     if id == eventIDs?[(eventIDs?.endIndex)! - 1] {
                         // Save to Disk
@@ -688,7 +729,7 @@ class NSEvent: NSObject, NSCoding {
             //let addressString = dictToString(dict: event.getCompleteAddress())!
             
             // Build Post Request
-            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&add=\(dictToString(dict: event.getCompleteAddress())!)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=\(event.getRating()!)&ratC=\(event.getRatingCount()!)&flags=\(event.getFlags()!)&heads=\(event.getHeadCount()!)&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()!) ?? "")"
+            var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&add=\(dictToString(dict: event.getCompleteAddress())!)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=\(event.getRating()!)&ratC=\(event.getRatingCount()!)&flags=\(event.getFlags()!)&heads=\(event.getHeadCount()!)&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()) ?? "")"
             
             postString = postString.replacingOccurrences(of: " ", with: "%20")
             postString = postString.replacingOccurrences(of: "'", with: "''")
@@ -799,7 +840,7 @@ class NSEvent: NSObject, NSCoding {
     // Delete Event Information
     static func deleteEvent(ID: String) {
         // Set URL
-        if let url = URL(string: "http://gymbuddyapp.net/deleteEvent.php?") {
+        if let url = URL(string: "http://gymbuddyapp.net/removeEvent.php?") {
             
             /** Request **/
             // Setup Request
