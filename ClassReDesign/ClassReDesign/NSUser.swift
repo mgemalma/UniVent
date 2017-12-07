@@ -1,30 +1,12 @@
-/**
- Name:              NSUser (The new and improved user).
- 
- Revision Date:     26 Oct @ 1:00 PM
- 
- Description:       The class provides all user associated
-                    methods and instance variables and also
-                    incorporates data management of these
-                    variables.
- 
- Authors:           Anirudh Pal (Class Design)
-                    Altug Gemalmamz (Persist Data)
-                    Amjad Zahara (DB Operations)
-                    Andrew Peterson (Singelton Pattern)
- 
- Design:
- */
-
-/** Libraries **/
 import UIKit            // Used for NSObject & NS Coding.
 import CoreLocation
 import EventKit
+import Firebase
 
 /**
  Name:              NSUser (The new and improved user).
  
- Revision Date:     26 Oct @ 1:00 PM
+ Revision Date:     07 Dec 2017
  
  Description:       The class provides all user associated
  methods and instance variables and also
@@ -39,31 +21,28 @@ import EventKit
  Design:
  */
 class NSUser: NSObject, NSCoding {
+    
+    typealias boolCompletion = (_ success: Bool) -> Void
+    typealias anyCompletion = (_ success: Any?) -> Void
     // MARK: - Static Variables
-    /** Static Variables **/
-    // Altug Needs to Figure Out.
     static let docDir = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let arcURL = docDir.appendingPathComponent("userDisk")
     
     // MARK: - Singleton
-    /** Singleton Pattern **/
     /** Description: This section of code insures that there is only one instance of this class.
                      This 'user' will be the user who has logged into the app.
-     **/
+    */
     static var user: NSUser = {
-        // Create Instance
         let instance = NSUser()
-        // Return Instance
         return instance
     }()
     
-    /** Instance Variables **/
     // MARK: - Instance Variables
     /** Description: Privatization of the instance variables allows the class to be independent
                      and roboust although this also results in a large set of functions that
                      allow interation with instance variables. The level of privatization might
                      changes based on needs in the future.
-     **/
+    */
     private var id: String?             // Stores id assigned by FB.
     private var name: String?           // Stores name associated with id.
     private var flags: Int?             // Stores flag count of the user.
@@ -75,21 +54,10 @@ class NSUser: NSObject, NSCoding {
     private var fEvents: [String]?      // Stores all posted Events as IDs.
     private var loc: CLLocation?
     
-    static let eventStore = EKEventStore()
+    var ref: DatabaseReference!
+    var FBUser: Firebase.User?
     
-    /*//////Unit Test Version
-    // MARK: - Instance Variables Unit Tests
-     
-    public var id: String?             // Stores id assigned by FB.
-    public var name: String?           // Stores name associated with id.
-    public var flags: Int?             // Stores flag count of the user.
-    public var rad: Float?             // Stores the preffered search radius.
-    public var interests: [String]?    // Stores the list of Interests of the user. Should change to Enum.
-    public var pEvents: [String]?      // Stores all posted Events as IDs.
-    public var aEvents: [String]?      // Stores all attending Events as IDs.
-    public var rEvents: [String]?      // Stores all posted Events as IDs.
-    public var fEvents: [String]?      // Stores all posted Events as IDs.
-    public var loc: CLLocation?*/
+    static let eventStore = EKEventStore()
     
     /** Convienience Structs **/
     // MARK: - Convenience Structs
@@ -110,6 +78,14 @@ class NSUser: NSObject, NSCoding {
     
     /** Constructor **/
     // MARK: - Constructors
+    override init() {
+        ref = Database.database().reference()
+        ref.keepSynced(true)
+        if Auth.auth().currentUser != nil {
+            FBUser = Auth.auth().currentUser
+        }
+    }
+
     /** Description: The decoder is classified as a constructor because it initializes the class
      based on data from the Disk. This init() is called internally by NSCoding.
      **/
@@ -158,18 +134,11 @@ class NSUser: NSObject, NSCoding {
         }
     }
     
-    /** Getter **/
     // MARK: - Getters
+    
     static func getID() -> String? { return user.id }
     static func getName() -> String? { return user.name }
-    static func getFlags() -> Int? {
-//        if ifInternet() || user.id != nil{
-//            if loadDB(id: user.id!) {
-//                return nil
-//            }
-//        }
-        return user.flags
-    }
+    static func getFlags() -> Int? { return user.flags }
     static func getRadius() -> Float? { return user.rad }
     static func getInterests() -> [String]? { return user.interests }
     static func getPostedEvents() -> [String]? { return user.pEvents }
@@ -178,593 +147,49 @@ class NSUser: NSObject, NSCoding {
     static func getRatedEvents() -> [String]? { return user.rEvents }
     static func getLocation() -> CLLocation? { return user.loc }
     
-    /** Setter **/
+
     // MARK: - Setters
-    static func setID(id: String?) {
-        if ( id == nil)
-        {
-            print("setID() -> NSUser.swift \"the id value is set to nil\"")
-        }
-        user.id = id
-        saveDisk()
-        saveDB()
-    }
+    
     static func setName(name: String?) {
-        if ( name == nil)
-        {
-            print("setName() -> NSUser.swift \"the name value is set to nil\"")
-        }
         user.name = name
         saveDisk()
-        saveDB()
+        updateUserInDB(key: "name", value: user.name)
     }
     static func setFlags(flags: Int?) {
-        if ( flags == nil)
-        {
-            print("setFlags() -> NSUser.swift \"the flags value is set to nil\"")
-        }
         user.flags = flags
-        saveDisk()
-        saveDB()
+        updateUserInDB(key: "flags", value: user.flags)
     }
     static func setRadius(rad: Float?) {
-        if ( rad == nil)
-        {
-            print("setRadius() -> NSUser.swift \"the radius value is set to nil\"")
-        }
         user.rad = rad
-        saveDisk()
-        saveDB()
+        updateUserInDB(key: "radius", value: rad)
     }
     static func setInterests(interests: [String]?) {
         user.interests = interests
-        saveDisk()
-        saveDB()
+        updateUserInDB(key: "interests", value: user.interests)
     }
     static func setPostedEvents(pEvents: [String]?) {
         user.pEvents = pEvents
-        saveDisk()
-        saveDB()
+        updateUserInDB(key: "pEvents", value: user.pEvents)
     }
     static func setAttendingEvents(aEvents: [String]?) {
         user.aEvents = aEvents
-        saveDisk()
-        saveDB()
+        updateUserInDB(key: "aEvents", value: user.aEvents)
     }
     static func setFlaggedEvents(fEvents: [String]?) {
         user.fEvents = fEvents
-        saveDisk()
-        saveDB()
+        updateUserInDB(key: "fEvents", value: user.fEvents)
     }
     static func setRatedEvents(rEvents: [String]?) {
         user.rEvents = rEvents
-        saveDisk()
-        saveDB()
+        updateUserInDB(key: "rEvents", value: user.rEvents)
     }
-    static func setLocation(loc: CLLocation?) { user.loc = loc }
-    
-    // MARK: - Functions
-    /** Functions **/
-    
-    /// Boot
-    ///
-    /// - Parameters:
-    ///   - id: User ID as String
-    ///   - name: User Name as String
-    static func boot(id: String, name: String) {
-        // Check internet status: 'isConnected' is true if we can reach the network
-        let connection = Reachability.shared.isConnectedToNetwork()
-        let isConnected = connection.connected || connection.cellular
-        
-        // Device APN setup
-        if isConnected {
-            let userDefaults = UserDefaults.standard
-            if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
-                self.sendDeviceID(id: id, devID: newIDValue)
-            }
-//            let userDefaults = UserDefaults.standard
-//            if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
-//                if let oldIDValue = userDefaults.object(forKey: "UniVentOldDevID") as? String {
-//                    if newIDValue == "" {
-//                        // Send old value to DB
-//                        self.sendDeviceID(id: id, devID: oldIDValue)
-//                    }
-//                }
-//            }
-        }
-        
-        // VERSION WITHOUT PRINTS OR TESTING
-        
-        /** Attempt Load Disk **/
-        if(loadDisk() && id == user.id) {
-            print("loadDisk and User")
-            /** Disk Yes **/
-            // Check Internet
-            if isConnected {
-                print("is Connected")
-                // Load DB'
-                loadDB(id: user.id!) { success in
-                    print(success)
-                    if success == "Success" {
-                        
-                        saveDisk()
-                        if name != user.name {
-                            // Update Mem & Disk
-                            user.name = name
-                            saveDisk()
-                            if isConnected {
-                                saveDB()
-                            }
-                        }
-//                    NSEvent.loadDB() { _ in
-//                    }
-
-                    } else {
-                        saveDB()
-                    }
-                }
-            }
-        }
-        
-//        // VERSION WITH PRINTS AND TESTING
-//        let changedNameExample = "Andrew Peterson"   // SET THIS TO WHICHEVER NAME YOU ARE LOADING FROM DB, CHANGE IT TO
-//                                                         // TEST UPDATING THAT DB ENTRY
-//        /** Attempt Load Disk **/
-//        if(loadDisk() && id == user.id) {
-//            /** Disk Yes **/
-//            // Check Internet
-//            if isConnected/*ifInternet()*/ {
-//                // Load DB
-//                //print("going to load from DB")
-//                loadDB(id: user.id!) { success in
-//                    //print("Something was loaded!")
-//                    if success == "Success" {
-//                        //print("The user was set")
-//                        saveDisk()
-//                    } //else {
-//                        //print("The user was NOT set")
-//                    //}
-//                    
-//                    if changedNameExample != user.name {
-//                        print("name is not the same")
-//                        // Update Mem & Disk
-//                        user.name = changedNameExample//name
-//                        print(user.name ?? "Impossible error")
-//                        saveDisk()
-//                        if isConnected/*ifInternet()*/ {
-//                            print("going to save to DB")
-//                            saveDB()
-//                        }
-//                    } else {
-//                        print("name is the same")
-//                    }
-//                }
-//            }
-//        }
-        else {
-            /** No Disk or ID Diff **/
-            // Attempt Load DB
-            loadDB(id: id) { success in
-                if success == "Success" {
-                    saveDisk()
-                } else {
-                    user.id = id
-                    user.name = name
-                
-                    // Save Disk
-                    saveDisk()
-                
-                    // Save DB
-                    saveDB()
-                    
-//                    NSEvent.loadDB() { _ in
-//                        
-//                    }
-                }
-            }
-        }
-        
-        // THIS SHOULD BE TAKEN OUT
-//        // Check Username
-//        if(name != user.name) {
-//            print("name is not the same")
-//            // Update Mem & Disk
-//            user.name = name
-//            saveDisk()
-//            
-//            // Update DB
-//            if isConnected/*ifInternet()*/ {
-//                saveDB()
-//            }
-//        } else {
-//            print("name is the same")
-//        }
-    }
-    // Function for DeviceAPN
-    
-    /// Sends device ID to DB
-    ///
-    /// - Parameters:
-    ///   - id: User ID as String
-    ///   - devID: Device ID as String
-    static func sendDeviceID(id: String, devID: String) {
-        // Check internet status: 'isConnected' is true if we can reach the network
-        let connection = Reachability.shared.isConnectedToNetwork()
-        let isConnected = connection.connected || connection.cellular
-        
-        if isConnected == false {
-            print("NSUser: getUserDB() Not connected to internet!")
-            return
-        }
-        
-        // Set URL
-        if let url = URL(string: "http://gymbuddyapp.net/sendDeviceID.php?") {
-            
-            // Setup Request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            // Build Post Request
-            var postString = "userID=\(id)&deviceID=\(devID)"
-            
-            // Send Request
-            request.httpBody = postString.data(using: .utf8)
-            
-            // Setup Task
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                // Error Handler
-                guard let _ = data, error == nil else {
-                    print("NSUser: sendDeviceID Connection Error = \(error!)")
-                    return
-                }
-                
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    
-                }
-                let responseString = String(data: data!, encoding: .utf8)
-                if responseString == nil {
-                    print("NSUser: sendDeviceID() Response String is nil")
-                }
-                else {
-                    print("NSUser: sendDeviceID() Response Message = \(responseString!)")
-                }
-            }
-            
-            // Start Task
-            task.resume()
-        }
-    }
-    
-    /** DB Functions **/
-    // MARK: - DB Functions
-    
-    // UPDATED loadDB. USES CORRECT MAIN THREAD PARALLEL EXECUTION. USE THE PRINT STATEMENTS TO WATCH THE EXECUTION PROCESS
-    
-    // Load from Database (Abdtraction of Database Operations)
-    typealias loadDBHandler = (_ success: String) -> Void
-    
-    
-    /// Gets user from DB and loads it in disk
-    ///
-    /// - Parameters:
-    ///   - id: User ID as String
-    ///   - completionHandler: Multithreading handler
-    static func loadDB(id: String, completionHandler: @escaping loadDBHandler) {
-        DispatchQueue.main.async {
-            getUserDB(ID: id) { success in
-                if success != nil {
-                    let dict = success
-                    user.id = dict!["id"]
-                    user.name = dict!["name"]
-                    user.flags = Int(dict!["flags"]!)
-                    user.rad = Float(dict!["rad"]!)
-                    user.interests = arrayer(string: dict!["interests"]) as? [String]
-                    user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
-                    user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
-                    user.rEvents = arrayer(string: dict!["rEvents"]) as? [String]
-                    user.fEvents = arrayer(string: dict!["fEvents"]) as? [String]
-                    completionHandler("Success")
-                } else {
-                    completionHandler("Failure")
-                }
-            }
-        }
+    static func setLocation(loc: CLLocation?) { user.loc = loc
+        updateUserInDB(key: "latitude", value: user.loc?.coordinate.latitude)
+        updateUserInDB(key: "longitude", value: user.loc?.coordinate.longitude)
     }
 
-//    // Load from Database (Abdtraction of Database Operations)
-//    static func loadDB(id: String) -> Bool {
-//        // Call DB Command
-//        //var dict: [String:String]? = getUserDB(ID: id)
-//        var dict: [String:String]?
-//        
-//        // Should run completely before the rest is executed
-//        DispatchQueue.main.async {
-//            print("Let me go first")
-//            getUserDB(ID: id) { success in
-//                dict = success
-//            }
-//        }
-//        
-//        print("Now the rest can run")
-//        // If Not in DB
-//        if dict == nil {
-//            // Return Fail
-//            print("Not in DB")
-//            return false
-//        }
-//        
-//        // Else Load Values
-//        user.id = dict!["id"]
-//        user.name = dict!["name"]
-//        user.flags = Int(dict!["flags"]!)
-//        user.rad = Float(dict!["rad"]!)
-//        user.interests = arrayer(string: dict!["interests"]) as? [String]
-//        user.pEvents = arrayer(string: dict!["pEvents"]) as? [String]
-//        user.aEvents = arrayer(string: dict!["aEvents"]) as? [String]
-//        user.rEvents = arrayer(string: dict!["rEvents"]) as? [String]
-//        user.fEvents = arrayer(string: dict!["fEvents"]) as? [String]
-//        
-//        // Return Success
-//        return true;
-//    }
-    
-    // UPDATED getUserDB. USES CORRECT PARALLEL EXECUTION RATHER THAN A MAIN THREAD WHILE LOOP
-    // Get User Information
-    typealias CompletionHandler = (_ success: [String : String]?) -> Void
-    
-    /// Gets user from DB
-    ///
-    /// - Parameters:
-    ///   - ID: User ID as String
-    ///   - completionHandler: Multithreading handler
-    static func getUserDB(ID: String, completionHandler: @escaping CompletionHandler) {
-        // Dict
-        //var dict: [String:String]?
-        // Check internet status: 'isConnected' is true if we can reach the network
-        let connection = Reachability.shared.isConnectedToNetwork()
-        let isConnected = connection.connected || connection.cellular
-        
-        if isConnected == false {
-            print("NSUser: getUserDB() Not connected to internet!")
-            return
-        }
-        
-        // Set URL
-        if let url = URL(string: "https://gymbuddyapp.net/getUser.php?") {
-            
-            /** Request **/
-            // Setup Request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            // Build Post Request
-            var postString = "id=\(ID)"
-            postString = postString.replacingOccurrences(of: " ", with: "%20")
-            postString = postString.replacingOccurrences(of: "'", with: "''")
-            
-            // Send Request
-            request.httpBody = postString.data(using: .utf8)
-            
-            /** Response **/
-            // Setup Task
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                
-                if let _ = data, error == nil {
-                    DispatchQueue.main.async {
-                        if data == nil {
-                            print("NSUser: getUserDB() Error connection to DB")
-                        }
-                        else {
-                            let dict = parseUser(data!)
-                            let responseString = String(data: data!, encoding: .utf8)
-                            print("NSUser: getUserDB() Response Message = \(responseString!)")
-                            completionHandler(dict)
-                        }
-                    }
-                } else {
-                    completionHandler(nil)
-                }
-            }
-            
-            // Start Task
-            task.resume()
-        }
-    }
-    
-//    // Get User Information
-//    static func getUserDB(ID: String) -> [String:String]? {
-//        // Int Wait
-//        var wait = 0
-//        
-//        // Dict
-//        var dict: [String:String]?
-//        
-//        // Set URL
-//        if let url = URL(string: "https://gymbuddyapp.net/getUser.php?") {
-//            
-//            /** Request **/
-//            // Setup Request
-//            var request = URLRequest(url: url)
-//            request.httpMethod = "POST"
-//            
-//            // Build Post Request
-//            var postString = "id=\(ID)"
-//            postString = postString.replacingOccurrences(of: " ", with: "%20")
-//            postString = postString.replacingOccurrences(of: "'", with: "''")
-//            
-//            // Send Request
-//            request.httpBody = postString.data(using: .utf8)
-//            
-//            /** Response **/
-//            // Setup Task
-//            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-//                // Error Handler
-//                guard let data = data, error == nil else {
-//                    //print("NSUser: getUserDB() Connection Error = \(error!)")
-//                    return
-//                }
-//                
-//                /** Parse the Data -> Dict **/
-//                dict = parseUser(data)              // Get Dictionary
-//                wait = 1                            // Set Wait
-//                
-//                // Respond Back
-//                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-//                    //print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-//                    //print("NSUser: getUserDB() Response = \(response!)")
-//                }
-//                let responseString = String(data: data, encoding: .utf8)
-//                //print("NSUser: getUserDB() Response Message = \(responseString!)")
-//            }
-//            
-//            // Start Task
-//            task.resume()
-//        }
-//        // Busy Waiting
-//        while wait == 0{
-//            // Do nothing
-//        }
-//        
-//        // Return
-//        return dict
-//    }
-    
-    
-    /// Sends user info to DB
-    static func saveDB() {
-        // print("Updating users DB")
-        // Check internet status: 'isConnected' is true if we can reach the network
-        let connection = Reachability.shared.isConnectedToNetwork()
-        let isConnected = connection.connected || connection.cellular
-        
-        if isConnected == false {
-            print("NSUser: saveDB() Not connected to internet!")
-            return
-        }
-        // Queue this process as low priority
-        DispatchQueue.global(qos: .utility).async {
-            // Set URL
-            if let url = URL(string: "http://gymbuddyapp.net/setUser.php?")
-            {
-                // Setup Request
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                
-                // Nil Handler
-                if user.id == nil || user.name == nil {
-                    print("NSUser: saveDB() User ID or Name is nil")
-                    return
-                }
-                
-                // Build Post Request
-                var postString = "id=\(user.id!)&latitude=\(user.loc?.coordinate.latitude ?? 0.0)&longitude=\(user.loc?.coordinate.longitude ?? 0.0)&name=\(user.name!)&flags=\(user.flags ?? 0)&rad=\(user.rad ?? 0.25)&interests=\(stringer(array: user.interests) ?? "interests nil")&pEvents=\(stringer(array: user.pEvents) ?? "pEvents nil")&aEvents=\(stringer(array: user.aEvents) ?? "aEvents nil")&fEvents=\(stringer(array: user.fEvents) ?? "fEvents nil")&rEvents=\(stringer(array: user.rEvents) ?? "rEvents nil")"
-                postString = postString.replacingOccurrences(of: " ", with: "%20")
-                postString = postString.replacingOccurrences(of: "'", with: "''")
-                //print(postString)
-                
-                // Send Request
-                request.httpBody = postString.data(using: .utf8)
-                
-                /** Response **/
-                // Setup Task
-                let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                    //print(data)
-                    // Error Handler
-                    guard let data = data, error == nil else {
-                        print("NSUser: setUserDB() Connection Error = \(error!)")
-                        return
-                    }
-                    
-                    // Respond Back
-                    if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    }
-                    let responseString = String(data: data, encoding: .utf8)
-                    if responseString == nil {
-                        print("NSUser: saveDB() Response String is nil")
-                    }
-                    else {
-                        print("NSUser: saveDB() Response Message = \(responseString!)")
-                    }
-                }
-                
-                // Start Task
-                task.resume()
-            }
-        }
-    }
-    
-    /**
-    // Get User Flags
-    static func getFlagsDB() -> Int? {
-        // Int Wait
-        var wait = 0
-        
-        // Dict
-        var dict: [String:String]?
-        
-        // Set URL
-        if let url = URL(string: "http://gymbuddyapp.net/flagUser.php?") {
-            
-            /** Request **/
-            // Setup Request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            // Nil Handler
-            if user.id == nil {
-                return nil
-            }
-            
-            // Build Post Request
-            var postString = "id=\(user.id!)"
-            postString = postString.replacingOccurrences(of: " ", with: "%20")
-            postString = postString.replacingOccurrences(of: "'", with: "''")
-            
-            // Send Request
-            request.httpBody = postString.data(using: .utf8)
-            
-            /** Response **/
-            // Setup Task
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                // Error Handler
-                guard let data = data, error == nil else {
-                    print("NSUser: getUserDB() Connection Error = \(error!)")
-                    return
-                }
-                
-                /** Parse the Data -> Dict **/
-                dict = parseUser(data)              // Get Dictionary
-                wait = 1                            // Set Wait
-                
-                // Respond Back
-                if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                    print("NSUser: getUserDB() Response statusCode should be 200, but is \(httpStatus.statusCode)")
-                    print("NSUser: getUserDB() Response = \(response!)")
-                }
-                let responseString = String(data: data, encoding: .utf8)
-                print("NSUser: getUserDB() Response Message = \(responseString!)")
-            }
-            
-            // Start Task
-            task.resume()
-        }
-        // Busy Waiting
-        while wait == 0{
-            // Do nothing
-        }
-        
-        // Get Flag
-        if dict == nil || dict!["flags"] == nil {
-            return nil
-        }
-        return Int(dict!["flags"]!)
-    }**/
-    
-    
-    
-    /** Disk Functions **/
     // MARK: - Disk Functions
+    
     /// This function saves the user data to the disk
     static func saveDisk() {
         //Saves the user data to the disk in here "user" to "arcURL.path" this is the file path where the data is going to be stored
@@ -791,36 +216,6 @@ class NSUser: NSObject, NSCoding {
             return false
         }
     }
-    
-    /** Parsers & Encoders **/
-    // MARK: - Parsers & Encoders
-    /// Parse Data into a Dictionary
-    static func parseUser(_ data:Data) -> [String:String]? {
-        // Dict
-        var dict: [String:String]?
-        
-        // Do
-        do {
-            // Extract JSON
-            let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as! [Any]
-            
-            // Extract Dict from JSON
-            for element in jsonArray {
-                let userDict = element as! [String:String]
-                dict = userDict
-            }
-        }
-            
-        // Catch
-        catch {
-            // Print Error Message
-            print("NSUser: parseUser() Caught an Exception!")
-        }
-        
-        // Return Dict
-        return dict
-    }
-    
     
     /// Disk Encoder (Required by NSCoding) this function encodes the variables so that they are secure when saved to the disk.
     func encode(with aCoder: NSCoder) {
@@ -853,22 +248,6 @@ class NSUser: NSObject, NSCoding {
     }
     
     
-    /// Converts string to array
-    ///
-    /// - Parameter string: String of elements separated by ^
-    /// - Returns: Array of type any
-    static func arrayer(string: String?) -> [Any]? {
-        // Nil
-        if string == nil {
-            return nil
-        }
-        
-        // Parse to Array
-        let array: [Any]? = string?.components(separatedBy: "^")
-        
-        // Return
-        return array
-    }
     ///Function to complete erase the disk contents no file will be left at the disk after calling this function returning true when succeed, returning false otherwise
     static func eraseDisk() -> Bool{
         do {
@@ -883,38 +262,8 @@ class NSUser: NSObject, NSCoding {
         return false
     }
     
-    
-    /// Converts array of type any to string
-    ///
-    /// - Parameter array: Array of type any
-    /// - Returns: String of elements separated by ^
-    static func stringer(array: [Any]?) -> String? {
-        // Nil
-        if array == nil || (array?.isEmpty)! {
-            return nil
-        }
-        
-        // Parse to String
-        var string: String = ""
-        for element in array! {
-            string.append(String(describing: element))
-            string.append("^")
-        }
-        
-        // Remove last +
-        //string.removeLast()
-//        if string == ""
-        string.remove(at: string.index(before: string.endIndex))
-        
-        // Return
-        return string
-    }
-    
-    
-    
     // MARK: Calendar and Reminders
-    
-    
+  
     static func checkCalendarAuthorizationStatus(completion: @escaping (_ result: Bool) -> Void) {
         let status = EKEventStore.authorizationStatus(for: EKEntityType.event)
         print(status.rawValue)
@@ -948,18 +297,6 @@ class NSUser: NSObject, NSCoding {
             } else {
                 completion(true)
             }
-//            if UserDefaults.standard.string(forKey: "UniVentUserCalendar") == nil {
-//                addUniVentCalendar() { added in
-//                    if added {
-//                        completion(true)
-//                    } else {
-//                        completion(false)
-//                    }
-//                }
-//
-//            } else {
-//                completion(true)
-//            }
         case EKAuthorizationStatus.restricted, EKAuthorizationStatus.denied:
             print("restricted or denied")
             // We need to help them give us permission
@@ -1068,15 +405,6 @@ class NSUser: NSObject, NSCoding {
     }
     
     static func addUniVentCalendar(completion: @escaping (_ added: Bool) -> Void) {
-        // TODO: Check if Calendar exists by looking for title "UniVent", update the ID if needed
-//        let calendars = eventStore.calendars(for: EKEntityType.event)
-//        for cal in calendars {
-//            if cal.title == "UniVent" {
-//                print("Found UniVent")
-//                completion(true)
-//                break
-//            }
-//        }
         // Use Event Store to create a new calendar instance
         // Configure its title
         let newCalendar = EKCalendar.init(for: .event, eventStore: eventStore)
@@ -1116,8 +444,80 @@ class NSUser: NSObject, NSCoding {
             let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(OKAction)
             completion(false)
-            
-            //self.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
+    
+    
+    
+    
+    
+
+    // MARK: - FIREBASE
+    
+    static func updateUserInDB(key: String, value: Any?) {
+        if user.FBUser != nil && user.FBUser?.uid != nil {
+            let userRef = user.ref.child("users").child((user.FBUser?.uid)!)
+            userRef.child(key).setValue(value)
+        }
+    }
+    
+    static func getUserItemFromDB(key: String, completion: @escaping anyCompletion) {
+        if user.FBUser != nil && user.FBUser?.uid != nil {
+            let userRef = user.ref.child("users").child((user.FBUser?.uid)!)
+            userRef.observeSingleEvent(of: .value, with: { snapshot in
+                let dict = snapshot.value as? NSDictionary
+                completion(dict?[key])
+            })
+        } else {
+            completion(nil)
+        }
+    }
+    
+    static func getUserFromDB(completion: @escaping boolCompletion) {
+        if user.FBUser != nil && user.FBUser?.uid != nil {
+            let userRef = user.ref.child("users").child((user.FBUser?.uid)!)
+            userRef.observeSingleEvent(of: .value, with: { snapshot in
+                let dict = snapshot.value as? NSDictionary
+                guard let name = dict?["name"] as? String else { completion(false); return }
+                guard let flags = dict?["flags"] as? Int else { completion(false); return }
+                guard let radius = dict?["radius"] as? Float else { completion(false); return }
+                let interests = dict?["interests"] as? [String]
+                let pE = dict?["pEvents"] as? [String]
+                let aE = dict?["aEvents"] as? [String]
+                let fE = dict?["fEvents"] as? [String]
+                let rE = dict?["rEvents"] as? [String]
+                user.name = name
+                user.flags = flags
+                user.rad = radius
+                user.interests = interests
+                user.pEvents = pE
+                user.aEvents = aE
+                user.fEvents = fE
+                user.rEvents = rE
+                completion(true)
+            })
+        } else {
+            completion(false)
+        }
+    }
+    
+    static func newUserInDB() {
+        if user.FBUser != nil && user.FBUser?.uid != nil {
+            let userRef = user.ref.child("users").child((user.FBUser?.uid)!)
+            userRef.child("name").setValue(user.FBUser?.displayName)
+            userRef.child("flags").setValue(0)
+            userRef.child("radius").setValue(0.25)
+            userRef.child("latitude").setValue(nil)
+            userRef.child("longitude").setValue(nil)
+            userRef.child("interests").setValue(nil)
+            userRef.child("pEvents").setValue(nil)
+            userRef.child("aEvents").setValue(nil)
+            userRef.child("fEvents").setValue(nil)
+            userRef.child("rEvents").setValue(nil)
+            let userDefaults = UserDefaults.standard
+            if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
+                userRef.child("deviceID").setValue(newIDValue)
+            }
         }
     }
 

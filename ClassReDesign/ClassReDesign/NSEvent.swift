@@ -1,15 +1,13 @@
-
-
-/** Libraries **/
 import UIKit                // Used for NSObject & NS Coding.
 import CoreLocation         // Used for Location Data.
 import SwiftLocation
+import Firebase
 
 let nseventUpdateNotif = "univent.nseventUpdateNotif"
 /**
  Name:              NSEvent (The new and improved event).
  
- Revision Date:     11.06.17
+ Revision Date:     07 Dec 2017 
  
  Description:
  
@@ -27,10 +25,6 @@ class NSEvent: NSObject, NSCoding {
     typealias dictArrayCompletion = (_ success: [[String : String]]?) -> Void
     typealias boolCompletion = (_ success: Bool) -> Void
     typealias dictCompletion = (_ success: [String : String]?) -> Void
-
-
-    
-
     
     static var datePicker: UIDatePicker = {
         let instance = UIDatePicker()
@@ -84,6 +78,9 @@ class NSEvent: NSObject, NSCoding {
     private var desc : String?
     private var interests : [String]?
     
+    static var ref: DatabaseReference!
+    static var FBUser: Firebase.User?
+    
     /** Convienience Structs **/
     /** Description: This struct is user to stores <keys> which will be later used to get <Values>
      from <<Key>:<Value>> pairs. These pairs are used both in DB & Disk.
@@ -107,10 +104,16 @@ class NSEvent: NSObject, NSCoding {
     }
     override init() {
         super.init()
+        NSEvent.ref = Database.database().reference().child("events")
+        NSEvent.ref.keepSynced(true)
+        if Auth.auth().currentUser != nil {
+            NSEvent.FBUser = Auth.auth().currentUser
+        }
+
         NotificationCenter.default.addObserver(self, selector: #selector(doThisWhenNotify), name: NSNotification.Name(rawValue: nseventUpdateNotif), object: nil)
     }
     func doThisWhenNotify() {
-        print("sEvents was set")
+       // print("sEvents was set")
     }
     /** Constructor **/
     // Creation Constructor
@@ -418,7 +421,7 @@ class NSEvent: NSObject, NSCoding {
             NSUser.setFlaggedEvents(fEvents: arr)
             
             // User save to DB & Disk
-            NSUser.saveDB()
+//            NSUser.saveDB()
             NSUser.saveDisk()
             
             // Update to DB
@@ -690,6 +693,7 @@ class NSEvent: NSObject, NSCoding {
         let loc = NSUser.getLocation()
         let lat = loc?.coordinate.latitude
         let lon = loc?.coordinate.longitude
+        getEventsNearUser()
         
         /** Load Local Events **/
         // Get Array of Event Dicts
@@ -1228,5 +1232,123 @@ class NSEvent: NSObject, NSCoding {
         }
         return false
     }
+    
+    
+    // MARK: - FIREBASE
+    static func addEventToDB(id: String?, start: Date?, end: Date?, building: String?, address: String?, city: String?, state: String?, zip: String?, loc: CLLocation?, rat: Float?, ratC: Int?, flags: Int?, heads: Int?, host: String?, title: String?, type: String?, desc: String?, intrests: [String]?, addr: [String:String]?) -> Bool {
+        
+        var id = id
+        if FBUser != nil && FBUser?.uid != nil {
+            if id == nil {
+                id = UUID().uuidString
+            }
+            let event = NSEvent(id: id, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: loc, rat: rat, ratC: ratC, flags: flags, heads: heads, host: host, title: title, type: type, desc: desc, intrests: intrests, addr: addr)
+            
+            let eventRef = ref.child(event.getID()!)
+            eventRef.child("start").setValue(event.getStartTime()?.timeIntervalSince1970)
+            eventRef.child("end").setValue(event.getEndTime()?.timeIntervalSince1970)
+            eventRef.child("building").setValue(event.getBuilding())
+            eventRef.child("address").setValue(event.getAddress())
+            eventRef.child("city").setValue(event.getCity())
+            eventRef.child("state").setValue(event.getState())
+            eventRef.child("zip").setValue(event.getZip())
+            eventRef.child("latitude").setValue(event.getLatitude())
+            eventRef.child("longitude").setValue(event.getLongitude())
+            eventRef.child("rating").setValue(event.getRating())
+            eventRef.child("ratingCount").setValue(event.getRatingCount())
+            eventRef.child("flags").setValue(event.getFlags())
+            eventRef.child("headcount").setValue(event.getHeadCount())
+            eventRef.child("hostID").setValue(event.getHostID())
+            eventRef.child("title").setValue(event.getTitle())
+            eventRef.child("type").setValue(event.getType())
+            eventRef.child("description").setValue(event.getDescription())
+            eventRef.child("interests").setValue(event.getInterest())
+            
+            
+            // Adding the event and its ID to NSUser and NSEvent
+            if var uPEvents = NSUser.getPostedEvents() {
+                if let index = uPEvents.index(of: id!) {
+                    uPEvents.remove(at: index)
+                    uPEvents.insert(id!, at: index)
+                } else {
+                    uPEvents.append(id!)
+                }
+                NSUser.setPostedEvents(pEvents: uPEvents)
+            } else {
+                NSUser.setPostedEvents(pEvents: [id!])
+            }
+            
+            if pEvents != nil {
+                for i in pEvents! {
+                    if i.getID() == id {
+                        let index = (pEvents?.index(of: i))!
+                        pEvents?.remove(at: index)
+                        pEvents?.insert(event, at: index)
+                    }
+                }
+            }
+
+            // TODO: Check if event was actually added
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    static func getEventFromDB(id: String, completion: @escaping (_ event: NSEvent?) -> Void) {
+    
+        let eventRef = ref.child(id)
+        eventRef.observeSingleEvent(of: .value, with: { snapshot in
+            let dict = snapshot.value as? NSDictionary
+            
+            let start = Date.init(timeIntervalSince1970: dict?["start"] as! Double)
+            let end = Date.init(timeIntervalSince1970: dict?["end"] as! Double)
+            let building = dict?["building"] as? String
+            let address = dict?["address"] as? String
+            let city = dict?["city"] as? String
+            let state = dict?["state"] as? String
+            let zip = dict?["zip"] as? String
+            let lat = dict?["latitude"] as? Double
+            let long = dict?["longitude"] as? Double
+            let rating = dict?["rating"] as? Float
+            let ratingCount = dict?["ratingCount"] as? Int
+            let flags = dict?["flags"] as? Int
+            let headcount = dict?["headcount"] as? Int
+            let hostID = dict?["hostID"] as? String
+            let title = dict?["title"] as? String
+            let type = dict?["type"] as? String
+            let description = dict?["description"] as? String
+            let interests = dict?["interests"] as? [String]
+            
+            let fullAddr = ["building": building, "address": address, "city": city, "state": state, "zip": zip] as? [String: String]
+            
+            let event = NSEvent(id: id, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: CLLocation.init(latitude: lat!, longitude: long!), rat: rating, ratC: ratingCount, flags: flags, heads: headcount, host: hostID, title: title, type: type, desc: description, intrests: interests, addr: fullAddr)
+            
+            completion(event)
+        })
+    }
+    
+    static func getEventsNearUser() {
+        print("Trying to get events near user")
+        let eventRef = NSEvent.ref
+        if let loc = NSUser.getLocation() {
+            let upperLat = loc.coordinate.latitude + 0.03
+            let lowerLat = loc.coordinate.latitude - 0.03
+            let upperLong = loc.coordinate.longitude + 0.03
+            let lowerLong = loc.coordinate.longitude - 0.03
+            ref?.queryStarting(atValue: lowerLat, childKey: eventRef?.child("latitude").key).observe(.value, with: { snapshot in
+                print(snapshot.children ?? "No value")
+            })
+
+//            ref?.queryStarting(atValue: lowerLat, childKey: eventRef?.child("latitude").key).queryEnding(atValue: upperLat, childKey: eventRef?.child("latitude").key).observe(.childAdded, with: { snapshot in
+//                print(snapshot.value ?? "No value")
+//            })
+
+        }
+        
+    }
+    
+    
+    
 
 }
