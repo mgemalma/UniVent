@@ -704,7 +704,11 @@ class NSEvent: NSObject, NSCoding {
                     let event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
                     
                     // Add Event
-                    arr!.append(event);
+                    if let rad = NSUser.getRadius(), let dist = NSUser.getLocation()?.distance(from: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!)), dist <= Double((rad * 1609.344)) {
+                        arr!.append(event);
+                    }
+                    
+                    
                 }
                 // Save to Mem
                 lEvents = arr
@@ -726,8 +730,7 @@ class NSEvent: NSObject, NSCoding {
             // Setup Request
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
-            //let addressString = dictToString(dict: event.getCompleteAddress())!
-            
+           
             // Build Post Request
             var postString = "id=\(event.getID()!)&start=\(event.getStartTime()!.timeIntervalSince1970)&end=\(event.getEndTime()!.timeIntervalSince1970)&add=\(dictToString(dict: event.getCompleteAddress())!)&latitude=\(event.getLocation()!.coordinate.latitude)&longitude=\(event.getLocation()!.coordinate.longitude)&rat=\(event.getRating()!)&ratC=\(event.getRatingCount()!)&flags=\(event.getFlags()!)&heads=\(event.getHeadCount()!)&host=\(event.getHostID()!)&title=\(event.getTitle()!)&type=\(event.getType()!)&desc=\(event.getDescription() ?? "" )&interests=\(stringer(array: event.getInterest()) ?? "")"
             

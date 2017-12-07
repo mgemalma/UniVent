@@ -260,13 +260,17 @@ class NSUser: NSObject, NSCoding {
         if isConnected {
             let userDefaults = UserDefaults.standard
             if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
-                if let oldIDValue = userDefaults.object(forKey: "UniVentOldDevID") as? String {
-                    if newIDValue == "" {
-                        // Send old value to DB
-                        self.sendDeviceID(id: id, devID: oldIDValue)
-                    }
-                }
+                self.sendDeviceID(id: id, devID: newIDValue)
             }
+//            let userDefaults = UserDefaults.standard
+//            if let newIDValue = userDefaults.object(forKey: "UniVentNewDevID") as? String {
+//                if let oldIDValue = userDefaults.object(forKey: "UniVentOldDevID") as? String {
+//                    if newIDValue == "" {
+//                        // Send old value to DB
+//                        self.sendDeviceID(id: id, devID: oldIDValue)
+//                    }
+//                }
+//            }
         }
         
         // VERSION WITHOUT PRINTS OR TESTING
