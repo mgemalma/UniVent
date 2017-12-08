@@ -1,14 +1,14 @@
 <?php
 // Create connection
 $con = mysqli_connect("localhost","gymbudd1_UVAdmin","Bo56H!m&","gymbudd1_UniVentDB");
-$id = $_POST['id'];
+
 // Check connection
 if (mysqli_connect_errno())
 {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 $time = time();
-$sql = "SELECT * FROM Event_Prod where id  = '$id'";
+$sql = "SELECT * FROM Event_Prod where $time >= endT";
 
 
 $result = mysqli_query($con, $sql);
@@ -73,15 +73,12 @@ $result = mysqli_query($con, $sql);
   // Finally, encode the array to JSON and output the results
   //echo json_encode($resultArray);
 
-  $sql = "DELETE FROM Event_Prod where id  = '$id'";
-
-  // Check if there are results
-  if ($result = mysqli_query($con, $sql))
-  {
-  	echo "Event $id removed successfully";
-  }else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-  }
+$sql = "DELETE FROM Event_Prod where $time >= endT";
+if (mysqli_query($con, $sql)) {
+    echo "Removed Events";
+} else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($con);
+}
 
 mysqli_close($con);
 ?>
