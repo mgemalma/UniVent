@@ -78,7 +78,7 @@ class NSEvent: NSObject, NSCoding {
     private var desc : String?
     private var interests : [String]?
     
-    static var ref: DatabaseReference!
+    static var ref: DatabaseReference! = Database.database().reference().child("events")
     static var FBUser: Firebase.User?
     
     /** Convienience Structs **/
@@ -104,7 +104,6 @@ class NSEvent: NSObject, NSCoding {
     }
     override init() {
         super.init()
-        NSEvent.ref = Database.database().reference().child("events")
         NSEvent.ref.keepSynced(true)
         if Auth.auth().currentUser != nil {
             NSEvent.FBUser = Auth.auth().currentUser
@@ -693,8 +692,10 @@ class NSEvent: NSObject, NSCoding {
         let loc = NSUser.getLocation()
         let lat = loc?.coordinate.latitude
         let lon = loc?.coordinate.longitude
-        getEventsNearUser()
-        
+//        getEventsNearUser(completion: { events in
+//        
+//        })
+//        
         /** Load Local Events **/
         // Get Array of Event Dicts
         getEventsBlockDB(lat: lat!, long: lon!) { success in
@@ -704,6 +705,8 @@ class NSEvent: NSObject, NSCoding {
                 // Iterate through Dict
                 for dict in dictArr! {
                     let ent = dict
+                    let locStr = Geohash.encode(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!, precision: Geohash.Precision.nineteenMeters)
+                    print("\(ent["title"])  location ----> \(locStr)")
                     let addressComponents = dicter(string: ent["addr"])!
                     let event: NSEvent = NSEvent(id: ent["id"], start: Date(timeIntervalSince1970: Double(ent["startT"]!)!), end: Date(timeIntervalSince1970: Double(ent["endT"]!)!), building: addressComponents["building"], address: addressComponents["address"], city: addressComponents["city"], state: addressComponents["state"], zip: addressComponents["zip"], loc: CLLocation(latitude: Double(ent["latitude"]!)!, longitude: Double(ent["longitude"]!)!), rat: Float(ent["rat"]!)!, ratC: Int(ent["ratC"]!)!, flags: Int(ent["flags"]!)!, heads: Int(ent["heads"]!)!, host: ent["host"], title: ent["title"], type: ent["type"], desc: ent["descr"], intrests: arrayer(string: ent["interests"]) as? [String], addr: addressComponents)
                     
@@ -1263,6 +1266,8 @@ class NSEvent: NSObject, NSCoding {
             eventRef.child("type").setValue(event.getType())
             eventRef.child("description").setValue(event.getDescription())
             eventRef.child("interests").setValue(event.getInterest())
+            let locStr = Geohash.encode(latitude: event.getLatitude()!, longitude: event.getLongitude()!, length: 5)
+            eventRef.child("geohash").setValue(locStr)
             
             
             // Adding the event and its ID to NSUser and NSEvent
@@ -1328,26 +1333,61 @@ class NSEvent: NSObject, NSCoding {
         })
     }
     
-    static func getEventsNearUser() {
+    static func getEventsNearUser(completion: eventArrayCompletion) {
         print("Trying to get events near user")
-        let eventRef = NSEvent.ref
-        if let loc = NSUser.getLocation() {
-            let upperLat = loc.coordinate.latitude + 0.03
-            let lowerLat = loc.coordinate.latitude - 0.03
-            let upperLong = loc.coordinate.longitude + 0.03
-            let lowerLong = loc.coordinate.longitude - 0.03
-            ref?.queryStarting(atValue: lowerLat, childKey: eventRef?.child("latitude").key).observe(.value, with: { snapshot in
-                print(snapshot.children ?? "No value")
-            })
-
-//            ref?.queryStarting(atValue: lowerLat, childKey: eventRef?.child("latitude").key).queryEnding(atValue: upperLat, childKey: eventRef?.child("latitude").key).observe(.childAdded, with: { snapshot in
-//                print(snapshot.value ?? "No value")
-//            })
-
-        }
         
+        var eventsNearUser: [NSEvent]?
+        let eventRef = Database.database().reference().child("events")
+        eventRef.keepSynced(true)
+        if let loc = NSUser.getLocation() {
+            print("Doing stuff now")
+            let locStr = Geohash.encode(latitude: loc.coordinate.latitude, longitude: loc.coordinate.longitude, precision: Geohash.Precision.twentyFourHundredMeters)
+            print(locStr)
+            eventRef.queryOrdered(byChild: "geohash").queryStarting(atValue: locStr).observe(.value, with: { snapshot in
+                for i in snapshot.children {
+                    if let event = parseEvent(snapshot: i as! DataSnapshot) {
+                        let eLoc = CLLocation(latitude: event.getLatitude()!, longitude: event.getLongitude()!)
+                        if let rad = NSUser.getRadius(), loc.distance(from: eLoc) <= Double((rad * 1609.344)) {
+                            eventsNearUser?.append(event)
+                        }
+                    }
+                }
+                lEvents = eventsNearUser
+                sEvents = lEvents
+
+//                completion(sEvents)
+            })
+        }
     }
     
+    static func parseEvent(snapshot: DataSnapshot) -> NSEvent? {
+        let dict = snapshot.value as! NSDictionary
+        let id = snapshot.key
+        let start = Date.init(timeIntervalSince1970: dict["start"] as! Double)
+        let end = Date.init(timeIntervalSince1970: dict["end"] as! Double)
+        let building = dict["building"] as? String
+        let address = dict["address"] as? String
+        let city = dict["city"] as? String
+        let state = dict["state"] as? String
+        let zip = dict["zip"] as? String
+        let lat = dict["latitude"] as? Double
+        let long = dict["longitude"] as? Double
+        let rating = dict["rating"] as? Float
+        let ratingCount = dict["ratingCount"] as? Int
+        let flags = dict["flags"] as? Int
+        let headcount = dict["headcount"] as? Int
+        let hostID = dict["hostID"] as? String
+        let title = dict["title"] as? String
+        let type = dict["type"] as? String
+        let description = dict["description"] as? String
+        let interests = dict["interests"] as? [String]
+        
+        let fullAddr = ["building": building, "address": address, "city": city, "state": state, "zip": zip] as? [String: String]
+        
+        let event = NSEvent(id: id, start: start, end: end, building: building, address: address, city: city, state: state, zip: zip, loc: CLLocation.init(latitude: lat!, longitude: long!), rat: rating, ratC: ratingCount, flags: flags, heads: headcount, host: hostID, title: title, type: type, desc: description, intrests: interests, addr: fullAddr)
+        
+        return event
+    }
     
     
 
