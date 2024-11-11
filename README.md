@@ -12,7 +12,7 @@ UniVent is an iOS application designed to help new students discover events near
 - **Status**: Previously published on the Apple Store, currently not maintained
 
 ### Team Members
-- **Team Leader**: Meric Altug Gemalmaz
+- **Team Leader**: [Meric Altug Gemalmaz](https://www.linkedin.com/in/meric-altug-gemalmaz/)
 - [Andrew Peterson](https://www.linkedin.com/in/apeterson135/)
 - [Amjad Zahraa](https://www.linkedin.com/in/amjad-zahraa/)
 - [Anirudh Pal](https://www.linkedin.com/in/pal5/)
